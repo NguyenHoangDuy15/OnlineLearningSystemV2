@@ -104,24 +104,24 @@ public class ChangeUserForAdminServlet extends HttpServlet {
         AdminDao adao = new AdminDao();
         int r = Integer.parseInt(role);
         if (!email.equals(udao.getUserByUserId(userid).getEmail())) {
-            
-        }
-//        if (getuserById(udao.getAll(), email) != null) {
-//            session.setAttribute("noti", "Gmail Dublicate");
-//            request.setAttribute("fullname", fullname);
-//            request.setAttribute("email", email);
-//            request.setAttribute("role", role);
-//            request.setAttribute("name", fullname);
-//            request.setAttribute("status", status);
-//            request.getRequestDispatcher("jsp/ChangeUserForAdmin.jsp").forward(request, response);
-//        } else{
-        adao.UpdateUserForAdmin(userid, fullname, email, role, status);
-        if (r == 2) {
-            response.sendRedirect("ListOfExpertServlet");
+            if (getuserById(udao.getAll(), email) != null) {
+                session.setAttribute("noti", "Gmail Dublicate");
+                request.setAttribute("fullname", fullname);
+                request.setAttribute("email", email);
+                request.setAttribute("role", role);
+                request.setAttribute("name", fullname);
+                request.setAttribute("status", status);
+                request.getRequestDispatcher("jsp/ChangeUserForAdmin.jsp").forward(request, response);
+
+            }
         } else {
-              response.sendRedirect("ListOfSellerServlet");
+            adao.UpdateUserForAdmin(userid, fullname, email, role, status);
+            if (r == 2) {
+                response.sendRedirect("ListOfExpertServlet");
+            } else {
+                response.sendRedirect("ListOfSellerServlet");
+            }
         }
-//        }
     }
 
     /**
