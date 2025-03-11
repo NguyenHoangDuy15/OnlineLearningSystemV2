@@ -134,8 +134,11 @@
                             <td>${b.blogDetail}</td>
                             <td>${b.blogDate}</td>
                             <td>
-                                <a href="EditBlogServlet?id=${b.blogID}" class="btn edit-btn">Edit</a>
-                                <a href="DeleteBlogServlet?id=${b.blogID}" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete</a>
+                                <form action="EditBlog" method="get" style="display:inline;">
+                                    <input type="hidden" name="id" value="${b.blogID}">
+                                    <button type="submit" class="btn edit-btn">Edit</button>
+                                </form>
+                                <a href="DeleteBlog?blogID=${b.blogID}" onclick="return confirm('Are you sure?' + ${b.blogID})" class="btn btn-danger btn-sm">Delete</a>
                             </td>
                         </tr>
                     </c:forEach>

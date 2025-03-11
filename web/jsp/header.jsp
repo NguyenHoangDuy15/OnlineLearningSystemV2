@@ -1,4 +1,14 @@
+<%@ page import="Model.Usernew, Model.User" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%
+    User user = (User) session.getAttribute("account"); // Lấy User từ session
+    if (user == null) {
+        response.sendRedirect("LoginServlet"); // Nếu chưa đăng nhập, chuyển hướng về trang login
+        return;
+    }
+    Usernew userNew = new Usernew(user); // Chuyển đổi từ User sang Usernew
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -80,9 +90,9 @@
                     %>
                     <!-- Nếu đã đăng nhập, hiển thị avatar dropdown -->
                     <div class="dropdown">
-                        <img src="https://toquoc.mediacdn.vn/280518851207290880/2022/12/15/p0dnxrcv-16710704848821827978943.jpg" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown">
+                        <img src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown">
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
-                            <li><a class="dropdown-item" href="ChangePasswordServlet">View profile</a></li>
+                            <li><a class="dropdown-item" href="ViewProfile">View My Profile</a></li>
                             <li><a class="dropdown-item" href="myenrollment">View My Enrollments</a></li>
                             <li><a class="dropdown-item" href="ChangePasswordServlet">Change Password</a></li>
 
