@@ -93,8 +93,9 @@ public class ViewProfile extends HttpServlet {
         Usernew userNew = new Usernew(user);// Chuyển đổi từ User sang Usernew
         userNew.setFullName(fullName);
         userNew.setEmail(email);
-        if (fileName != null) {
+        if (fileName != null && !fileName.equals("")) {
             userNew.setAvatar(fileUrl);
+            System.out.println("hehe");
         }
         boolean updateSuccess = dao.updateProfile(userNew);
 

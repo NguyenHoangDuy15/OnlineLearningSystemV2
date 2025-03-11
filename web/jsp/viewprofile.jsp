@@ -77,6 +77,10 @@
                     <input type="file" name="avatar" class="form-control">
                 </div>
                 <div class="form-group mb-3">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" class="form-control" value="<%= userNew.getUserName() %>" readonly>
+                </div>
+                <div class="form-group mb-3">
                     <label for="fullName">Full Name:</label>
                     <input type="text" name="fullName" class="form-control" value="<%= userNew.getFullName() %>">
                 </div>
