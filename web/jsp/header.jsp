@@ -3,11 +3,11 @@
 
 <%
     User user = (User) session.getAttribute("account"); // Lấy User từ session
-    if (user == null) {
-        response.sendRedirect("LoginServlet"); // Nếu chưa đăng nhập, chuyển hướng về trang login
-        return;
-    }
-    Usernew userNew = new Usernew(user); // Chuyển đổi từ User sang Usernew
+    
+    Usernew userNew = null;
+    if (user != null){
+        userNew = new Usernew(user);
+    }// Chuyển đổi từ User sang Usernew
 %>
 <!DOCTYPE html>
 <html>
@@ -54,7 +54,7 @@
         <!-- Navbar Start -->
         <div class="container-fluid p-0">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
-                <a href="index.jsp" class="navbar-brand ml-lg-3">
+                <a href="index" class="navbar-brand ml-lg-3">
                     <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Edukate</h1>
                 </a>
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -62,8 +62,8 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto py-0">
-                        <a href="/LearningOnlineSystem/index" class="nav-item nav-link active">Home</a>
-                        <a href="/LearningOnlineSystem/about" class="nav-item nav-link">About</a>
+                        <a href="/LearningOnlineSystemV2/index" class="nav-item nav-link active">Home</a>
+                        <a href="/LearningOnlineSystemV2/about" class="nav-item nav-link">About</a>
                         <a href="/LearningOnlineSystem/course" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
