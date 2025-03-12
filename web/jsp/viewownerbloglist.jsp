@@ -115,7 +115,7 @@
         <h3 style="color: #153e7a;">List of Blogs</h3>
 
         <div class="container">
-            <a href="CreateBlogServlet" class="create-btn">Create New Blog</a>
+            <a href="CreateBlog" class="create-btn">Create New Blog</a>
 
             <table>
                 <tr>
