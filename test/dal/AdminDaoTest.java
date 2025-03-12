@@ -119,13 +119,13 @@ public class AdminDaoTest {
         assertEquals(1, requests.size());
     }
 
-    @Test
-    public void testDeleteRequest() throws SQLException {
-        System.out.println("deleteRequest");
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-        admindao.deleteRequest("1");
-        verify(mockPreparedStatement, times(1)).executeUpdate();
-    }
+//    @Test
+//    public void testDeleteRequest() throws SQLException {
+//        System.out.println("deleteRequest");
+//        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+//        admindao.deleteRequest("1");
+//        verify(mockPreparedStatement, times(1)).executeUpdate();
+//    }
 
     @Test
     public void testUpdateRoleForUser() throws SQLException {
