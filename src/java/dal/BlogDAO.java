@@ -16,26 +16,15 @@ import java.sql.SQLException;
 public class BlogDAO extends DBContext {
 
     // 1.Create Blog
-    public void createBlog(String title, String detail, String image, int userID, int roleID) {
+    public void createBlog(String title, String detail, String image,int userID, int roleID) {
         if (roleID != 3) {
             System.out.println("Bạn không có quyền tạo blog.");
             return;
         }
 
-        String sql = "INSERT INTO [dbo].[Blogs]\n"
-                + "           ([BlogTitle]\n"
-                + "           ,[BlogDetail]\n"
-                + "           ,[BlogImage]\n"
-                + "           ,[BlogDate]\n"
-                + "           ,[UserID])\n"
-                + "     VALUES\n"
-                + "           (?\n"
-                + "           ,?\n"
-                + "           ,?\n"
-                + "           ,GETDATE()\n"
-                + "           ,?)";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        String sql = "INSERT INTO Blogs (BlogTitle, BlogDetail, BlogImage, BlogDate, UserID) VALUES (?, ?, ?, GETDATE(), ?)";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, title);
             st.setString(2, detail);
             st.setString(3, image);
@@ -45,8 +34,8 @@ public class BlogDAO extends DBContext {
             e.printStackTrace();
         }
     }
-
     // 2.Delete Blog
+
     public void deleteBlog(int blogID, int roleID) {
         if (roleID != 1 && roleID != 3) {
             System.out.println("Bạn không có quyền xóa blog.");

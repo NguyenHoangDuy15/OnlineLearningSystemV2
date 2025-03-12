@@ -5,6 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="Model.Blog" %>
+
+<% 
+    Blog blog = (Blog) request.getAttribute("blog");
+    if (blog == null) {
+%>
+<p style="color: red;">Blog không tồn tại hoặc bạn không có quyền chỉnh sửa.</p>
+<% } else { %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -29,60 +37,90 @@
 
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
+        <title>Edit My Blog</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <style>
+            .form-container {
+                max-width: 800px;
+                margin: auto;
+                padding: 30px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                background-color: #f9f9f9;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .form-group {
+                margin-bottom: 25px;
+            }
+            label {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            input, textarea {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            textarea {
+                height: 150px;
+                resize: none;
+            }
+            .image-preview {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                margin-top: 10px;
+                border-radius: 5px;
+            }
+            button {
+                background-color: #003d80;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 5px;
+                width: 100%;
+                font-size: 16px;
+                transition: background 0.3s;
+            }
+            button:hover {
+                background-color: #003d80;
+            }
+        </style>
     </head>
-    <head>
-    <title>Edit Blog</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        .container {
-            max-width: 700px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h3 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-        .btn-custom {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <%@ include file="header.jsp" %>
+    <body>
+        <%@ include file="header.jsp" %>
 
-    <div class="container">
-        <h3>Edit Blog</h3>
-        <form action="EditBlogServlet" method="post">
-            <input type="hidden" name="blogID" value="${blog.blogID}">
-            
-            <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input type="text" name="title" class="form-control" value="${blog.blogTitle}" required>
+        <div class="d-flex justify-content-center mt-4">
+            <div class="form-container">
+                <h2 class="text-center mb-4">Edit My Blog</h2>
+                <form action="EditBlog" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="blogID" value="<%= blog.getBlogID() %>">
+
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" name="title" value="<%= blog.getBlogTitle() %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="detail">Details:</label>
+                        <textarea id="detail" name="detail" required><%= blog.getBlogDetail() %></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Image:</label>
+                        <% if (blog.getBlogImage() != null && !blog.getBlogImage().isEmpty()) { %>
+                        <img src="<%= blog.getBlogImage() %>" alt="Ảnh blog" class="image-preview">
+                        <% } %>
+                        <input type="file" id="image" name="image">
+                    </div>
+
+                    <button type="submit">Save changes</button>
+                </form>
             </div>
+        </div>
 
-            <div class="mb-3">
-                <label class="form-label">Content</label>
-                <textarea name="content" class="form-control" rows="6" required>${blog.blogDetail}</textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-custom">Save Changes</button>
-            <a href="viewownerbloglist" class="btn btn-secondary btn-custom mt-2">Cancel</a>
-        </form>
-    </div>
-
-    <%@ include file="footer.jsp" %>
-</body>
+        <%@ include file="footer.jsp" %>
+    </body>
 </html>
+<% } %>

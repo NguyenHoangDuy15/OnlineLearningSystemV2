@@ -1,83 +1,124 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package local.SaleController;
 
+import Model.Blog;
+import Model.User;
+import dal.BlogDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.File;
+import java.nio.file.Paths;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 
-/**
- *
- * @author THU UYEN
- */
-@WebServlet(name="EditBlog", urlPatterns={"/EditBlog"})
+@WebServlet(name = "EditBlog", urlPatterns = {"/EditBlog"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 1024 * 1024 * 5, // 5MB
+        maxRequestSize = 1024 * 1024 * 10 // 10MB
+)
 public class EditBlog extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet EditBlog</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet EditBlog at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    } 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private static final String UPLOAD_DIR = "blog_images";
+    private BlogDAO blogDAO = new BlogDAO();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    } 
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("account");
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+        if (user == null) {
+            response.sendRedirect("LoginServlet");
+            return;
+        }
+
+        String blogIDStr = request.getParameter("blogID");
+        if (blogIDStr == null || blogIDStr.isEmpty()) {
+            response.sendRedirect("viewownerbloglist?error=MissingBlogID");
+            return;
+        }
+
+        int blogID;
+        try {
+            blogID = Integer.parseInt(blogIDStr);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("viewownerbloglist?error=InvalidBlogID");
+            return;
+        }
+
+        Blog blog = blogDAO.getBlogByID(blogID);
+        if (blog == null || blog.getUserID() != user.getUserID()) {
+            response.sendRedirect("viewownerbloglist?error=BlogNotFound");
+            return;
+        }
+
+        request.setAttribute("blog", blog);
+        request.getRequestDispatcher("jsp/updateblog.jsp").forward(request, response);
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        Integer userID = (Integer) session.getAttribute("userid");
+        if (userID == null) {
+            response.sendRedirect("LoginServlet");
+            return;
+        }
+
+        String blogIDStr = request.getParameter("blogID");
+        if (blogIDStr == null || blogIDStr.isEmpty()) {
+            response.sendRedirect("viewownerbloglist?error=MissingBlogID");
+            return;
+        }
+
+        int blogID;
+        try {
+            blogID = Integer.parseInt(blogIDStr);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("viewownerbloglist?error=InvalidBlogID");
+            return;
+        }
+
+        String title = request.getParameter("title").trim();
+        String detail = request.getParameter("detail").trim();
+
+        Blog existingBlog = blogDAO.getBlogByID(blogID);
+        if (existingBlog == null || existingBlog.getUserID() != userID) {
+            response.sendRedirect("viewownerbloglist?error=BlogNotFound");
+            return;
+        }
+
+        // Xử lý ảnh
+        Part filePart = request.getPart("image");
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        String imagePath = existingBlog.getBlogImage();
+
+        if (filePart != null && fileName != null && !fileName.isEmpty()) {
+            String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            String filePath = uploadPath + File.separator + fileName;
+            filePart.write(filePath);
+            imagePath = UPLOAD_DIR + "/" + fileName;
+        }
+
+        // Cập nhật blog
+        blogDAO.editBlog(blogID, title, detail, imagePath, userID);
+        response.sendRedirect("EditBlog?blogID=" + blogID);
+    }
+
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet for editing blog posts";
+    }
 }

@@ -90,21 +90,36 @@
                 font-weight: bold;
             }
 
-            .edit-btn {
-                background-color: #007bff;
+
+
+            .btn-edit, .btn-delete {
+                display: inline-block;
+                width: 70px; /* Đảm bảo hai nút có cùng độ rộng */
+                padding: 8px 5px; /* Giữ padding trên/dưới cố định */
+                font-size: 16px;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .btn-edit {
+                background-color: #0056b3; /* Màu xanh */
                 color: white;
             }
 
-            .edit-btn:hover {
-                background-color: #0056b3;
+            .btn-edit:hover {
+                background-color: darkblue;
             }
 
-            .delete-btn {
-                background-color: #dc3545;
+            .btn-delete {
+                background-color: #dc3545; /* Màu đỏ */
                 color: white;
             }
 
-            .delete-btn:hover {
+            .btn-delete:hover {
                 background-color: #a71d2a;
             }
         </style>
@@ -115,7 +130,7 @@
         <h3 style="color: #153e7a;">List of Blogs</h3>
 
         <div class="container">
-            <a href="CreateBlogServlet" class="create-btn">Create New Blog</a>
+            <a href="CreateBlog" class="create-btn">Create New Blog</a>
 
             <table>
                 <tr>
@@ -134,11 +149,8 @@
                             <td>${b.blogDetail}</td>
                             <td>${b.blogDate}</td>
                             <td>
-                                <form action="EditBlog" method="get" style="display:inline;">
-                                    <input type="hidden" name="id" value="${b.blogID}">
-                                    <button type="submit" class="btn edit-btn">Edit</button>
-                                </form>
-                                <a href="DeleteBlog?blogID=${b.blogID}" onclick="return confirm('Are you sure?' + ${b.blogID})" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="EditBlog?blogID=${b.getBlogID()}"class="btn-edit" >Edit</a>
+                                <a href="DeleteBlog?blogID=${b.blogID}" onclick="return confirm('Are you sure?' + ${b.blogID})" class="btn-delete">Delete</a>
                             </td>
                         </tr>
                     </c:forEach>
