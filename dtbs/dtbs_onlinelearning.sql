@@ -21,27 +21,28 @@ CREATE TABLE Users (
 CREATE TABLE Category (
     CategoryID INT PRIMARY KEY IDENTITY(1,1),
     CategoryName NVARCHAR(255) NOT NULL,
-    Description TEXT
+   Description nvarchar(max)
 );
 
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
     Name NVARCHAR(255) NOT NULL,
-    Description TEXT,
+    Description nvarchar(max),
     Price FLOAT,
 	imageCources nvarchar(max),
     UserID INT FOREIGN KEY REFERENCES Users(UserID),
     CategoryID INT FOREIGN KEY REFERENCES Category(CategoryID),
     CreatedAt DATE,
+	 Status INT NULL CHECK (Status IN (0,1)) DEFAULT 0
 	
 );
 
 CREATE TABLE Lessons (
     LessonID INT IDENTITY(1,1) PRIMARY KEY,
-    Content NVARCHAR(MAX),
-    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID),
-    Title NVARCHAR(255),
-    Status INT CHECK (Status IN (0,1))
+    Content NVARCHAR(MAX) NOT NULL,
+    CourseID INT  FOREIGN KEY REFERENCES Courses(CourseID),
+    Title NVARCHAR(255) NOT NULL,
+   
 );
 
 CREATE TABLE Blogs (
@@ -82,48 +83,50 @@ CREATE TABLE TransactionHistory (
 CREATE TABLE Requests (
     RequestID INT PRIMARY KEY IDENTITY(1,1),
     RequestedRole INT FOREIGN KEY REFERENCES Roles(RoleID),
-    UserID INT FOREIGN KEY REFERENCES Users(UserID)
+    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+	 Status INT NULL CHECK (Status IN (0,1)) DEFAULT NULL
 );
-CREATE TABLE Answer (
-    AnswerID INT PRIMARY KEY IDENTITY(1,1),
-    IsCorrectAnswer INT CHECK (IsCorrectAnswer IN (0,1)),
-    AnswerContent NVARCHAR(255),
-  
+CREATE TABLE Test (
+    TestID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(255),
+   Status INT NULL CHECK (Status IN (0,1)) DEFAULT 0,
+    CreatedBy NVARCHAR(50),
+    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID)
 );
+
 CREATE TABLE Question (
     QuestionID INT PRIMARY KEY IDENTITY(1,1),
     QuestionType NVARCHAR(255),
     QuestionContent NVARCHAR(255),
-	OptionA NVARCHAR(255),
+    OptionA NVARCHAR(255),
     OptionB NVARCHAR(255),
     OptionC NVARCHAR(255),
     OptionD NVARCHAR(255),
-    AnswerID INT FOREIGN KEY REFERENCES Answer(AnswerID)
-);
-CREATE TABLE Test (
-    TestID INT PRIMARY KEY  IDENTITY(1,1),
-    Name VARCHAR(255),
-    Status INT CHECK (Status IN (0,1)),
-    CreatedBy NVARCHAR(50),
-   
-    TotalMark FLOAT,
-    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID)
+    TestID INT FOREIGN KEY REFERENCES Test(TestID)
 );
 
-CREATE TABLE Test_Question ( -- Bảng trung gian để Test có nhiều Question
-    TestID INT FOREIGN KEY REFERENCES Test(TestID),
-    QuestionID INT FOREIGN KEY REFERENCES Question(QuestionID),
-    PRIMARY KEY (TestID, QuestionID)
+CREATE TABLE Answer (
+    AnswerID INT PRIMARY KEY IDENTITY(1,1),
+    AnswerContent NVARCHAR(255),
+    QuestionID INT FOREIGN KEY REFERENCES Question(QuestionID)
 );
 
-CREATE TABLE UserAnswers (--lưu câu trả lời của từng người dùn
+CREATE TABLE History (
+    HistoryID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT FOREIGN KEY REFERENCES Users(UserID),
+    TestID INT FOREIGN KEY REFERENCES Test(TestID)
+);
+
+CREATE TABLE UserAnswers (
+    UserAnswerID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính tự tăng
     UserID INT FOREIGN KEY REFERENCES Users(UserID),
     TestID INT FOREIGN KEY REFERENCES Test(TestID),
     QuestionID INT FOREIGN KEY REFERENCES Question(QuestionID),
+    AnswerOption CHAR(1),
     AnswerID INT FOREIGN KEY REFERENCES Answer(AnswerID),
-    PRIMARY KEY (UserID, TestID, QuestionID)
+    IsCorrectAnswer INT CHECK (IsCorrectAnswer IN (0,1)), -- Đánh dấu đúng/sai
+    HistoryID INT FOREIGN KEY REFERENCES History(HistoryID) -- Liên kết với lần làm bài
 );
-
 
 
 
@@ -265,17 +268,17 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 
 
 
-INSERT INTO Lessons (Title, Content, CourseID, Status) VALUES 
-('Java Programming for Beginner-Full-Course', 'https://www.youtube.com/watch?v=eIrMbAQSU34&t=2989s&ab_channel=ProgrammingwithMosh', 1, 1),
-('Java 24 - Better Language, Better APIs, Better Runtime', 'https://www.youtube.com/watch?v=2NTyzL-9Bfo', 1, 1),
-('Advanced Java Programming A Comprehensive Full-Course', 'https://www.youtube.com/watch?v=I_qP7H3STMg', 2, 1),
-('Java Spring Boot Web Development-Full-Course', 'https://www.youtube.com/watch?v=I_qP7H3STMg', 3, 1),
-('Python Full Course for Beginners', 'https://www.youtube.com/watch?v=_uQrJ0TkZlc', 4, 1),
-('Data Science with Python-Full Course', 'https://www.youtube.com/watch?v=nHAPcZRg9VM', 5, 1),
-('Web Development with Python Tutorial – Flask & Dynamic Database-Driven Web Apps', 'https://www.youtube.com/watch?v=yBDHkveJUf4', 6, 1),
-('JavaScript Course for Beginners 2024', 'https://www.youtube.com/watch?v=Zi-Q0t4gMC8', 7, 1),
-('Frontend Web Development Bootcamp Course (JavaScript, HTML, CSS)', 'https://www.youtube.com/watch?v=zJSY8tbf_ys', 8, 1),
-('Node.js and Express.js - Full Course', 'https://www.youtube.com/watch?v=Oe421EPjeBE', 9, 1)
+INSERT INTO Lessons (Title, Content, CourseID) VALUES 
+('Java Programming for Beginner-Full-Course', 'https://www.youtube.com/watch?v=GoXwIVyNvX0', 1),
+('Java 24 - Better Language, Better APIs, Better Runtime', 'https://www.youtube.com/watch?v=2NTyzL-9Bfo', 1),
+('Advanced Java Programming A Comprehensive Full-Course', 'https://www.youtube.com/watch?v=I_qP7H3STMg', 2),
+('Java Spring Boot Web Development-Full-Course', 'https://www.youtube.com/watch?v=I_qP7H3STMg', 3),
+('Python Full Course for Beginners', 'https://www.youtube.com/watch?v=_uQrJ0TkZlc', 4),
+('Data Science with Python-Full Course', 'https://www.youtube.com/watch?v=nHAPcZRg9VM', 5),
+('Web Development with Python Tutorial – Flask & Dynamic Database-Driven Web Apps', 'https://www.youtube.com/watch?v=yBDHkveJUf4', 6),
+('JavaScript Course for Beginners 2024', 'https://www.youtube.com/watch?v=Zi-Q0t4gMC8', 7),
+('Frontend Web Development Bootcamp Course (JavaScript, HTML, CSS)', 'https://www.youtube.com/watch?v=zJSY8tbf_ys', 8),
+('Node.js and Express.js - Full Course', 'https://www.youtube.com/watch?v=Oe421EPjeBE', 9)
 INSERT INTO Blogs (BlogTitle, BlogDetail, BlogImage, BlogDate, UserID)
 VALUES 
     (N'Bắt đầu học lập trình: Lộ trình cho người mới', 
@@ -355,280 +358,89 @@ INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMetho
 VALUES (2, 1, GETDATE(), 1, N'VNPay', GETDATE());
 INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMethod, PaymentDate) 
 VALUES (3, 1, GETDATE(), 2, N'VNPay', GETDATE());
-INSERT INTO [dbo].[Requests]
-           ([RequestedRole]
-           ,[UserID])
-     VALUES
-           (2
-           ,6)
-INSERT INTO [dbo].[Requests]
-           ([RequestedRole]
-           ,[UserID])
-     VALUES
-           (2
-           ,6)
-INSERT INTO [dbo].[Requests]
-           ([RequestedRole]
-           ,[UserID])
-     VALUES
-           (3
-           ,6)
-
-INSERT INTO Answer (IsCorrectAnswer, AnswerContent) VALUES 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'), 
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'), 
-(1, 'C'), (0, 'A'), (0, 'B'), (0, 'D'), 
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'), 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'), 
-(1, 'D'), (0, 'A'), (0, 'B'), (0, 'C'), 
-(1, 'C'), (0, 'A'), (0, 'B'), (0, 'D'), 
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'), 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'), 
-(1, 'C'), (0, 'A'), (0, 'B'), (0, 'D'), 
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'), 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'), 
-(1, 'C'), (0, 'A'), (0, 'B'), (0, 'D'),
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'), 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'),  
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'),
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'), 
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'), 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'),
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'),
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'),
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'),
-(1, 'C'), (0, 'B'), (0, 'A'), (0, 'D'),    
-(1, 'D'), (0, 'A'), (0, 'B'), (0, 'C'), 
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D'),
-(1, 'B'), (0, 'A'), (0, 'D'), (0, 'C'),
-(1, 'D'), (0, 'A'), (0, 'B'), (0, 'C'),
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'),
-(1, 'A'), (0, 'B'), (0, 'C'), (0, 'D'),
-(1, 'B'), (0, 'A'), (0, 'C'), (0, 'D');
 
 
-INSERT INTO Question(QuestionType, QuestionContent, OptionA, OptionB, OptionC, OptionD, AnswerID) 
+-- Insert answers into the Answer table (only correct answers)
+
+INSERT INTO [dbo].[Test] ([Name], [Status], [CreatedBy],[CourseID]) 
+VALUES ('Test 1', 0, 'Hoang Cong Ninh', 1);
+-- Insert questions into the Question table with TestID = 1
+INSERT INTO Question (QuestionType, QuestionContent, OptionA, OptionB, OptionC, OptionD, TestID) 
 VALUES 
 ('multiple choice', 'Which keyword is used to inherit a class in Java?', 'A. implements', 'B. extends', 'C. inherits', 'D. interface', 1),
-('multiple choice', 'Which of the following is the correct declaration of the main method in Java?', 'A. public static void main(String[] args)', 'B. static void main(String[] args)', 'C. public void main(String[] args)', 'D. void main(String args[])', 2),
-('multiple choice', 'Which data type is a primitive type in Java?', 'A. String', 'B. ArrayList', 'C. int', 'D. Integer', 3),
-('multiple choice', 'Which statement is used to read input from the keyboard in Java?', 'A. Scanner scanner = new Scanner(System.in);', 'B. Input input = new Input(System.in);', 'C. System.console().readLine();', 'D. new Scanner();', 4),
-('multiple choice', 'What is the scope of a local variable?', 'A. The entire program', 'B. Inside a method or block', 'C. The entire class', 'D. Inside a package', 5),
-('multiple choice', 'What does the final keyword mean in Java?', 'A. A variable cannot be changed', 'B. A method cannot be overridden', 'C. A class cannot be inherited', 'D. All of the above', 6),
-('multiple choice', 'An interface in Java can contain:', 'A. Methods with a body', 'B. Mutable variables', 'C. Abstract methods', 'D. Constructors', 7),
-('multiple choice', 'Which package does the ArrayList class belong to?', 'A. java.util', 'B. java.lang', 'C. java.io', 'D. java.sql', 8),
-('multiple choice', 'Which method of ArrayList is used to retrieve an element by index?', 'A. fetch(int index)', 'B. get(int index)', 'C. retrieve(int index)', 'D. find(int index)',9),
-('multiple choice', 'Which keyword is used to create an object in Java?', 'A. create', 'B. build', 'C. new', 'D. instance', 10),
-('multiple choice', 'What is the default value of a boolean variable in Java?', 'A. true', 'B. false', 'C. null', 'D. 0', 11),
-('multiple choice', 'What is the purpose of the equals() method?', 'A. Compare memory addresses of two objects', 'B. Compare the contents of two objects', 'C. Copy an object', 'D. Compare two integers', 12),
-('multiple choice', 'Which of the following is an example of downcasting?', 'A. (Dog) animal;', 'B. (int) 3.5;', 'C. Integer.parseInt("123");', 'D. String.valueOf(123);', 13),
-('multiple choice', 'Which class is used to read data from a file in Java?', 'A. FileReader', 'B. FileScanner', 'C. FileWriter', 'D. FileOutputStream', 14),
-('multiple choice', 'What is try-catch-finally used for?', 'A. Exception handling', 'B. Defining loops', 'C. Ending a program', 'D. Initializing variables', 15),
-('multiple choice', 'What is the purpose of the throw keyword?', 'A. Declare an exception', 'B. Throw an exception', 'C. Handle an exception', 'D. Catch an exception', 16),
-('multiple choice', 'What is Runnable in Java?', 'A. A class', 'B. An interface', 'C. A package', 'D. An annotation', 17),
-('multiple choice', 'What is the purpose of the super keyword?', 'A. Call the constructor of the parent class', 'B. Call a static method', 'C. Access a private method', 'D. Access a global variable', 18),
-('multiple choice', 'What is the difference between == and equals()?', 'A. == compares memory addresses, equals() compares content', 'B. Both compare memory addresses', 'C. == compares content, equals() compares memory addresses', 'D. No difference', 19),
-('multiple choice', 'Which statement is used to exit a loop?', 'A. stop', 'B. continue', 'C. break', 'D. exit', 20),
-('multiple choice', 'Which class does System.out.println() belong to?', 'A. System', 'B. Console', 'C. OutputStream', 'D. PrintStream', 21),
-('multiple choice', 'What does Math.random() return?', 'A. An integer', 'B. A floating-point number in the range [0,1)', 'C. A floating-point number in the range (0,1]', 'D. An integer in the range [0,10]', 22),
-('multiple choice', 'What is the size of an int variable in Java?', 'A. 16 bits', 'B. 32 bits', 'C. 64 bits', 'D. 8 bits', 23),
-('multiple choice', 'Which keyword is used to prevent a method from being overridden?', 'A. static', 'B. private', 'C. final', 'D. protected', 24),
-('multiple choice', 'What will happen if we try to execute a program without a main method in Java?', 'A. It will compile and run', 'B. It will compile but not run', 'C. It will not compile', 'D. It will throw an exception', 25),
-('multiple choice', 'Which method is called automatically when an object is created?', 'A. finalize()', 'B. constructor', 'C. start()', 'D. run()', 26),
-('multiple choice', 'Which access modifier allows a variable to be accessed only within the same package?', 'A. public', 'B. private', 'C. protected', 'D. default (no modifier)', 27),
-('multiple choice', 'What is the parent class of all classes in Java?', 'A. Object', 'B. Class', 'C. Super', 'D. Base', 28),
-('multiple choice', 'What happens when you divide an integer by zero in Java?', 'A. Throws ArithmeticException', 'B. Returns Infinity', 'C. Returns NaN', 'D. Returns 0', 29),
-('multiple choice', 'Which keyword is used to call the constructor of the parent class?', 'A. this', 'B. super', 'C. extends', 'D. parent', 30);
+('multiple choice', 'Which of the following is the correct declaration of the main method in Java?', 'A. public static void main(String[] args)', 'B. static void main(String[] args)', 'C. public void main(String[] args)', 'D. void main(String args[])', 1),
+('multiple choice', 'Which data type is a primitive type in Java?', 'A. String', 'B. ArrayList', 'C. int', 'D. Integer', 1),
+('multiple choice', 'Which statement is used to read input from the keyboard in Java?', 'A. Scanner scanner = new Scanner(System.in);', 'B. Input input = new Input(System.in);', 'C. System.console().readLine();', 'D. new Scanner();', 1),
+('multiple choice', 'What is the scope of a local variable?', 'A. The entire program', 'B. Inside a method or block', 'C. The entire class', 'D. Inside a package', 1),
+('multiple choice', 'What does the final keyword mean in Java?', 'A. A variable cannot be changed', 'B. A method cannot be overridden', 'C. A class cannot be inherited', 'D. All of the above', 1),
+('multiple choice', 'An interface in Java can contain:', 'A. Methods with a body', 'B. Mutable variables', 'C. Abstract methods', 'D. Constructors', 1),
+('multiple choice', 'Which package does the ArrayList class belong to?', 'A. java.util', 'B. java.lang', 'C. java.io', 'D. java.sql', 1),
+('multiple choice', 'Which method of ArrayList is used to retrieve an element by index?', 'A. fetch(int index)', 'B. get(int index)', 'C. retrieve(int index)', 'D. find(int index)', 1),
+('multiple choice', 'Which keyword is used to create an object in Java?', 'A. create', 'B. build', 'C. new', 'D. instance', 1),
+('multiple choice', 'What is the default value of a boolean variable in Java?', 'A. true', 'B. false', 'C. null', 'D. 0', 1),
+('multiple choice', 'What is the purpose of the equals() method?', 'A. Compare memory addresses of two objects', 'B. Compare the contents of two objects', 'C. Copy an object', 'D. Compare two integers', 1),
+('multiple choice', 'Which of the following is an example of downcasting?', 'A. (Dog) animal;', 'B. (int) 3.5;', 'C. Integer.parseInt("123");', 'D. String.valueOf(123);', 1),
+('multiple choice', 'Which class is used to read data from a file in Java?', 'A. FileReader', 'B. FileScanner', 'C. FileWriter', 'D. FileOutputStream', 1),
+('multiple choice', 'What is try-catch-finally used for?', 'A. Exception handling', 'B. Defining loops', 'C. Ending a program', 'D. Initializing variables', 1),
+('multiple choice', 'What is the purpose of the throw keyword?', 'A. Declare an exception', 'B. Throw an exception', 'C. Handle an exception', 'D. Catch an exception', 1),
+('multiple choice', 'What is Runnable in Java?', 'A. A class', 'B. An interface', 'C. A package', 'D. An annotation', 1),
+('multiple choice', 'What is the purpose of the super keyword?', 'A. Call the constructor of the parent class', 'B. Call a static method', 'C. Access a private method', 'D. Access a global variable', 1),
+('multiple choice', 'What is the difference between == and equals()?', 'A. == compares memory addresses, equals() compares content', 'B. Both compare memory addresses', 'C. == compares content, equals() compares memory addresses', 'D. No difference', 1),
+('multiple choice', 'Which statement is used to exit a loop?', 'A. stop', 'B. continue', 'C. break', 'D. exit', 1),
+('multiple choice', 'Which class does System.out.println() belong to?', 'A. System', 'B. Console', 'C. OutputStream', 'D. PrintStream', 1),
+('multiple choice', 'What does Math.random() return?', 'A. An integer', 'B. A floating-point number in the range [0,1)', 'C. A floating-point number in the range (0,1]', 'D. An integer in the range [0,10]', 1),
+('multiple choice', 'What is the size of an int variable in Java?', 'A. 16 bits', 'B. 32 bits', 'C. 64 bits', 'D. 8 bits', 1),
+('multiple choice', 'Which keyword is used to prevent a method from being overridden?', 'A. static', 'B. private', 'C. final', 'D. protected', 1),
+('multiple choice', 'What will happen if we try to execute a program without a main method in Java?', 'A. It will compile and run', 'B. It will compile but not run', 'C. It will not compile', 'D. It will throw an exception', 1),
+('multiple choice', 'Which method is called automatically when an object is created?', 'A. finalize()', 'B. constructor', 'C. start()', 'D. run()', 1),
+('multiple choice', 'Which access modifier allows a variable to be accessed only within the same package?', 'A. public', 'B. private', 'C. protected', 'D. default (no modifier)', 1),
+('multiple choice', 'What is the parent class of all classes in Java?', 'A. Object', 'B. Class', 'C. Super', 'D. Base', 1),
+('multiple choice', 'What happens when you divide an integer by zero in Java?', 'A. Throws ArithmeticException', 'B. Returns Infinity', 'C. Returns NaN', 'D. Returns 0', 1),
+('multiple choice', 'Which keyword is used to call the constructor of the parent class?', 'A. this', 'B. super', 'C. extends', 'D. parent', 1);
+
+
+INSERT INTO Answer (AnswerContent, QuestionID)
+VALUES
+('B', 1), -- Correct answer for question 1
+('A', 2), -- Correct answer for question 2
+('C', 3), -- Correct answer for question 3
+('A', 4), -- Correct answer for question 4
+('B', 5), -- Correct answer for question 5
+('D', 6), -- Correct answer for question 6
+('C', 7), -- Correct answer for question 7
+('A', 8), -- Correct answer for question 8
+('B', 9), -- Correct answer for question 9
+('C', 10), -- Correct answer for question 10
+('A', 11), -- Correct answer for question 11
+('B', 12), -- Correct answer for question 12
+('C', 13), -- Correct answer for question 13
+('B', 14), -- Correct answer for question 14
+('A', 15), -- Correct answer for question 15
+('B', 16), -- Correct answer for question 16
+('C', 17), -- Correct answer for question 17
+('A', 18), -- Correct answer for question 18
+('B', 19), -- Correct answer for question 19
+('C', 20), -- Correct answer for question 20
+('A', 21), -- Correct answer for question 21
+('B', 22), -- Correct answer for question 22
+('A', 23), -- Correct answer for question 23
+('B', 24), -- Correct answer for question 24
+('A', 25), -- Correct answer for question 25
+('B', 26), -- Correct answer for question 26
+('C', 27), -- Correct answer for question 27
+('A', 28), -- Correct answer for question 28
+('B', 29), -- Correct answer for question 29
+('C', 30); -- Correct answer for question 30
 
 
 
-INSERT INTO [dbo].[Test] ([Name], [Status], [CreatedBy], [TotalMark], [CourseID]) 
-VALUES ('Test 1', 0, 'Hoang Cong Ninh', 0, 1);
-
-select * from Answer
 
 
 
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,1)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,2)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,3)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,4)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,5)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,6)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,7)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,8)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,9)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,10)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,11)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,12)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,13)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,14)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,15)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,16)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,17)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,18)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,19)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,20)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,21)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,22)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,23)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,24)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,25)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,26)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,27)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,28)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,29)
-INSERT INTO [dbo].[Test_Question]
-           ([TestID]
-           ,[QuestionID])
-     VALUES
-           (1
-           ,30)
+
+
+
+
 INSERT INTO [dbo].[Enrollments]
            ([UserID]
            ,[CourseID]
@@ -671,6 +483,19 @@ INSERT INTO [dbo].[Enrollments]
 
            ,GETDATE());
 
-
-
-	
+	INSERT INTO [dbo].[Requests]
+           ([RequestedRole]
+           ,[UserID]
+           ,[Status])
+     VALUES
+           (2
+           ,6
+           ,null)	
+INSERT INTO [dbo].[Requests]
+           ([RequestedRole]
+           ,[UserID]
+           ,[Status])
+     VALUES
+           (3
+           ,6
+           ,null)
