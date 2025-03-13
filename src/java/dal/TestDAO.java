@@ -131,7 +131,7 @@ public class TestDAO extends DBContext {
 
     // Thêm phương thức createTest
     public int createTest(String testName, String createdBy, int courseId) {
-    String sql = "INSERT INTO Test(Name, Status, CreatedBy, CourseID) VALUES(?, 0, ?, ?)";
+    String sql = "INSERT INTO Test(Name, Status, CreatedBy, CourseID) VALUES(?, 1, ?, ?)";
     try {
         PreparedStatement st = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         st.setString(1, testName);
