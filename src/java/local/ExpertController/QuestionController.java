@@ -16,6 +16,10 @@ import java.util.Enumeration;
 public class QuestionController extends HttpServlet {
     private TestDAO testDAO;
 
+    QuestionController(TestDAO testDAO) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     @Override
     public void init() throws ServletException {
         testDAO = new TestDAO();

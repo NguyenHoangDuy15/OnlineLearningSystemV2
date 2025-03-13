@@ -2,22 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/src/java/local/AdminController/ListOfFeedbackByAdminServlet.java</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/src/java/local/AdminController/DeleteRequestServlet.java</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/nbproject/private/private.xml</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/test/dal/AdminDaoTest.java</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/web/jsp/header.jsp</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/web/jsp/ListOfRequestByAdmin.jsp</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/src/java/local/AdminController/ShowAdminDasboardServlet.java</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/src/java/dal/AdminDao.java</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/web/jsp/ChangeUserForAdmin.jsp</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/src/java/local/AdminController/UpdateRoleUserServlet.java</file>
-            <file>file:/E:/MainSwp/LearningOnlineSystem/src/java/local/AdminController/ListOfRequestByAdminServlet.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/local/ExpertController/ViewTest.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/local/ExpertController/QuestionController.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/local/ExpertController/ViewCourse.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/local/ExpertController/NoticeServlet.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/web/jsp/NoticeJSP.jsp</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/dal/CourseDao.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/Model/Courses.java</file>
+            <file>file:/D:/SWPV%23/OnlineLearningSystemV2/src/java/dal/TestDAO.java</file>
         </group>
-
     </open-files>
 </project-private>
