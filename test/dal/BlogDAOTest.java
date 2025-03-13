@@ -128,7 +128,7 @@ public class BlogDAOTest {
         when(resultSet.getString("BlogImage")).thenReturn("image.jpg");
         when(resultSet.getDate("BlogDate")).thenReturn(java.sql.Date.valueOf(LocalDate.now()));
         when(resultSet.getInt("UserID")).thenReturn(1);
-
+        
         List<Blog> blogs = blogDAO.getBlogsByUserID(1, 3);
 
         assertEquals(1, blogs.size());
