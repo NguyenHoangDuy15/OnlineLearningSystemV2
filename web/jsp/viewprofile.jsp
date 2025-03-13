@@ -60,6 +60,18 @@
                 border: none;
                 padding: 10px;
                 border-radius: 5px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            .save-btn:hover {
+                background-color: #dc3545;
+                color: white;
+            }
+
+            .save-btn.active {
+                background-color: #28a745; /* Màu xanh khi có thay đổi */
+                color: white;
+                cursor: pointer;
             }
             .form-group {
                 text-align: left;

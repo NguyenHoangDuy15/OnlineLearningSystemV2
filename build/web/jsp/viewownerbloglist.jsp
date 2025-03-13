@@ -108,6 +108,7 @@
             .btn-edit {
                 background-color: #0056b3; /* Màu xanh */
                 color: white;
+                margin: 5px;
             }
 
             .btn-edit:hover {
@@ -117,6 +118,7 @@
             .btn-delete {
                 background-color: #dc3545; /* Màu đỏ */
                 color: white;
+                margin: 5px;
             }
 
             .btn-delete:hover {
