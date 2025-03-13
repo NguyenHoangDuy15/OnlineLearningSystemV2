@@ -75,7 +75,7 @@ public class ListOfExpertServlet extends HttpServlet {
             index = Integer.parseInt(request.getParameter("index"));
         }
         if (NoPage == 0) {
-            request.setAttribute("noti", "No user found");
+            request.setAttribute("noti", "No Expert found");
         }
         List<User> listExpert = udao.get5Expert(index);
         session.setAttribute("Nopage", NoPage);

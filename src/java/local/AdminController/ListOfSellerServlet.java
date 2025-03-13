@@ -71,6 +71,9 @@ public class ListOfSellerServlet extends HttpServlet {
         if (request.getParameter("index") != null) {
             index = Integer.parseInt(request.getParameter("index"));
         }
+        if (NoPage == 0) {
+                request.setAttribute("noti", "No Seller found");
+            }
         List<User> listSeller = udao.get5Seller(index);
         session.setAttribute("Nopage", NoPage);
         session.setAttribute("currentindex", index);

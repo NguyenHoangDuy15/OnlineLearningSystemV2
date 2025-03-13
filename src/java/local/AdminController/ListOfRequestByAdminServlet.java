@@ -50,7 +50,7 @@ public class ListOfRequestByAdminServlet extends HttpServlet {
                 index = Integer.parseInt(request.getParameter("index"));
             }
             if (NoPage == 0) {
-                request.setAttribute("noti", "No user found");
+                request.setAttribute("noti", "No Request found");
             }
             List<RequestPrint> listRequest = adao.get5Request(index);
             session.setAttribute("Nopage", NoPage);

@@ -51,7 +51,7 @@ public class ListBlogByAdminServlet extends HttpServlet {
                 index = Integer.parseInt(request.getParameter("index"));
             }
             if (NoPage == 0) {
-                request.setAttribute("noti", "No user found");
+                request.setAttribute("noti", "No Blog found");
             }
             List<BlogPrint> listBlog = bdao.get5Blogs(index);
             session.setAttribute("Nopage", NoPage);

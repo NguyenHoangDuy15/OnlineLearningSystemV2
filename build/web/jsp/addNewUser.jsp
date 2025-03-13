@@ -311,71 +311,7 @@
         // Set the max attribute for the birthday input to the date 18 years ago
         document.getElementById("birthday").setAttribute("max", minAgeDate.toISOString().split('T')[0]);
     </script>
-<!--    <script>
-        document.getElementById("name").addEventListener("blur", function () {
-            const nameInput1 = document.getElementById("name").value;
-            // Check if the input contains only spaces
-            if (nameInput1 !== "" && nameInput1.trim() === "") {
-                alert("The name field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("name").value = ""; // Clear the field
-            }
-        });
-        document.getElementById("email").addEventListener("blur", function () {
-            const nameInput2 = document.getElementById("email").value;
-            // Check if the input contains only spaces
-            if (nameInput2 !== "" && nameInput2.trim() === "") {
-                alert("The email field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("email").value = ""; // Clear the field
-            }
-        });
-        document.getElementById("identification").addEventListener("blur", function () {
-            const nameInput3 = document.getElementById("identification").value;
-            // Check if the input contains only spaces
-            if (nameInput3 !== "" && nameInput3.trim() === "") {
-                alert("The identification field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("identification").value = ""; // Clear the field
-            }
-        });
-        document.getElementById("phone").addEventListener("blur", function () {
-            const nameInput4 = document.getElementById("phone").value;
-            // Check if the input contains only spaces
-            if (nameInput4 !== "" && nameInput4.trim() === "") {
-                alert("The phone field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("phone").value = ""; // Clear the field
-            }
-        });
-        document.getElementById("address").addEventListener("blur", function () {
-            const nameInput5 = document.getElementById("address").value;
-            // Check if the input contains only spaces
-            if (nameInput5 !== "" && nameInput5.trim() === "") {
-                alert("The address field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("address").value = ""; // Clear the field
-            }
-        });
-        document.getElementById("username").addEventListener("blur", function () {
-            const nameInput7 = document.getElementById("username").value;
-            // Check if the input contains only spaces
-            if (nameInput7 !== "" && nameInput7.trim() === "") {
-                alert("The username field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("username").value = ""; // Clear the field
-            }
-        });
-        document.getElementById("password").addEventListener("blur", function () {
-            const nameInput8 = document.getElementById("password").value;
-            // Check if the input contains only spaces
-            if (nameInput8 !== "" && nameInput8.trim() === "") {
-                alert("The password field cannot contain only spaces.");
-                // Optionally, you can clear the field or take any other action
-                document.getElementById("password").value = ""; // Clear the field
-            }
-        });
-    </script>-->
+
     <script>
         $(document).ready(function () {
             $("#basic-datatables").DataTable({});
