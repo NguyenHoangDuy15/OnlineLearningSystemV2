@@ -16,26 +16,15 @@ import java.sql.SQLException;
 public class BlogDAO extends DBContext {
 
     // 1.Create Blog
-    public void createBlog(String title, String detail, String image, int userID, int roleID) {
+    public void createBlog(String title, String detail, String image,int userID, int roleID) {
         if (roleID != 3) {
             System.out.println("Bạn không có quyền tạo blog.");
             return;
         }
 
-        String sql = "INSERT INTO [dbo].[Blogs]\n"
-                + "           ([BlogTitle]\n"
-                + "           ,[BlogDetail]\n"
-                + "           ,[BlogImage]\n"
-                + "           ,[BlogDate]\n"
-                + "           ,[UserID])\n"
-                + "     VALUES\n"
-                + "           (?\n"
-                + "           ,?\n"
-                + "           ,?\n"
-                + "           ,GETDATE()\n"
-                + "           ,?)";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        String sql = "INSERT INTO Blogs (BlogTitle, BlogDetail, BlogImage, BlogDate, UserID) VALUES (?, ?, ?, GETDATE(), ?)";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, title);
             st.setString(2, detail);
             st.setString(3, image);
@@ -45,8 +34,8 @@ public class BlogDAO extends DBContext {
             e.printStackTrace();
         }
     }
-
     // 2.Delete Blog
+
     public void deleteBlog(int blogID, int roleID) {
         if (roleID != 1 && roleID != 3) {
             System.out.println("Bạn không có quyền xóa blog.");
@@ -61,8 +50,6 @@ public class BlogDAO extends DBContext {
             e.printStackTrace();
         }
     }
-    
-    
 
     // 3.Edit Blog
     public void editBlog(int blogID, String title, String detail, String image, int userID) {
@@ -171,51 +158,12 @@ public class BlogDAO extends DBContext {
     }
 
     // 7. View Blog By UserID (Only Sale)
-//    public List<Blog> getBlogsByUserID(int userID, int roleID) {
-//        List<Blog> list = new ArrayList<>();
-//        if (roleID != 3) {
-//            System.out.println("Bạn không có quyền xem blog này.");
-//            return list;
-//        }
-//
-//        String sql = "SELECT [BlogID]\n"
-//                + "      ,[BlogTitle]\n"
-//                + "      ,[BlogDetail]\n"
-//                + "      ,[BlogImage]\n"
-//                + "      ,[BlogDate]\n"
-//                + "      ,[UserID]\n"
-//                + "  FROM [dbo].[Blogs]"
-//                + "  WHERE UserID = ?" 
-//                + "ORDER BY BlogDate DESC";
-//
-//        try {
-//            PreparedStatement st = connection.prepareStatement(sql);
-//            st.setInt(1, userID);
-//            ResultSet rs = st.executeQuery();
-//            while (rs.next()) {
-//                Blog b = new Blog(
-//                        rs.getInt("BlogID"),
-//                        rs.getString("BlogTitle"),
-//                        rs.getString("BlogDetail"),
-//                        rs.getString("BlogImage"),
-//                        rs.getDate("BlogDate"),
-//                        rs.getInt("UserID")
-//                );
-//                list.add(b);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return list;
-//    }
     public List<Blog> getBlogsByUserID(int userID, int roleID) {
         List<Blog> list = new ArrayList<>();
         if (roleID != 3) {
             System.out.println("Bạn không có quyền xem blog này.");
             return list;
         }
-
-        // Sửa lỗi thiếu dấu cách trước ORDER BY
         String sql = "SELECT BlogID, BlogTitle, BlogDetail, BlogImage, BlogDate, UserID "
                 + "FROM Blogs WHERE UserID = ? ORDER BY BlogDate DESC";
 
@@ -274,7 +222,7 @@ public class BlogDAO extends DBContext {
 
     public static void main(String[] args) {
         BlogDAO dao = new BlogDAO();
-        System.out.println(dao.getBlogsByUserID(4, 3).toString());
+//        System.out.println(dao.deleteBlog(6, 3);
     }
 
 }

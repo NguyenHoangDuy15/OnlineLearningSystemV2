@@ -8,15 +8,17 @@ public class RequestPrint {
     private int UserID;
     private String UserName;
     private int RequestedRole;
+    private int status;
 
     public RequestPrint() {
     }
 
-    public RequestPrint(int RequestID, int UserID, String UserName, int RequestedRole) {
+    public RequestPrint(int RequestID, int UserID, String UserName, int RequestedRole, int status) {
         this.RequestID = RequestID;
         this.UserID = UserID;
         this.UserName = UserName;
         this.RequestedRole = RequestedRole;
+        this.status = status;
     }
 
     public int getRequestID() {
@@ -51,9 +53,17 @@ public class RequestPrint {
         this.RequestedRole = RequestedRole;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "RequestPrint{" + "RequestID=" + RequestID + ", UserID=" + UserID + ", UserName=" + UserName + ", RequestedRole=" + RequestedRole + '}';
+        return "RequestPrint{" + "RequestID=" + RequestID + ", UserID=" + UserID + ", UserName=" + UserName + ", RequestedRole=" + RequestedRole + ", status=" + status + '}';
     }
 
 }

@@ -70,6 +70,9 @@ public class ListOfFeedbackByAdminServlet extends HttpServlet {
             index = Integer.parseInt(request.getParameter("index"));
         }
         List<FeedbackPrint> listFeedbackPrint = fbDao.getAllFeedbackForAdmin(index);
+        if (listFeedbackPrint.isEmpty()) {
+            session.setAttribute("noti", "Not found");
+        }
         session.setAttribute("Nopage", NoPage);
         session.setAttribute("currentindex", index);
         session.setAttribute("listFeedbackPrint", listFeedbackPrint);

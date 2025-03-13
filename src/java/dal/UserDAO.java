@@ -1,6 +1,7 @@
 package dal;
 
 import Model.User;
+import Model.Usernew;
 import java.util.*;
 import java.lang.*;
 import java.sql.PreparedStatement;
@@ -154,6 +155,7 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+
     public List<User> get5ExpertBySearch(int index, String name) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT [UserID]\n"
@@ -183,6 +185,7 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+
     public List<User> get5SellerBySearch(int index, String name) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT [UserID]\n"
@@ -351,7 +354,7 @@ public class UserDAO extends DBContext {
         }
     }
 
-    public User getUserByUserId(String userid) {
+    public Usernew getUserByUserId(String userid) {
         String sql = "SELECT [UserID]\n"
                 + "      ,[FullName]\n"
                 + "      ,[UserName]\n"
@@ -367,12 +370,53 @@ public class UserDAO extends DBContext {
             stm.setString(1, userid);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                User user = new User(rs.getInt("UserID"), rs.getString("FullName"),
-                        rs.getString("UserName"), rs.getString("Email"),
-                        rs.getString("Password"), rs.getInt("Status"), rs.getInt("RoleID"));
+                Usernew user = new Usernew(rs.getInt("UserID"), rs.getString("FullName"), rs.getString("UserName"), rs.getString("Email"), rs.getString("Password"), rs.getString("Avartar"), rs.getInt("RoleID"), rs.getInt("Status"));
                 return user;
             }
         } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    public boolean updateProfile(Usernew user) {
+        String sql = "UPDATE Users SET FullName = ?, Email = ?, Avartar = ?, Status = ? WHERE UserID = ?";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, user.getFullName());
+            stm.setString(2, user.getEmail());
+            stm.setString(3, user.getAvatar()); // Ảnh đại diện (có thể null nếu không đổi)
+            stm.setInt(4, user.getStatus()); // Trạng thái user (nếu có)
+            stm.setInt(5, user.getUserID()); // Xác định user cần cập nhật
+
+            return stm.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public Usernew getUserNewByUserId(int userid) {
+        String sql = "SELECT [UserID]\n"
+                + "      ,[FullName]\n"
+                + "      ,[UserName]\n"
+                + "      ,[Email]\n"
+                + "      ,[Password]\n"
+                + "      ,[Avartar]\n"
+                + "      ,[RoleID]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Users]\n"
+                + "  WHERE [UserID] = ?";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, "" + userid);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                Usernew user = new Usernew(rs.getInt("UserID"), rs.getString("FullName"), rs.getString("UserName"), rs.getString("Email"), rs.getString("Password"), rs.getString("Avartar"), rs.getInt("RoleID"), rs.getInt("Status"));
+                return user;
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
         return null;
     }
