@@ -4,6 +4,8 @@
  */
 package Model;
 
+import java.sql.Date;
+
 public class Courses {
 
     int userid;
@@ -18,6 +20,18 @@ public class Courses {
     int totalReviews;
 
     public Courses() {
+    }
+
+    public Courses(int userid, int courseID, String name, String expertName, String image, String description, float price, double averageRating, int totalReviews) {
+        this.userid = userid;
+        this.courseID = courseID;
+        this.name = name;
+        this.expertName = expertName;
+        this.image = image;
+        this.description = description;
+        this.price = price;
+        this.averageRating = averageRating;
+        this.totalReviews = totalReviews;
     }
 
  public Courses(int courseID, String name, String expertName, float price, double averageRating, int totalReviews) {
