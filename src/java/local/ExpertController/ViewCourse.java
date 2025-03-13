@@ -2,24 +2,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package local.UserController;
+package local.ExpertController;
 
-import Model.User;
-import dal.UserDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
+import Model.Courses;
+import Model.Test;
+import dal.CourseDao;
+import dal.TestDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import util.MaHoa;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+
 
 /**
  *
- * @author DELL
+ * @author CONG NINH
  */
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "ViewCourse", urlPatterns = {"/ViewCourse"})
+public class ViewCourse extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +44,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet ViewCourse</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewCourse at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,7 +65,20 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
+       HttpSession session = request.getSession();
+        Integer userID = (Integer) session.getAttribute("userid");
+        Integer role = (Integer) session.getAttribute("rollID");
+
+        if (userID == null || role == null || role != 2) {
+            response.sendRedirect("jsp/expertDashboard.jsp");
+            return;
+        }
+
+        CourseDao coursedao = new CourseDao();
+        List<Courses> courses = coursedao.getCourseByUserId(userID);
+
+        request.setAttribute("courses", courses);
+        request.getRequestDispatcher("jsp/ViewCourse.jsp").forward(request, response);
     }
 
     /**
@@ -73,43 +92,17 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        String u = request.getParameter("username");
-        String p = request.getParameter("password");
-        UserDAO d = new UserDAO();
-        String pass = MaHoa.toSHA1(p);
-        User a = d.check(u, pass);
-        HttpSession sec = request.getSession();
-
-        if (a == null) {  // Hợp nhất logic từ cả hai nhánh
-            sec.setAttribute("isLoggedIn", false);
-            request.setAttribute("err", "Username or password invalid " + pass);
-            request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
-        } else if (a.getStatus() == 0) {
-            sec.setAttribute("isLoggedIn", false);
-            request.setAttribute("err", "Your account was banned");
-            request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
-        } else {
-            sec.setAttribute("Fullname", a.getFullName());
-            sec.setAttribute("account", a);
-            sec.setAttribute("isLoggedIn", true);
-            sec.setAttribute("userid", a.getUserID());
-            sec.setAttribute("sessionID", sec.getId());
-            sec.setAttribute("rollID", a.getRoleID()); // Thêm rollID vào session
-            request.setAttribute("rollID", a.getRoleID());
-            sec.setAttribute("username", a.getUserName());
-            if (a.getRoleID() == 1) {
-                response.sendRedirect("ShowAdminDasboardServlet");
-            } else if(a.getRoleID() == 2)
-                response.sendRedirect("ShowexpertServlet");
-            else if (a.getRoleID() == 3) {
-                response.sendRedirect("viewownerbloglist");
-                sec.setAttribute("isSale", true);
-            } else {
-                response.sendRedirect("index");
-            }
-
-        }
+        processRequest(request, response);
     }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 
 }
