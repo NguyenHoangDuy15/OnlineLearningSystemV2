@@ -2,22 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
-
 package Model;
+
 /**
  *
  * @author CONG NINH
  */
 import java.util.*;
- import java.lang.*;
- import java.io.*;
+import java.lang.*;
+import java.io.*;
+
 public class Test {
- int testID;
- String name;
- int status;
- String createdBy;
- int courseID;
+
+    int testID;
+    String name;
+    int status;
+    String createdBy;
+    int courseID;
 
     public Test(int testID, String name, int status, String createdBy, int courseID) {
         this.testID = testID;
@@ -75,7 +76,5 @@ public class Test {
     public String toString() {
         return "Test{" + "testID=" + testID + ", name=" + name + ", status=" + status + ", createdBy=" + createdBy + ", courseID=" + courseID + '}';
     }
-
-    
 
 }

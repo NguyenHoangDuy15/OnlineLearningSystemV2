@@ -4,13 +4,23 @@ import java.util.*;
 import java.lang.*;
 
 public class RequestPrint {
-    private int RequestID;
-    private int UserID;
-    private String UserName;
-    private int RequestedRole;
-    private int status;
+
+    int RequestID;
+    int UserID;
+    String UserName;
+    int RequestedRole;
+    String rolename;
+    int status;
+    String statustext;
 
     public RequestPrint() {
+    }
+
+    public RequestPrint(int RequestID, int UserID, String rolename, String statustext) {
+        this.RequestID = RequestID;
+        this.UserID = UserID;
+        this.rolename = rolename;
+        this.statustext = statustext;
     }
 
     public RequestPrint(int RequestID, int UserID, String UserName, int RequestedRole, int status) {
@@ -59,6 +69,22 @@ public class RequestPrint {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getRolename() {
+        return rolename;
+    }
+
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
+    }
+
+    public String getStatustext() {
+        return statustext;
+    }
+
+    public void setStatustext(String statustext) {
+        this.statustext = statustext;
     }
 
     @Override

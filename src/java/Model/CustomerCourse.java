@@ -10,11 +10,20 @@ package Model;
  */
 public class CustomerCourse {
 
-    int courseId;
+   int courseId;
     String courseName;
     String description;
     float price;
     String instructor;
+    String image;
+
+    public CustomerCourse(int courseId, String courseName, float price, String instructor, String image) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.price = price;
+        this.instructor = instructor;
+        this.image = image;
+    }
 
     public CustomerCourse(int courseId, String courseName, String description, float price, String instructor) {
         this.courseId = courseId;
@@ -22,6 +31,14 @@ public class CustomerCourse {
         this.description = description;
         this.price = price;
         this.instructor = instructor;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public void setCourseId(int courseId) {
@@ -68,5 +85,4 @@ public class CustomerCourse {
     public String toString() {
         return "CustomerCourse{" + "courseId=" + courseId + ", name=" + courseName + ", description=" + description + ", price=" + price + ", instructor=" + instructor + '}';
     }
-
 }

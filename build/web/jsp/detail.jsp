@@ -18,7 +18,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
 
-        <!-- Font Awesome -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
         <!-- Libraries Stylesheet -->
@@ -26,6 +27,14 @@
 
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
+        <style>
+            .bg-primary {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+        </style>
     </head>
 
     <body>
@@ -120,12 +129,15 @@
                                 <h6 class="text-white my-3">Feedbacks</h6>
                                 <h6 class="text-white my-3">${coursedetails.totalReviews}</h6>
                             </div>
-                            
+
                             <h5 class="text-white py-3 px-4 m-0">Course Price: $${coursedetails.price}</h5>
                             <div class="py-3 px-4">
-                                <a class="btn btn-block py-3 px-5" href="" style="background-color: red; color: white;">
+                                <a class="btn btn-block py-3 px-5" href="PaymentServlet" style="background-color: red; color: white;">
                                     Enroll Now
                                 </a>
+
+
+
                             </div>
                         </div>
 

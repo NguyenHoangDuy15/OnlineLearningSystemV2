@@ -9,18 +9,20 @@ import Model.Expert;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
+
 /**
  *
  * @author Administrator
  */
-public class ExpertDao extends DBContext{
-   public List<Expert> getAllInstructorCourses() {
+public class ExpertDao extends DBContext {
+
+    public List<Expert> getAllInstructorCourses() {
         List<Expert> list = new ArrayList<>();
-        String sql = "SELECT u.FullName AS username, c.Name AS name " +
-                     "FROM Users u " +
-                     "JOIN Courses c ON u.UserID = c.UserID " +
-                     "JOIN Roles r ON u.RoleID = r.RoleID " +
-                     "WHERE r.RoleID = 2"; // RoleID = 2 là giảng viên
+        String sql = "SELECT u.FullName AS username, c.Name AS name "
+                + "FROM Users u "
+                + "JOIN Courses c ON u.UserID = c.UserID "
+                + "JOIN Roles r ON u.RoleID = r.RoleID "
+                + "WHERE r.RoleID = 2"; // RoleID = 2 là giảng viên
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -36,45 +38,73 @@ public class ExpertDao extends DBContext{
         }
         return list;
     }
-public List<Expert> getAllInstructorCourses(String expertId) {
-    List<Expert> list = new ArrayList<>();
-    // Sửa lại câu truy vấn SQL để lọc theo expertId
-    String sql = "SELECT u.FullName AS username, c.Name AS name " +
-                 "FROM Users u " +
-                 "JOIN Courses c ON u.UserID = c.UserID " +
-                 "JOIN Roles r ON u.RoleID = r.RoleID " +
-                 "WHERE r.RoleID = 2 AND u.UserID = ?"; // Thêm điều kiện để lọc theo UserID (expertId)
 
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, expertId);  // Sử dụng expertId để thay thế cho dấu hỏi chấm trong câu truy vấn
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            list.add(new Expert(
-                    rs.getString("username"),
-                    rs.getString("name")
-            ));
+    public List<Expert> getAllInstructorCoursesss() {
+        List<Expert> list = new ArrayList<>();
+        String sql = "SELECT u.FullName AS username, c.Name AS course_name, u.Avartar "
+                + "FROM Users u "
+                + "JOIN Courses c ON u.UserID = c.UserID "
+                + "JOIN Roles r ON u.RoleID = r.RoleID "
+                + "WHERE r.RoleID = 2;"; // RoleID = 2 là giảng viên
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Expert(
+                        rs.getString("username"),
+                        rs.getString("course_name"),
+                        rs.getString("Avartar")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
+
+    public List<Expert> getAllInstructorCourses(String expertId) {
+        List<Expert> list = new ArrayList<>();
+        // Sửa lại câu truy vấn SQL để lọc theo expertId
+        String sql = "SELECT u.FullName AS username, c.Name AS name "
+                + "FROM Users u "
+                + "JOIN Courses c ON u.UserID = c.UserID "
+                + "JOIN Roles r ON u.RoleID = r.RoleID "
+                + "WHERE r.RoleID = 2 AND u.UserID = ?"; // Thêm điều kiện để lọc theo UserID (expertId)
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, expertId);  // Sử dụng expertId để thay thế cho dấu hỏi chấm trong câu truy vấn
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Expert(
+                        rs.getString("username"),
+                        rs.getString("name")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public static void main(String[] args) {
-        ExpertDao expertDao = new ExpertDao();
-            List<Expert> experts = expertDao.getAllInstructorCourses();
+        ExpertDao expertDAO = new ExpertDao();
+        List<Expert> experts = expertDAO.getAllInstructorCourses();
 
-            // Hiển thị kết quả
-            for (Expert ex : experts) {
-                System.out.println("Giảng viên: " + ex.getUsername() + " - Khóa học: " + ex.getName());
-            }
+        // Hiển thị danh sách giảng viên và khóa học của họ
+        for (Expert expert : experts) {
+            System.out.println("Giảng viên: " + expert.getUsername()
+                    + ", Khóa học: " + expert.getCourseName()
+                    + ", Avatar: " + expert.getAvatar());
+        }
     }
+
     public String getUserIdByUsernameAndRole(String username) {
         String userId = null;
-        String sql = "SELECT u.UserID FROM Users u " +
-                     "JOIN Roles r ON u.RoleID = r.RoleID " +
-                     "WHERE r.RoleID = 2 AND u.UserName = ?"; // RoleID = 2 là giảng viên
+        String sql = "SELECT u.UserID FROM Users u "
+                + "JOIN Roles r ON u.RoleID = r.RoleID "
+                + "WHERE r.RoleID = 2 AND u.UserName = ?"; // RoleID = 2 là giảng viên
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, username);  // Set username vào câu truy vấn
