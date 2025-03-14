@@ -39,8 +39,8 @@ public class index extends HttpServlet {
         FeedbackDao dao = new FeedbackDao();
         List<Feedback> feedbacks = dao.getCustomerFeedbacks();
         ExpertDao expertdao = new ExpertDao();
-        List<Expert> coursesdao = expertdao.getAllInstructorCourses();
-         request.setAttribute("coursedao", coursesdao);
+        List<Expert> coursesdao = expertdao.getAllInstructorCoursesss();
+        request.setAttribute("coursedao", coursesdao);
         request.setAttribute("feedbacks", feedbacks);
 
         request.setAttribute("courses", courses);

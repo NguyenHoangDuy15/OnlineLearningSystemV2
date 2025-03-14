@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -28,16 +29,23 @@ public class detail extends HttpServlet {
 
         Courses course = null;
         Courses coursedetails = null;
+        Integer courseId = null;
+
         if (courseIdParam != null && !courseIdParam.isEmpty()) {
             try {
-                int courseId = Integer.parseInt(courseIdParam);
+                courseId = Integer.parseInt(courseIdParam); // Chuyển thành Integer
                 CourseDao courseDAO = new CourseDao();
-                course = courseDAO.getCourseById(courseId);
+                course = courseDAO.getCourseByIdd(courseId);
                 coursedetails = courseDAO.getCourseDetails(courseId);
             } catch (NumberFormatException e) {
-
+                e.printStackTrace(); // Debug lỗi nếu có
             }
         }
+
+        // Lưu vào session dưới dạng Integer
+        HttpSession session = request.getSession();
+        session.setAttribute("courseId", courseId);
+
         request.setAttribute("coursedetails", coursedetails);
         request.setAttribute("course", course);
         request.getRequestDispatcher("jsp/detail.jsp").forward(request, response);

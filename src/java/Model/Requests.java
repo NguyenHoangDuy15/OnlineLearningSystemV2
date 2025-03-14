@@ -1,6 +1,7 @@
 package Model;
 
 public class Requests {
+
     /*
     RequestID INT PRIMARY KEY IDENTITY(1,1),
     RequestedRole INT FOREIGN KEY REFERENCES Roles(RoleID),
@@ -14,6 +15,11 @@ public class Requests {
 
     public Requests(int RequestID, int RequestedRole, int UserID) {
         this.RequestID = RequestID;
+        this.RequestedRole = RequestedRole;
+        this.UserID = UserID;
+    }
+
+    public Requests(int RequestedRole, int UserID) {
         this.RequestedRole = RequestedRole;
         this.UserID = UserID;
     }
@@ -46,6 +52,5 @@ public class Requests {
     public String toString() {
         return "Requests{" + "RequestID=" + RequestID + ", RequestedRole=" + RequestedRole + ", UserID=" + UserID + '}';
     }
-    
-    
+
 }

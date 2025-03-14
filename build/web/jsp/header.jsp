@@ -62,16 +62,16 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto py-0">
-                        <a href="/LearningOnlineSystemV2/index" class="nav-item nav-link active">Home</a>
-                        <a href="/LearningOnlineSystemV2/about" class="nav-item nav-link">About</a>
-                        <a href="/LearningOnlineSystem/course" class="nav-item nav-link">Courses</a>
+                        <a href="index" class="nav-item nav-link active">Home</a>
+
+                        <a href="course" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Page</a>
                             <div class="dropdown-menu m-0">
-                                <a href="/LearningOnlineSystem/detail" class="dropdown-item">Course Detail</a>
-                                <a href="/LearningOnlineSystem/feature" class="dropdown-item">Our Features</a>
+                           
+                            
                                 <a href="/LearningOnlineSystem/team" class="dropdown-item">Instructors</a>
-                                <a href="/LearningOnlineSystem/testimonial" class="dropdown-item">Testimonial</a>
+                               
                             </div>
                         </div>
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
@@ -96,7 +96,9 @@
                             <li><a class="dropdown-item" href="myenrollment">View My Enrollments</a></li>
                             <li><a class="dropdown-item" href="ChangePasswordServlet">Change Password</a></li>
 
-                            <li><a class="dropdown-item" href="LogoutServlet">View history of transaction</a></li>
+                            <li><a class="dropdown-item" href="Historytransaction">View history of transaction</a></li>
+                            <li><a class="dropdown-item" href="Role">Want to become Expert or Sale</a></li>
+                            <li><a class="dropdown-item" href="Request">Wait for application approval</a></li>
                             <li><a class="dropdown-item" href="LogoutServlet">Logout</a></li>
                         </ul>
                     </div>

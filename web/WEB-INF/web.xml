@@ -9,32 +9,12 @@
         <servlet-class>local.UserController.index</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>about</servlet-name>
-        <servlet-class>local.UserController.about</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>contact</servlet-name>
-        <servlet-class>local.UserController.contact</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>course</servlet-name>
         <servlet-class>local.UserController.course</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>team</servlet-name>
-        <servlet-class>local.UserController.team</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>detail</servlet-name>
         <servlet-class>local.UserController.detail</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>feature</servlet-name>
-        <servlet-class>local.UserController.feature</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>category</servlet-name>
-        <servlet-class>local.UserController.category</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Feedback</servlet-name>
@@ -121,32 +101,12 @@
         <url-pattern>/index</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>about</servlet-name>
-        <url-pattern>/about</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>contact</servlet-name>
-        <url-pattern>/contact</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>course</servlet-name>
         <url-pattern>/course</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>team</servlet-name>
-        <url-pattern>/team</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>detail</servlet-name>
         <url-pattern>/detail</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>feature</servlet-name>
-        <url-pattern>/feature</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>category</servlet-name>
-        <url-pattern>/category</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Feedback</servlet-name>

@@ -60,33 +60,29 @@ public class CourseDao extends DBContext {
         return courses;
     }
 
-    public List<Courses> getCourseByUserId(int userID) {
-    List<Courses> courseList = new ArrayList<>();
-    String query = "SELECT c.CourseID, c.Name, c.Description, c.Price FROM Courses c "
-                 + "JOIN Users u ON c.UserID = u.UserID "
-                 + "WHERE c.UserID = ? AND u.RoleID = 2";
+    public Courses getCourseByIdd(int courseId) {
+        String query = "SELECT CourseID, Name,Price, imageCources,Description FROM Courses WHERE CourseID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
 
-    try {
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setInt(1, userID);
-
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Courses course = new Courses(
-                        rs.getInt("CourseID"),
-                        rs.getString("Name"),
-                        rs.getString("Description"),
-                        rs.getFloat("Price")
-                );
-                courseList.add(course); // Add the course to the list
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("Name"),
+                            rs.getFloat("Price"),
+                            rs.getString("imageCources"),
+                            rs.getString("Description")
+                    );
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return null;
     }
 
-    return courseList; // Return the list of courses
-}       
     public Courses getCourseDetails(int courseId) {
         Courses course = null;
         String sql = "SELECT c.CourseID, c.Name, u.FullName AS ExpertName, c.Price, "
@@ -117,6 +113,34 @@ public class CourseDao extends DBContext {
         return course;
     }
 
+    public List<Courses> getCourseByUserId(int userID) {
+        List<Courses> courseList = new ArrayList<>();
+        String query = "SELECT c.CourseID, c.Name, c.Description, c.Price FROM Courses c "
+                + "JOIN Users u ON c.UserID = u.UserID "
+                + "WHERE c.UserID = ? AND u.RoleID = 2";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, userID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Courses course = new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("Name"),
+                            rs.getString("Description"),
+                            rs.getFloat("Price")
+                    );
+                    courseList.add(course); // Add the course to the list
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return courseList; // Return the list of courses
+    }
+
     public void addCourse(String courseName, String description, double price, String imageCourses, String expertId, int categoryId) {
         String sql = "INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, GETDATE())";
         try {
@@ -143,27 +167,28 @@ public class CourseDao extends DBContext {
             e.printStackTrace();
         }
     }
-  public Courses getCourseById(int courseId) {
-    String query = "SELECT CourseID, Name, Description, imageCources FROM Courses WHERE CourseID = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setInt(1, courseId);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return new Courses(
-                        rs.getInt("CourseID"),
-                        rs.getString("Name"),
-                        rs.getString("imageCources"),
-                        rs.getString("Description")
-                );
+
+    public Courses getCourseById(int courseId) {
+        String query = "SELECT CourseID, Name, Description, imageCources FROM Courses WHERE CourseID = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, courseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("Name"),
+                            rs.getString("imageCources"),
+                            rs.getString("Description")
+                    );
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        // Nếu không tìm thấy, trả về một đối tượng mặc định thay vì null
+        return new Courses(0, "Unknown", "default.jpg", "No description available");
     }
-    // Nếu không tìm thấy, trả về một đối tượng mặc định thay vì null
-    return new Courses(0, "Unknown", "default.jpg", "No description available");
-}
 
     public static void main(String[] args) {
         CourseDao courseDAO = new CourseDao();
