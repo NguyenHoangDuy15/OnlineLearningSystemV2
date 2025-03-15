@@ -127,14 +127,14 @@
                         <li class="nav-item">
                             <a data-bs-toggle="collapse" href="#tables">
                                 <i class="fas fa-bell"></i>
-                                <p>Total Of Money</p>
+                                <p>Transaction history</p>
                                 <span class="caret"></span>
                             </a>
                             <div class="collapse" id="tables">
                                 <ul class="nav nav-collapse">
                                     <li>
                                         <a href="ListTranscriptByAdminServlet">
-                                            <span class="sub-item">Transaction history</span>
+                                            <span class="sub-item">List Transaction history</span>
                                         </a>
                                     </li>
                                 </ul>
