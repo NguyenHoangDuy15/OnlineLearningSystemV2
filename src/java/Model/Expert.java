@@ -10,11 +10,27 @@ package Model;
  */
 public class Expert {
 
-    String username; // Tên giảng viên
-    String name;     // Tên khóa học
+    String username;
+    String name;
+    String courseName;
+    String avatar;
+
+    public Expert(String username, String courseName, String avatar) {
+        this.username = username;
+        this.courseName = courseName;
+        this.avatar = avatar;
+    }
 
     public Expert(String username, String name) {
         this.username = username;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -26,12 +42,25 @@ public class Expert {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    @Override
+    public String toString() {
+        return "Expert{" + "username=" + username + ", courseName=" + courseName + ", avatar=" + avatar + '}';
     }
 
 }

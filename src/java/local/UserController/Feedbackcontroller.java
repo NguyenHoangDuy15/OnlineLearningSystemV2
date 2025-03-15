@@ -22,38 +22,35 @@ import java.util.Date;
  */
 public class Feedbackcontroller extends HttpServlet {
 
-  @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    HttpSession session = request.getSession();
-    Integer userId = (Integer) session.getAttribute("userid");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute("userid");
 
-    if (userId == null) {
-        response.sendRedirect("jsp/login.jsp");
-        return;
+        if (userId == null) {
+            response.sendRedirect("Loginservlet");
+            return;
+        }
+
+        int courseId = Integer.parseInt(request.getParameter("courseId"));
+        int rating = Integer.parseInt(request.getParameter("rating"));
+        String comment = request.getParameter("comment");
+
+        Feedback feedback = new Feedback(userId, courseId, rating, comment);
+
+        FeedbackDao feedbackDAO = new FeedbackDao();
+
+        boolean success = feedbackDAO.insertFeedback(feedback);
+
+        if (success) {
+            session.setAttribute("message", "Send sucessfully!");
+        } else {
+            session.setAttribute("message", "Comment Fails");
+        }
+
+        response.sendRedirect("index");
     }
-    
-    
-    int courseId = Integer.parseInt(request.getParameter("courseId"));
-    int rating = Integer.parseInt(request.getParameter("rating"));
-    String comment = request.getParameter("comment");
-
-    Feedback feedback = new Feedback(userId, courseId, rating, comment);
-
-  
-    FeedbackDao feedbackDAO = new FeedbackDao();
-
-    boolean success = feedbackDAO.insertFeedback(feedback);
-
-    if (success) {
-        session.setAttribute("message", "Gửi phản hồi thành công!");
-    } else {
-        session.setAttribute("message", "Gửi phản hồi thất bại!");
-    }
-    
-    response.sendRedirect("index");
-}
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

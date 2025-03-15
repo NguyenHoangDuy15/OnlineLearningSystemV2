@@ -15,6 +15,9 @@ public class Enrollment {
     private String description;
     private int paymentStatus;
 
+    public Enrollment() {
+    }
+
     // Constructor
     public Enrollment(int enrollmentId, int userId, String fullName, int courseId, String courseName,
             String imageCourses, String description, int paymentStatus) {

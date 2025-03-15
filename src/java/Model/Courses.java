@@ -9,15 +9,16 @@ import java.sql.Date;
 public class Courses {
 
     int userid;
-    
+
     int courseID;
     String name;
     String expertName;
+    float price;
     String image;
-    String description;
-    float price; 
     double averageRating;
     int totalReviews;
+    String category;
+    String description;
 
     public Courses() {
     }
@@ -52,6 +53,13 @@ public class Courses {
     public Courses(int courseID, String name, String image, String description) {
         this.courseID = courseID;
         this.name = name;
+        this.image = image;
+        this.description = description;
+    }
+        public Courses(int courseID, String name, float price, String image, String description) {
+        this.courseID = courseID;
+        this.name = name;
+        this.price = price;
         this.image = image;
         this.description = description;
     }
