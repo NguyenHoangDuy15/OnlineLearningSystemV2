@@ -35,7 +35,20 @@ public class Courses {
         this.totalReviews = totalReviews;
     }
 
- public Courses(int courseID, String name, String expertName, float price, double averageRating, int totalReviews) {
+    public Courses(int courseID, String name, String description, float price, String image, String category, String expertName, double averageRating) {
+        this.courseID = courseID;
+        this.name = name;
+
+        this.description = description;
+        this.price = price;
+        this.image = image;
+        this.category = category;
+        this.expertName = expertName;
+        this.averageRating = averageRating;
+
+    }
+
+    public Courses(int courseID, String name, String expertName, float price, double averageRating, int totalReviews) {
         this.courseID = courseID;
         this.name = name;
         this.expertName = expertName;
@@ -43,6 +56,7 @@ public class Courses {
         this.averageRating = averageRating;
         this.totalReviews = totalReviews;
     }
+
     public Courses(int courseID, String name, String description, float price) {
         this.courseID = courseID;
         this.name = name;
@@ -56,12 +70,21 @@ public class Courses {
         this.image = image;
         this.description = description;
     }
-        public Courses(int courseID, String name, float price, String image, String description) {
+
+    public Courses(int courseID, String name, float price, String image, String description) {
         this.courseID = courseID;
         this.name = name;
         this.price = price;
         this.image = image;
         this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getExpertName() {
@@ -103,8 +126,6 @@ public class Courses {
     public void setUserid(int userid) {
         this.userid = userid;
     }
-
-    
 
     // Getter và Setter
     public int getCourseID() {
