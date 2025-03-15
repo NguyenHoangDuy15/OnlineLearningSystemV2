@@ -88,6 +88,32 @@ public class ExpertDao extends DBContext {
         return list;
     }
 
+    public List<Expert> getExpertsWithCourses() {
+        List<Expert> experts = new ArrayList<>();
+        String sql = "SELECT DISTINCT u.UserID, u.UserName, u.Email, u.Avartar, c.Name "
+                + "FROM Users u "
+                + "LEFT JOIN Courses c ON u.UserID = c.UserID "
+                + "WHERE u.RoleID = 2 "
+                + "ORDER BY u.UserID";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int userID = rs.getInt("UserID");
+                String userName = rs.getString("UserName");
+                String email = rs.getString("Email");
+                String avatar = rs.getString("Avartar");
+                String courseName = rs.getString("Name");
+
+                experts.add(new Expert(userID, userName, email, avatar, courseName));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return experts;
+    }
+
     public static void main(String[] args) {
         ExpertDao expertDAO = new ExpertDao();
         List<Expert> experts = expertDAO.getAllInstructorCourses();

@@ -41,7 +41,7 @@ public class CategoryDao extends DBContext {
             System.out.println("Danh sách danh mục:");
             for (Category category : categories) {
                 System.out.println("ID: " + category.getCategoryId()
-                        + ", Name: " + category.getDescription()
+                        + ", Name: " + category.getCategoryName()
                         + ", Description: " + category.getDescription());
             }
         }

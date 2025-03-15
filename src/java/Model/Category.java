@@ -6,9 +6,9 @@ package Model;
 
 public class Category {
 
-    private int categoryId;
-    private String categoryName;
-    private String description;
+    int categoryId;
+    String categoryName;
+    String description;
 
     public Category() {
     }

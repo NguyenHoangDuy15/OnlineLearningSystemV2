@@ -70,7 +70,7 @@
                             <div class="dropdown-menu m-0">
                            
                             
-                                <a href="/LearningOnlineSystem/team" class="dropdown-item">Instructors</a>
+                                <a href="Instructor" class="dropdown-item">Instructors</a>
                                
                             </div>
                         </div>
