@@ -190,23 +190,115 @@ public class CourseDao extends DBContext {
         return new Courses(0, "Unknown", "default.jpg", "No description available");
     }
 
-    public static void main(String[] args) {
-        CourseDao courseDAO = new CourseDao();
+    public List<Courses> getFilteredCourses(String category, String priceOrder, String ratingOrder, int offset, int limit) {
+        List<Courses> courses = new ArrayList<>();
+        String sql = "SELECT c.CourseID, c.Name, c.Description, c.Price, c.imageCources, "
+                + "cat.CategoryName, u.FullName AS InstructorName, COALESCE(AVG(f.Rating), 0) AS AvgRating "
+                + "FROM Courses c "
+                + "JOIN Category cat ON c.CategoryID = cat.CategoryID "
+                + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
+                + "JOIN Users u ON c.UserID = u.UserID ";
 
-        // Nhập CourseID cần kiểm tra (ví dụ: 1)
-        int courseId = 1;
+        List<String> conditions = new ArrayList<>();
+        if (category != null) {
+            conditions.add("cat.CategoryID = ?");
+        }
 
-        Courses course = courseDAO.getCourseDetails(courseId);
+        sql += conditions.isEmpty() ? "" : " WHERE " + String.join(" AND ", conditions);
+        sql += " GROUP BY c.CourseID, c.Name, c.Description, c.Price, c.imageCources, cat.CategoryName, u.FullName ";
 
-        if (course != null) {
-            System.out.println(" Course ID: " + course.getCourseID());
-            System.out.println(" Course Name: " + course.getName());
-            System.out.println(" Instructor: " + course.getExpertName());
-            System.out.println(" Price: $" + course.getPrice());
-            System.out.println(" Average Rating: " + course.getAverageRating());
-            System.out.println(" Total Reviews: " + course.getTotalReviews());
+        // Thêm điều kiện sắp xếp nếu có
+        List<String> orderList = new ArrayList<>();
+        if ("low-high".equals(priceOrder)) {
+            orderList.add("c.Price ASC");
+        } else if ("high-low".equals(priceOrder)) {
+            orderList.add("c.Price DESC");
+        }
+        if ("high".equals(ratingOrder)) {
+            orderList.add("AvgRating DESC");
+        } else if ("low".equals(ratingOrder)) {
+            orderList.add("AvgRating ASC");
+        }
+
+        if (!orderList.isEmpty()) {
+            sql += " ORDER BY " + String.join(", ", orderList);
         } else {
-            System.out.println("️ Course not found with ID: " + courseId);
+            sql += " ORDER BY c.CourseID"; // Mặc định sắp xếp theo ID
+        }
+
+        // Phân trang
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            int index = 1;
+            if (category != null) {
+                ps.setInt(index++, Integer.parseInt(category));
+            }
+            ps.setInt(index++, offset);
+            ps.setInt(index++, limit);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    courses.add(new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("Name"),
+                            rs.getString("Description"),
+                            rs.getFloat("Price"),
+                            rs.getString("imageCources"),
+                            rs.getString("CategoryName"),
+                            rs.getString("InstructorName"),
+                            rs.getDouble("AvgRating")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+
+    public int countFilteredCourses(String category, String priceOrder, String ratingOrder) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) AS total FROM Courses c JOIN Category cat ON c.CategoryID = cat.CategoryID ";
+
+        List<String> conditions = new ArrayList<>();
+        if (category != null && !category.isEmpty()) {
+            conditions.add("cat.CategoryID = ?");
+        }
+
+        sql += conditions.isEmpty() ? "" : " WHERE " + String.join(" AND ", conditions);
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            int index = 1;
+            if (category != null && !category.isEmpty()) {
+                ps.setInt(index++, Integer.parseInt(category));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("total");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        CourseDao coursedao = new CourseDao();
+        String category = "1"; // ID của category cần lọc
+        String priceOrder = "low-high"; // Sắp xếp giá từ thấp đến cao
+        String ratingOrder = "high"; // Sắp xếp đánh giá từ cao xuống thấp
+        int totalCourses = coursedao.countFilteredCourses(category, priceOrder, ratingOrder);
+        System.out.println("Total courses found: " + totalCourses);
+        int offset = 0; // Trang đầu tiên
+        int limit = 5; // Số lượng kết quả tối đa mỗi lần truy vấn
+        List<Courses> courses = coursedao.getFilteredCourses(category, priceOrder, ratingOrder, offset, limit);
+
+        // In danh sách khóa học
+        for (Courses course : courses) {
+            System.out.println("CourseID: " + course.getCourseID() + ", Name: " + course.getName() + ", Price: " + course.getPrice() + ", Rating: " + course.getAverageRating());
         }
     }
 

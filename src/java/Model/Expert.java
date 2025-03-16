@@ -9,11 +9,20 @@ package Model;
  * @author Administrator
  */
 public class Expert {
-
+    int userId;
     String username;
     String name;
-    String courseName;
+    String email;
     String avatar;
+    String courseName;
+
+    public Expert(int userId,String username, String email, String avatar, String courseName) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.avatar = avatar;
+        this.courseName = courseName;
+    }
 
     public Expert(String username, String courseName, String avatar) {
         this.username = username;
