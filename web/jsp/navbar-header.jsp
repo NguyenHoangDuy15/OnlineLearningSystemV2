@@ -27,7 +27,7 @@
                             >
                             <div class="avatar-sm">
                                 <img
-                                    src="assets/img/profile.jpg"
+                                    src="./img/logo/logo.JPG"
                                     alt="..."
                                     class="avatar-img rounded-circle"
                                     />
