@@ -8,6 +8,7 @@ import Model.Blog;
 import Model.CustomerCourse;
 import Model.Feedback;
 import Model.MoneyHistoryByAdmin;
+import Model.RequestPrint;
 import Model.Requests;
 import Model.User;
 import dal.AdminDao;
@@ -76,7 +77,7 @@ public class ShowAdminDasboardServlet extends HttpServlet {
         UserDAO userDAO = new UserDAO();
         BlogDAO blogDAO = new BlogDAO();
         FeedbackDao feedbackDAO = new FeedbackDao();
-        RequestDAO requestDAO = new RequestDAO();
+        AdminDao requestDAO = new AdminDao();
         AdminDao adao = new AdminDao();
 
         // Get all list
@@ -85,7 +86,7 @@ public class ShowAdminDasboardServlet extends HttpServlet {
         List<User> experts = userDAO.getAllExpert();
         List<User> sales = userDAO.getAllSale();
         List<Feedback> feedbacks = feedbackDAO.getAllFeedback();
-        List<Requests> requests = requestDAO.getAllRequests();
+        List<RequestPrint> requests = requestDAO.getAllRequest();
         List<User> users = userDAO.getAll();
         List<MoneyHistoryByAdmin> money = adao.getAllHistory();
 
