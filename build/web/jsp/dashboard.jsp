@@ -93,7 +93,7 @@
                         <div class="row">
 
                             <div class="col-sm-6 col-md-3">
-                                <a href="">
+                                <a href="ListOfCourseByAdminServlet">
                                     <div class="card card-stats card-round">
                                         <div class="card-body">
                                             <div class="row align-items-center">
@@ -257,25 +257,27 @@
                             </div>
 
                             <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-success bubble-shadow-small"style="background-color: #20c997"
-                                                    >
-                                                    <i class="fas fa-user-friends"></i>
+                                <a href="ListOfUserByAdminServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-success bubble-shadow-small"style="background-color: #20c997"
+                                                        >
+                                                        <i class="fas fa-user-friends"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">User</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfUsers}</h4>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">User</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfUsers}</h4>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </div>

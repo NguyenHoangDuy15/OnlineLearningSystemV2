@@ -100,7 +100,7 @@
                                         <ul class="pagination pg-primary" style="display: flex; justify-content: flex-end;">
                                             <div style="width: 100px; align-content: end">${index} of ${Nopage} page</div>
                                             <li class="page-item ${index < 2 ? 'disabled' :'' } ">
-                                                <a class="page-link" href="listFeedbackPrint?index=${index-1}" aria-label="Previous">
+                                                <a class="page-link" href="ListOfFeedbackByAdminServlet?index=${index-1}" aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                     <span class="sr-only">Previous</span>
                                                 </a>
@@ -123,17 +123,17 @@
                                             <c:forEach var="p" begin="${startPage}" end="${endPage}">
                                                 <c:if test="${index == p}">
                                                     <li class="page-item active">
-                                                        <a class="page-link" href="listFeedbackPrint?index=${p}">${p}</a>
+                                                        <a class="page-link" href="ListOfFeedbackByAdminServlet?index=${p}">${p}</a>
                                                     </li>
                                                 </c:if>
                                                 <c:if test="${index != p}">
                                                     <li class="page-item">
-                                                        <a class="page-link" href="listFeedbackPrint?index=${p}">${p}</a>
+                                                        <a class="page-link" href="ListOfFeedbackByAdminServlet?index=${p}">${p}</a>
                                                     </li>
                                                 </c:if>
                                             </c:forEach>
                                             <li class="page-item ${index < Nopage ? '' :'disabled' }" >
-                                                <a class="page-link" href="listFeedbackPrint?index=${index+1}" aria-label="Next">
+                                                <a class="page-link" href="ListOfFeedbackByAdminServlet?index=${index+1}" aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                     <span class="sr-only">Next</span>
                                                 </a>

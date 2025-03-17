@@ -47,7 +47,7 @@ public class SearchExpertByAdminServlet extends HttpServlet {
             int index = 1;
             String name = request.getParameter("name");
             name = name.trim();
-            int NoPage = getNoPage(udao.getAllExpert());
+            int NoPage = getNoPage(udao.findExpertBySearch(name));
             if (request.getParameter("index") != null) {
                 index = Integer.parseInt(request.getParameter("index"));
             }

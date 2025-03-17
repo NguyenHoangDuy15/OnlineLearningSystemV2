@@ -7,7 +7,7 @@
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>List Expert</title><!--  page only for manager  -->
+        <title>List Courses</title><!--  page only for manager  -->
         <meta
             content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
             name="viewport"
@@ -52,7 +52,7 @@
                 <div class="container">
                     <div class="page-inner">
                         <div class="page-header">
-                            <h3 class="fw-bold mb-3">Manage Expert</h3>
+                            <h3 class="fw-bold mb-3">Manage Course</h3>
                         </div>
 
                         <div class="col-md-12">
@@ -63,99 +63,34 @@
                                             class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
                                             >
                                             <%--<c:set value="${requestScope.searchName} " var="n"/>--%>
-                                            <c:set value="${fn:trim(requestScope.searchName)}" var="n"/>
-                                            <form action="SearchExpertByAdminServlet">
-                                                <div class="input-group" >
-                                                    <div class="input-group-prepend">
-                                                        <button type="submit" class="btn btn-search pe-1">
-                                                            <i class="fa fa-search search-icon"></i>
-                                                        </button>
-                                                    </div>
-                                                    <c:if test="${fn:length(n) < 2}">
-                                                        <input
-                                                            type="text"
-                                                            name="name"
-                                                            placeholder="Search by name..."
-                                                            class="form-control"
-                                                            />
-                                                    </c:if>
-                                                    <c:if test="${fn:length(n) > 1}">
-                                                        <input
-                                                            type="text"
-                                                            name="name"
-                                                            value="${n}"
-                                                            placeholder="Search by name..."
-                                                            class="form-control"
-                                                            />
-                                                    </c:if>
-                                                </div>
-                                            </form>
-                                        </nav>
-                                        <c:set value="${requestScope.noti}" var="noti" />
 
-                                        <button
-                                            class="btn btn-primary btn-round ms-auto"
-                                            onclick="addUser()">
-                                            <i class="fa fa-plus"></i>
-                                            Add Expert
-                                        </button>
+
+                                        </nav>
+
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <!-- Modal -->
 
-
                                     <div class="table-responsive">
                                         <table class="display table table-striped table-hover" >
                                             <thead>
                                                 <tr style="text-align: start">
-                                                    <th>UserID</th>
-                                                    <th>Name</th>
-                                                    <th>Email</th>
-                                                    <th>Status</th>
-                                                    <th style="width: 10%; text-align: center">Action</th>
+                                                    <th>CourseID</th>
+                                                    <th>Name Of Course</th>
+                                                    <th>Description</th>
+                                                    <th>Created By</th>
+                                                    <th>Price</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach items="${sessionScope.listExpert}" var="s">
+                                                <c:forEach items="${sessionScope.listCourse}" var="s">
                                                     <tr>
-                                                        <td>${s.getUserID()}</td>
-                                                        <td>${s.getFullName()}</td>
-                                                        <td>${s.getEmail()}</td>
-
-                                                        <td>
-                                                            <c:if test="${s.status == 0}">
-                                                                <span style="color: red; font-weight:bold">Inactive</span>
-                                                            </c:if>
-                                                            <c:if test="${s.status == 1}">
-                                                                <span style="color: green; font-weight:bold">Active</span>
-                                                            </c:if>
-                                                        </td>
-
-                                                        <td>
-                                                            <div class="form-button-action">
-                                                                <a href="ChangeUserForAdminServlet?userid=${s.userID}" >
-                                                                    <button
-                                                                        type="button"
-                                                                        data-bs-toggle="tooltip"
-                                                                        title=""
-                                                                        class="btn btn-link btn-primary btn-lg"
-                                                                        data-original-title="Edit Task"
-                                                                        >
-                                                                        <i class="fa fa-edit"></i>
-                                                                    </button>
-                                                                </a>
-                                                                <button
-                                                                    type="button"
-                                                                    title=""
-                                                                    class="btn btn-link btn-danger"
-                                                                    data-original-title="Remove"
-                                                                    onclick="doDelete(${s.userID})"
-                                                                    >
-                                                                    <i class="fa fa-times"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
+                                                        <td>${s.getCourseID()}</td>
+                                                        <td>${s.getCourseName()}</td>
+                                                        <td>${s.getDescription()}</td>
+                                                        <td>${s.getCreatedBy()}</td>
+                                                        <td>${s.getPrice()}</td>
                                                     </tr>
                                                 </c:forEach>
                                                 <c:if test="${requestScope.noti != null}">
@@ -173,7 +108,7 @@
                                         <ul class="pagination pg-primary" style="display: flex; justify-content: flex-end;">
                                             <div style="width: 100px; align-content: end">${index} of ${Nopage} page</div>
                                             <li class="page-item ${index < 2 ? 'disabled' :'' } ">
-                                                <a class="page-link" href="ListOfExpertServlet?index=${index-1}" aria-label="Previous">
+                                                <a class="page-link" href="ListOfCourseByAdminServlet?index=${index-1}" aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                     <span class="sr-only">Previous</span>
                                                 </a>
@@ -196,17 +131,17 @@
                                             <c:forEach var="p" begin="${startPage}" end="${endPage}">
                                                 <c:if test="${index == p}">
                                                     <li class="page-item active">
-                                                        <a class="page-link" href="ListOfExpertServlet?index=${p}">${p}</a>
+                                                        <a class="page-link" href="ListOfCourseByAdminServlet?index=${p}">${p}</a>
                                                     </li>
                                                 </c:if>
                                                 <c:if test="${index != p}">
                                                     <li class="page-item">
-                                                        <a class="page-link" href="ListOfExpertServlet?index=${p}">${p}</a>
+                                                        <a class="page-link" href="ListOfCourseByAdminServlet?index=${p}">${p}</a>
                                                     </li>
                                                 </c:if>
                                             </c:forEach>
                                             <li class="page-item ${index < Nopage ? '' :'disabled' }" >
-                                                <a class="page-link" href="ListOfExpertServlet?index=${index+1}" aria-label="Next">
+                                                <a class="page-link" href="ListOfCourseByAdminServlet?index=${index+1}" aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                     <span class="sr-only">Next</span>
                                                 </a>
@@ -240,9 +175,9 @@
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="assets/js/setting-demo2.js"></script>
     <script>
-                                                                        document.querySelector('.close').addEventListener('click', function () {
-                                                                            $('#addUserModal').modal('hide');
-                                                                        });
+            document.querySelector('.close').addEventListener('click', function () {
+                $('#addUserModal').modal('hide');
+            });
     </script>
     <script>
         function doClose() {

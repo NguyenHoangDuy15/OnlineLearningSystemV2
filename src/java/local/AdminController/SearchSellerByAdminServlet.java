@@ -45,7 +45,7 @@ public class SearchSellerByAdminServlet extends HttpServlet {
             int index = 1;
             String name = request.getParameter("name");
             name = name.trim();
-            int NoPage = getNoPage(udao.getAllSale());
+            int NoPage = getNoPage(udao.findSellerBySearch(name));
             if (request.getParameter("index") != null) {
                 index = Integer.parseInt(request.getParameter("index"));
             }
