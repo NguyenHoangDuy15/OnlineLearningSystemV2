@@ -82,12 +82,10 @@ public class ForgotPassword extends HttpServlet {
         if (a == null) {
             request.setAttribute("err", "Mail and user invalid");
             request.getRequestDispatcher("jsp/forgotPassword.jsp").forward(request, response);
-                
         } else {
             if (!Validator.isValidPassword(pass)) {
                 request.setAttribute("err", "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
                 request.getRequestDispatcher("jsp/forgotPassword.jsp").forward(request, response);
-                
             } else if (pass.equals(repass)) {
                 pass = MaHoa.toSHA1(pass);
                 d.changePass(pass, a.getUserID());
