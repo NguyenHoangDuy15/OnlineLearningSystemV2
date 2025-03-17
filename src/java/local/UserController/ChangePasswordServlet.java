@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import util.MaHoa;
+import util.Validator;
 
 /**
  *
@@ -80,6 +81,10 @@ public class ChangePasswordServlet extends HttpServlet {
         String repass = request.getParameter("repassword");
         oldpass = MaHoa.toSHA1(oldpass);
         UserDAO d = new UserDAO();
+        if (!Validator.isValidPassword(pass)) {
+                request.setAttribute("err", "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
+                request.getRequestDispatcher("jsp/changePassword.jsp").forward(request, response);
+            }
         if (pass.contains(" ") || !oldpass.equals(a.getPassword())) {
             request.setAttribute("err", "password is not Empty or have space");
             request.setAttribute("oldpassword", oldpass);
