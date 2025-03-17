@@ -35,12 +35,14 @@
             <div class="container text-center my-5 py-5">
                 <h1 class="text-white display-1 mb-5">Courses</h1>
                 <div class="mx-auto mb-5" style="width: 100%; max-width: 800px;">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 20px;" placeholder="Search for a course...">
-                        <div class="input-group-append">
-                            <button class="btn btn-secondary px-4 px-lg-5">Search</button>
+                    <form action="detail" method="get">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" name="search" style="padding: 20px;" placeholder="Search for a course...">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary px-4 px-lg-5" type="submit">Search</button>>
+                            </div>
                         </div>
-                    </div>
+                    </form>
 
                     <!-- Bộ lọc -->
 

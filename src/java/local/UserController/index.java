@@ -32,8 +32,8 @@ public class index extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CustomerDao courseDAO = new CustomerDao();
-        List<CustomerCourse> courses = courseDAO.getAllCourses();
-
+        List<Courses> courses = courseDAO.getTop5Courses();
+        request.setAttribute("courses", courses);
         CategoryDao category = new CategoryDao();
         List<Category> categories = category.getAllCategories();
         FeedbackDao dao = new FeedbackDao();
@@ -43,7 +43,6 @@ public class index extends HttpServlet {
         request.setAttribute("coursedao", coursesdao);
         request.setAttribute("feedbacks", feedbacks);
 
-        request.setAttribute("courses", courses);
         request.setAttribute("categories", categories);
 
         request.getRequestDispatcher("jsp/index.jsp").forward(request, response);

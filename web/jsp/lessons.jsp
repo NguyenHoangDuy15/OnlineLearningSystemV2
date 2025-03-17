@@ -58,7 +58,7 @@
                     <li>
                         <i class="fas ${lesson.type eq 'Lesson' ? 'fa-video' : 'fa-book'}"></i>
                         <a href="#" onclick="changeContent('${lesson.type}', '${lesson.content}', ${lesson.id})">
-                            ${lesson.name}
+                            ${lesson.name} 
                         </a>
                         <c:if test="${lesson.type eq 'Test'}">
                             <c:set var="status" value="${testStatuses[lesson.id]}" />
@@ -87,19 +87,79 @@
             </ul>
         </div>
 
-
         <div class="content">
             <div class="video-container">
                 <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
                 <div id="testContainer" style="display: none;">
                     <h3 id="testTitle"></h3>
-                    <a id="testLink"  href="TestAnswer?testId=${firstLesson.id}" class="btn btn-primary">Làm bài kiểm tra</a>
+                    <a id="testLink" href="TestAnswer?testId=${firstLesson.id}" class="btn btn-primary">Start test</a>
                 </div>
+            </div>
 
+            <div id="commentContainer" class="mt-4">
+                <h4>Comment</h4>
+                <ul id="commentList" class="list-unstyled">
+                    <c:forEach var="comment" items="${comments}">
+                        <c:if test="${comment.lessonId eq currentLessonId}">
+                            <li id="commentItem-${comment.id}">
+                                <strong>${comment.username}</strong>: 
+                                <span id="commentContent-${comment.id}">${comment.content}</span>
+                                <button class="btn btn-sm btn-warning" onclick="editComment(${comment.id})">Edit</button>
+                                <form action="DeleteComment" method="POST" style="display: inline-block;" onsubmit="return confirm('Do you want to delete comment?')">
+                                    <input type="hidden" name="commentId" value="${comment.id}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </li>
+                        </c:if>
+                    </c:forEach>
+                </ul>
+
+                <form action="AddComment" method="POST" onsubmit="return submitComment()">
+                    <input type="hidden" id="lessonIdInput" name="lessonId" value="${currentLessonId}">
+                    <div class="mb-4">
+                        <textarea id="commentInput" name="content" class="form-control" placeholder="Comment..." rows="3" style="width: 80%;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
 
+
+
         <script>
+            // Hàm để sửa bình luận
+            function editComment(commentId) {
+                let commentSpan = document.getElementById(`commentContent-${commentId}`);
+                let currentContent = commentSpan.innerText;
+
+                // Hiển thị khung nhập liệu và nút lưu
+                commentSpan.innerHTML = `
+        <form action="EditComment" method="POST" style="display: inline-block;">
+            <input type="hidden" name="commentId" value="${commentId}">
+            <input type="text" name="content" class="form-control" value="${currentContent}" style="display: inline-block; width: auto;">
+            <button type="submit" class="btn btn-sm btn-success">Lưu</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="cancelEdit(${commentId}, '${currentContent}')">Cancell</button>
+        </form>
+    `;
+            }
+
+// Hủy sửa bình luận, trả lại nội dung ban đầu
+            function cancelEdit(commentId, originalContent) {
+                let commentSpan = document.getElementById(`commentContent-${commentId}`);
+                commentSpan.innerText = originalContent;
+            }
+
+// Thêm logic xác nhận trước khi nộp
+            function submitComment() {
+                let content = document.getElementById('commentInput').value.trim();
+                if (content === '') {
+                    alert('Bình luận không được để trống!');
+                    return false;
+                }
+                return true;
+            }
+
             function toggleCourseContent() {
                 var courseList = document.getElementById("courseList");
                 courseList.style.display = courseList.style.display === "none" ? "block" : "none";
@@ -121,7 +181,7 @@
                     videoFrame.src = ""; // Tắt video
                     videoFrame.style.display = "none";
 
-                    testTitle.innerText = "Bài kiểm tra";
+                    testTitle.innerText = "Take a test";
                     testLink.href = "TestAnswer?testId=" + testId; // Cập nhật link làm bài
                     testContainer.style.display = "block";
                 }
