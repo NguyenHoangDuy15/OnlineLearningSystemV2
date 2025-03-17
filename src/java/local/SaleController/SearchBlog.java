@@ -5,8 +5,8 @@
 package local.SaleController;
 
 import Model.Blog;
-import Model.User;
 import dal.BlogDAO;
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,42 +14,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  *
  * @author THU UYEN
  */
-@WebServlet(name = "ViewOwnerBlogList", urlPatterns = {"/viewownerbloglist"})
-public class ViewOwnerBlogList extends HttpServlet {
+@WebServlet(name = "SearchBlog", urlPatterns = {"/SearchBlog"})
+public class SearchBlog extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("account");
+        String keyword = request.getParameter("keyword");
 
-        // Kiểm tra nếu chưa đăng nhập hoặc không phải Sale
-        if (user == null || user.getRoleID() != 3) {
-            response.sendRedirect("LoginServlet");
-            return;
-        }
-
-        String search = request.getParameter("search"); // Lấy từ khóa tìm kiếm
         BlogDAO blogDAO = new BlogDAO();
-        List<Blog> blogs;
+        List<Blog> searchResults = blogDAO.searchBlogs(keyword);
 
-        if (search == null || search.trim().isEmpty()) {
-            blogs = blogDAO.getBlogsByUserID(user.getUserID(), user.getRoleID()); // Lấy toàn bộ
-        } else {
-            blogs = blogDAO.searchBlogsByUserID(user.getUserID(), search); // Tìm kiếm theo từ khóa
-        }
-
-        request.setAttribute("blogs", blogs);
-        request.setAttribute("search", search); // Trả lại từ khóa cho giao diện
-        request.getRequestDispatcher("jsp/viewownerbloglist.jsp").forward(request, response);
+        request.setAttribute("blogList", searchResults);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("jsp/viewblog.jsp");
+        dispatcher.forward(request, response);
     }
 
     /**

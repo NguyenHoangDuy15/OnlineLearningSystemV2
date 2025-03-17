@@ -124,6 +124,18 @@
             .btn-delete:hover {
                 background-color: #a71d2a;
             }
+            .search-input {
+                padding: 5px;
+                width: 80px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #b3d9ff; /* Xanh nhạt */
+                transition: background-color 0.5s;
+            }
+
+            .search-input:focus, .search-input:hover {
+                background-color: #66a3ff; /* Xanh đậm khi trỏ vào */
+            }
         </style>
     </head>
 
@@ -133,6 +145,10 @@
 
         <div class="container">
             <a href="CreateBlog" class="create-btn">Create New Blog</a>
+            <form action="viewownerbloglist" method="get" class="search-box">
+                <input type="text" name="search"  placeholder="Search blogs..." value="${param.search}">
+                <button type="submit" class="search-input" >Search </button>
+            </form>
 
             <table>
                 <tr>
