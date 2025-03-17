@@ -90,7 +90,7 @@
                                         <h4 class="card-title">Add User</h4>
                                         <button class="btn btn-primary btn-round ms-auto" onclick="BackToList()">
                                             <i class="fas fa-angle-left"></i>
-                                            Back
+                                            Back to list
                                         </button>
                                     </div>
                                 </div>

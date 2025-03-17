@@ -57,7 +57,7 @@ public class DeleteRequestServlet extends HttpServlet {
     throws ServletException, IOException {
         AdminDao adao = new AdminDao();
         String requestID = request.getParameter("requestID");
-        adao.deleteRequest(requestID, "0");
+        adao.deleteRequest(requestID);
         request.getRequestDispatcher("ListOfRequestByAdminServlet").forward(request, response);
     } 
 

@@ -75,20 +75,18 @@ public class AdminDao extends DBContext {
 
     public List<RequestPrint> getAllRequest() {
         List<RequestPrint> list = new ArrayList<>();
-        String sql = "SELECT r.RequestID,\n"
-                + "       r.UserID, \n"
-                + "       u.UserName,\n"
-                + "       r.RequestedRole,\n"
-                + "       r.[Status]\n"
-                + "       FROM Requests r\n"
-                + "JOIN Users u ON r.UserID = u.UserID\n"
-                + "where r.[Status] is null;\n";
+        String sql = "SELECT \n"
+                + "    r.RequestID, \n"
+                + "    r.UserID, \n"
+                + "    u.UserName, \n"
+                + "    r.RequestedRole\n"
+                + "FROM Requests r\n"
+                + "JOIN Users u ON r.UserID = u.UserID;";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                RequestPrint r = new RequestPrint(rs.getInt("RequestID"), rs.getInt("UserID"),
-                        rs.getString("UserName"), rs.getInt("RequestedRole"), rs.getInt("Status"));
+                RequestPrint r = new RequestPrint(rs.getInt("RequestID"), rs.getInt("UserID"), rs.getString("UserName"), rs.getInt("RequestedRole"));
                 list.add(r);
             }
         } catch (SQLException e) {
@@ -99,22 +97,20 @@ public class AdminDao extends DBContext {
 
     public List<RequestPrint> get5Request(int index) {
         List<RequestPrint> list = new ArrayList<>();
-        String sql = "SELECT r.RequestID,\n"
-                + "       r.UserID, \n"
-                + "       u.UserName,\n"
-                + "       r.RequestedRole,\n"
-                + "       r.[Status]\n"
-                + "       FROM Requests r\n"
+        String sql = "SELECT \n"
+                + "    r.RequestID, \n"
+                + "    r.UserID, \n"
+                + "    u.UserName, \n"
+                + "    r.RequestedRole\n"
+                + "FROM Requests r\n"
                 + "JOIN Users u ON r.UserID = u.UserID\n"
-                + "where r.[Status] is null\n"
                 + "ORDER BY RequestID OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, 5 * (index - 1));
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                RequestPrint r = new RequestPrint(rs.getInt("RequestID"), rs.getInt("UserID"),
-                        rs.getString("UserName"), rs.getInt("RequestedRole"), rs.getInt("Status"));
+                RequestPrint r = new RequestPrint(rs.getInt("RequestID"), rs.getInt("UserID"), rs.getString("UserName"), rs.getInt("RequestedRole"));
                 list.add(r);
             }
         } catch (SQLException e) {
@@ -123,14 +119,12 @@ public class AdminDao extends DBContext {
         return list;
     }
 
-    public void deleteRequest(String id, String status) {
-        String sql = "UPDATE [dbo].[Requests]\n"
-                + "   SET [Status] = ?\n"
-                + " WHERE RequestID = ?";
+    public void deleteRequest(String id) {
+        String sql = "DELETE FROM [dbo].[Requests]\n"
+                + "      WHERE RequestID = ?";
         try {
             PreparedStatement rs = connection.prepareStatement(sql);
-            rs.setString(1, status);
-            rs.setString(2, id);
+            rs.setString(1, id);
             rs.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
@@ -162,9 +156,9 @@ public class AdminDao extends DBContext {
             PreparedStatement rs = connection.prepareStatement(sql);
             rs.setString(1, fullname);
             rs.setString(2, email);
-            rs.setString(3, role);
+             rs.setString(3, role);
             rs.setString(4, status);
-            rs.setString(5, UserID);
+             rs.setString(5, UserID);
             rs.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);

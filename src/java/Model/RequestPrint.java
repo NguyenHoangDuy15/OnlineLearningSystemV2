@@ -89,7 +89,7 @@ public class RequestPrint {
 
     @Override
     public String toString() {
-        return "RequestPrint{" + "RequestID=" + RequestID + ", UserID=" + UserID + ", UserName=" + UserName + ", RequestedRole=" + RequestedRole + ", status=" + status + '}';
+        return "RequestPrint{" + "RequestID=" + RequestID + ", UserID=" + UserID + ", UserName=" + UserName + ", RequestedRole=" + RequestedRole + '}';
     }
 
 }

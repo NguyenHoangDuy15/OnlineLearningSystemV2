@@ -59,7 +59,7 @@ public class UpdateRoleUserServlet extends HttpServlet {
         String userID = request.getParameter("userID");
         String requestRole = request.getParameter("requestRole");
         adao.UpdateRoleForUser(userID, requestRole);
-        adao.deleteRequest(requestID, "1");
+        adao.deleteRequest(requestID);
         request.getRequestDispatcher("ListOfRequestByAdminServlet").forward(request, response);
     } 
 
