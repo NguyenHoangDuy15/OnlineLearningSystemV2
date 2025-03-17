@@ -91,158 +91,172 @@
                             </div>
                         </div>
                         <div class="row">
+
                             <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-primary bubble-shadow-small"
-                                                    >
-                                                    <i class="fa fa-book" aria-hidden="true"></i>
+                                <a href="">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-primary bubble-shadow-small"
+                                                        >
+                                                        <i class="fa fa-book" aria-hidden="true"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Course</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfCourse}</h4>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Course</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfCourse}</h4>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                             <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-info bubble-shadow-small"
-                                                    >
-                                                    <i class="fa fa-newspaper" aria-hidden="true"></i>
+                                <a href="ListBlogByAdminServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-info bubble-shadow-small"
+                                                        >
+                                                        <i class="fa fa-newspaper" aria-hidden="true"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Blogs</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfBlog}</h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-success bubble-shadow-small"
-                                                    >
-                                                    <i class="fas fa-file-invoice-dollar"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Total Amount</p>
-                                                    <h4 class="card-title price-vnd">${sessionScope.TotalMoney*1000}</h4>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Blogs</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfBlog}</h4>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-secondary bubble-shadow-small" 
-                                                    >
-                                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Expert</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfExpert}</h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-info bubble-shadow-small"style="background-color: orange"
-                                                    >
-                                                    <i class="fa fa-users" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Saler</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfSale}</h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </a>
                             </div>
 
                             <div class="col-sm-6 col-md-3">
-
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-success bubble-shadow-small"style="background-color: greenyellow"
-                                                    >
-                                                    <i class="fa fa-comment" aria-hidden="true"></i>
+                                <a href="ListTranscriptByAdminServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-success bubble-shadow-small"
+                                                        >
+                                                        <i class="fas fa-file-invoice-dollar"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Feedback</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfFeedback}</h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="card card-stats card-round">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div
-                                                    class="icon-big text-center icon-secondary bubble-shadow-small"style="background-color:#286090 "
-                                                    >
-                                                    <i class="fas fa-user-check"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col col-stats ms-3 ms-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">Request</p>
-                                                    <h4 class="card-title">${sessionScope.numberOfRequest}</h4>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Total Amount</p>
+                                                        <h4 class="card-title price-vnd">${sessionScope.TotalMoney*1000}</h4>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
+                            </div> 
+                            <div class="col-sm-6 col-md-3">
+                                <a href="ListOfExpertServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-secondary bubble-shadow-small" 
+                                                        >
+                                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Expert</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfExpert}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <a href="ListOfSellerServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-info bubble-shadow-small"style="background-color: orange"
+                                                        >
+                                                        <i class="fa fa-users" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Saler</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfSale}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
 
                             <div class="col-sm-6 col-md-3">
+                                <a href="ListOfFeedbackByAdminServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-success bubble-shadow-small"style="background-color: greenyellow"
+                                                        >
+                                                        <i class="fa fa-comment" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Feedback</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfFeedback}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <a href="ListOfRequestByAdminServlet">
+                                    <div class="card card-stats card-round">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                    <div
+                                                        class="icon-big text-center icon-secondary bubble-shadow-small"style="background-color:#286090 "
+                                                        >
+                                                        <i class="fas fa-user-check"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-stats ms-3 ms-sm-0">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Request</p>
+                                                        <h4 class="card-title">${sessionScope.numberOfRequest}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
 
+                            <div class="col-sm-6 col-md-3">
                                 <div class="card card-stats card-round">
                                     <div class="card-body">
                                         <div class="row align-items-center">
