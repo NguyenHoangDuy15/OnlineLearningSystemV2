@@ -222,7 +222,35 @@ public class BlogDAO extends DBContext {
         }
         return list;
     }
-    //9. Search Blog
+
+    //9. Search BlogbySale
+    public List<Blog> searchBlogsByUserID(int userID, String keyword) {
+        List<Blog> list = new ArrayList<>();
+        String sql = "SELECT * FROM Blogs WHERE UserID = ? AND (BlogTitle COLLATE Vietnamese_CI_AI LIKE ? OR BlogDetail COLLATE Vietnamese_CI_AI LIKE ?) ORDER BY BlogDate DESC";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userID);
+            st.setString(2, "%" + keyword + "%");
+            st.setString(3, "%" + keyword + "%");
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                Blog b = new Blog(
+                        rs.getInt("BlogID"),
+                        rs.getString("BlogTitle"),
+                        rs.getString("BlogDetail"),
+                        rs.getString("BlogImage"),
+                        rs.getDate("BlogDate"),
+                        rs.getInt("UserID")
+                );
+                list.add(b);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public static void main(String[] args) {
         BlogDAO dao = new BlogDAO();

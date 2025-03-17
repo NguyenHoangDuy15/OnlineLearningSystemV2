@@ -27,6 +27,7 @@ public class ViewOwnerBlogList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//        
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("account");
 
@@ -36,10 +37,18 @@ public class ViewOwnerBlogList extends HttpServlet {
             return;
         }
 
+        String search = request.getParameter("search"); // Lấy từ khóa tìm kiếm
         BlogDAO blogDAO = new BlogDAO();
-        List<Blog> blogs = blogDAO.getBlogsByUserID(user.getUserID(), user.getRoleID());
+        List<Blog> blogs;
+
+        if (search == null || search.trim().isEmpty()) {
+            blogs = blogDAO.getBlogsByUserID(user.getUserID(), user.getRoleID()); // Lấy toàn bộ
+        } else {
+            blogs = blogDAO.searchBlogsByUserID(user.getUserID(), search); // Tìm kiếm theo từ khóa
+        }
 
         request.setAttribute("blogs", blogs);
+        request.setAttribute("search", search); // Trả lại từ khóa cho giao diện
         request.getRequestDispatcher("jsp/viewownerbloglist.jsp").forward(request, response);
     }
 

@@ -76,36 +76,52 @@
             .blog-detail {
                 margin-top: 10px;
             }
-        </style>
+            /* Style cho nút search */
+            .search-btn {
+                padding: 8px 12px;
+                border: none;
+                background: #b3d9ff;
+                color: black;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .search-btn:hover {
+                background: #0056b3;
+            </style>
+        </head>
     </head>
-</head>
-<body>
-    <%@ include file="header.jsp" %>
-    <div style="text-align: center; padding: 10px 20px;">
-        <h2 style="margin-bottom: 10px;">Our Blog</h2>
-        <form action="SearchBlog" method="get" style="display: flex; justify-content: center;">
-            <input type="text" name="keyword" placeholder="Search blogs..." required 
-                   style="padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 5px; margin-right: 5px;">
-            <button type="submit" style="padding: 8px 12px; border: none; background: #007bff; color: white; border-radius: 5px;">
-                Search
-            </button>
-        </form>
-    </div>
-    <div class="blog-container">
+    <body>
+        <%@ include file="header.jsp" %>
+        <div style="text-align: center;
+            padding: 10px 20px;">
+            <h2 style="margin-bottom: 10px;">Our Blog</h2>
+            <form action="SearchBlog" method="get" style="display: flex;
+                justify-content: center;">
+                <input type="text" name="keyword" placeholder="Search blogs..." required 
+                       value="${param.keyword}"
+                       style="padding: 8px;
+                width: 300px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-right: 5px;">
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+        <div class="blog-container">
 
-        <c:forEach var="blog" items="${blogList}">
-            <div class="blog-item">
-                <img src="${blog.blogImage}" alt="Blog Image">
-                <div class="blog-title">${blog.blogTitle}</div>
-                <div class="blog-detail">${blog.blogDetail}</div>
-            </div>
-        </c:forEach>
-        <c:if test="${empty blogList}">
-            <p>No results found for your search.</p>
-        </c:if>
+            <c:forEach var="blog" items="${blogList}">
+                <div class="blog-item">
+                    <img src="${blog.blogImage}" alt="Blog Image">
+                    <div class="blog-title">${blog.blogTitle}</div>
+                    <div class="blog-detail">${blog.blogDetail}</div>
+                </div>
+            </c:forEach>
+            <c:if test="${empty blogList}">
+                <p>No results found for your search.</p>
+            </c:if>
 
-    </div>
+        </div>
 
-    <%@ include file="footer.jsp" %>
-</body>
+        <%@ include file="footer.jsp" %>
+    </body>
 </html>
