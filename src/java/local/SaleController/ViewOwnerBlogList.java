@@ -33,7 +33,7 @@ public class ViewOwnerBlogList extends HttpServlet {
 
         // Kiểm tra nếu chưa đăng nhập hoặc không phải Sale
         if (user == null || user.getRoleID() != 3) {
-            response.sendRedirect("jsp/login.jsp");
+            response.sendRedirect("LoginServlet");
             return;
         }
 
