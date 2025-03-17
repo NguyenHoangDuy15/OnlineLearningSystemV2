@@ -65,6 +65,11 @@
                             <div class="collapse" id="base">
                                 <ul class="nav nav-collapse">
                                     <li>
+                                        <a href="ListOfUserByAdminServlet">
+                                            <span class="sub-item">List User</span>
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a href="ListOfExpertServlet">
                                             <span class="sub-item">List Expert</span>
                                         </a>
@@ -77,6 +82,22 @@
                                     <li>
                                         <a href="AddNewUserServlet">
                                             <span class="sub-item">Add Expert/Seller</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#h">
+                                <i class="fa fa-book" aria-hidden="true"></i>
+                                <p>Manage Course</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="h">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a href="ListOfCourseByAdminServlet">
+                                            <span class="sub-item">List Course</span>
                                         </a>
                                     </li>
                                 </ul>

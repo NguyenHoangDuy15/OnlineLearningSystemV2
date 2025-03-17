@@ -185,7 +185,122 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
-
+    
+    public List<User> findExpertBySearch(String name) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT [UserID]\n"
+                + "      ,[FullName]\n"
+                + "      ,[UserName]\n"
+                + "      ,[Email]\n"
+                + "      ,[Password]\n"
+                + "      ,[Avartar]\n"
+                + "      ,[RoleID]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Users]\n"
+                + "  WHERE [RoleID] = 2 AND [FullName] like ?\n";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, "%" + name + "%");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt("UserID"), rs.getString("FullName"),
+                        rs.getString("UserName"), rs.getString("Email"),
+                        rs.getString("Password"), rs.getInt("Status"), rs.getInt("RoleID"));
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    public List<User> get5User(int index) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT [UserID]\n"
+                + "      ,[FullName]\n"
+                + "      ,[UserName]\n"
+                + "      ,[Email]\n"
+                + "      ,[Password]\n"
+                + "      ,[Avartar]\n"
+                + "      ,[RoleID]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Users]\n"
+                + "  WHERE [RoleID] = 2 OR [RoleID] = 3 OR [RoleID] = 4\n"
+                + "  ORDER BY [UserID] OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, 5 * (index - 1));
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt("UserID"), rs.getString("FullName"),
+                        rs.getString("UserName"), rs.getString("Email"),
+                        rs.getString("Password"), rs.getInt("Status"), rs.getInt("RoleID"));
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    public List<User> get5UserBySearch(int index, String name) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT [UserID]\n"
+                + "      ,[FullName]\n"
+                + "      ,[UserName]\n"
+                + "      ,[Email]\n"
+                + "      ,[Password]\n"
+                + "      ,[Avartar]\n"
+                + "      ,[RoleID]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Users]\n"
+                + "  WHERE ([RoleID] = 2 OR [RoleID] = 3 OR [RoleID] = 4) AND [FullName] like ?\n"
+                + "  ORDER BY [UserID] OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, "%" + name + "%");
+            st.setInt(2, 5 * (index - 1));
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt("UserID"), rs.getString("FullName"),
+                        rs.getString("UserName"), rs.getString("Email"),
+                        rs.getString("Password"), rs.getInt("Status"), rs.getInt("RoleID"));
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    public List<User> findUserBySearch(String name) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT [UserID]\n"
+                + "      ,[FullName]\n"
+                + "      ,[UserName]\n"
+                + "      ,[Email]\n"
+                + "      ,[Password]\n"
+                + "      ,[Avartar]\n"
+                + "      ,[RoleID]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Users]\n"
+                + "  WHERE ([RoleID] = 2 OR [RoleID] = 3 OR [RoleID] = 4) AND [FullName] like ?\n";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, "%" + name + "%");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt("UserID"), rs.getString("FullName"),
+                        rs.getString("UserName"), rs.getString("Email"),
+                        rs.getString("Password"), rs.getInt("Status"), rs.getInt("RoleID"));
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
     public List<User> get5SellerBySearch(int index, String name) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT [UserID]\n"
@@ -203,6 +318,33 @@ public class UserDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, "%" + name + "%");
             st.setInt(2, 5 * (index - 1));
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt("UserID"), rs.getString("FullName"),
+                        rs.getString("UserName"), rs.getString("Email"),
+                        rs.getString("Password"), rs.getInt("Status"), rs.getInt("RoleID"));
+                list.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    public List<User> findSellerBySearch(String name) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT [UserID]\n"
+                + "      ,[FullName]\n"
+                + "      ,[UserName]\n"
+                + "      ,[Email]\n"
+                + "      ,[Password]\n"
+                + "      ,[Avartar]\n"
+                + "      ,[RoleID]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Users]\n"
+                + "  WHERE [RoleID] = 3 AND [FullName] like ?\n";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, "%" + name + "%");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 User u = new User(rs.getInt("UserID"), rs.getString("FullName"),

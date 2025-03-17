@@ -7,7 +7,7 @@
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>List Expert</title><!--  page only for manager  -->
+        <title>List User</title><!--  page only for manager  -->
         <meta
             content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
             name="viewport"
@@ -36,6 +36,7 @@
         <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
         <link rel="stylesheet" href="assets/css/plugins.min.css" />
         <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+
     </head>
     <body>
         <div class="wrapper">
@@ -52,7 +53,7 @@
                 <div class="container">
                     <div class="page-inner">
                         <div class="page-header">
-                            <h3 class="fw-bold mb-3">Manage Expert</h3>
+                            <h3 class="fw-bold mb-3">Manage User</h3>
                         </div>
 
                         <div class="col-md-12">
@@ -64,7 +65,7 @@
                                             >
                                             <%--<c:set value="${requestScope.searchName} " var="n"/>--%>
                                             <c:set value="${fn:trim(requestScope.searchName)}" var="n"/>
-                                            <form action="SearchExpertByAdminServlet">
+                                            <form action="SearchUserByAdminServlet">
                                                 <div class="input-group" >
                                                     <div class="input-group-prepend">
                                                         <button type="submit" class="btn btn-search pe-1">
@@ -92,18 +93,10 @@
                                             </form>
                                         </nav>
                                         <c:set value="${requestScope.noti}" var="noti" />
-
-                                        <button
-                                            class="btn btn-primary btn-round ms-auto"
-                                            onclick="addUser()">
-                                            <i class="fa fa-plus"></i>
-                                            Add Expert
-                                        </button>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <!-- Modal -->
-
 
                                     <div class="table-responsive">
                                         <table class="display table table-striped table-hover" >
@@ -112,17 +105,28 @@
                                                     <th>UserID</th>
                                                     <th>Name</th>
                                                     <th>Email</th>
+                                                    <th>Role</th>
                                                     <th>Status</th>
                                                     <th style="width: 10%; text-align: center">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach items="${sessionScope.listExpert}" var="s">
+                                                <c:forEach items="${sessionScope.listUser}" var="s">
                                                     <tr>
                                                         <td>${s.getUserID()}</td>
                                                         <td>${s.getFullName()}</td>
                                                         <td>${s.getEmail()}</td>
-
+                                                        <td>
+                                                            <c:if test="${s.getRoleID() == 2}">
+                                                                <span style="color: red; font-weight:bold">Expert</span>
+                                                            </c:if>
+                                                            <c:if test="${s.getRoleID() == 3}">
+                                                                <span style="color: green; font-weight:bold">Sale</span>
+                                                            </c:if>
+                                                            <c:if test="${s.getRoleID() == 4}">
+                                                                <span style="color: darkblue; font-weight:bold">Customer</span>
+                                                            </c:if>
+                                                        </td>
                                                         <td>
                                                             <c:if test="${s.status == 0}">
                                                                 <span style="color: red; font-weight:bold">Inactive</span>
@@ -132,19 +136,8 @@
                                                             </c:if>
                                                         </td>
 
-                                                        <td>
-                                                            <div class="form-button-action">
-                                                                <a href="ChangeUserForAdminServlet?userid=${s.userID}" >
-                                                                    <button
-                                                                        type="button"
-                                                                        data-bs-toggle="tooltip"
-                                                                        title=""
-                                                                        class="btn btn-link btn-primary btn-lg"
-                                                                        data-original-title="Edit Task"
-                                                                        >
-                                                                        <i class="fa fa-edit"></i>
-                                                                    </button>
-                                                                </a>
+                                                        <td style="display: flex; justify-content: center;">
+                                                            <div class="form-button-action" >
                                                                 <button
                                                                     type="button"
                                                                     title=""
@@ -173,7 +166,7 @@
                                         <ul class="pagination pg-primary" style="display: flex; justify-content: flex-end;">
                                             <div style="width: 100px; align-content: end">${index} of ${Nopage} page</div>
                                             <li class="page-item ${index < 2 ? 'disabled' :'' } ">
-                                                <a class="page-link" href="ListOfExpertServlet?index=${index-1}" aria-label="Previous">
+                                                <a class="page-link" href="ListOfUserByAdminServlet?index=${index-1}" aria-label="Previous">
                                                     <span aria-hidden="true">&laquo;</span>
                                                     <span class="sr-only">Previous</span>
                                                 </a>
@@ -196,17 +189,17 @@
                                             <c:forEach var="p" begin="${startPage}" end="${endPage}">
                                                 <c:if test="${index == p}">
                                                     <li class="page-item active">
-                                                        <a class="page-link" href="ListOfExpertServlet?index=${p}">${p}</a>
+                                                        <a class="page-link" href="ListOfUserByAdminServlet?index=${p}">${p}</a>
                                                     </li>
                                                 </c:if>
                                                 <c:if test="${index != p}">
                                                     <li class="page-item">
-                                                        <a class="page-link" href="ListOfExpertServlet?index=${p}">${p}</a>
+                                                        <a class="page-link" href="ListOfUserByAdminServlet?index=${p}">${p}</a>
                                                     </li>
                                                 </c:if>
                                             </c:forEach>
                                             <li class="page-item ${index < Nopage ? '' :'disabled' }" >
-                                                <a class="page-link" href="ListOfExpertServlet?index=${index+1}" aria-label="Next">
+                                                <a class="page-link" href="ListOfUserByAdminServlet?index=${index+1}" aria-label="Next">
                                                     <span aria-hidden="true">&raquo;</span>
                                                     <span class="sr-only">Next</span>
                                                 </a>

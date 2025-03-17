@@ -5,6 +5,7 @@
 package local.AdminController;
 
 import Model.Blog;
+import Model.CoursePrint;
 import Model.CustomerCourse;
 import Model.Feedback;
 import Model.MoneyHistoryByAdmin;
@@ -13,6 +14,7 @@ import Model.Requests;
 import Model.User;
 import dal.AdminDao;
 import dal.BlogDAO;
+import dal.CourseDao;
 import dal.CustomerDao;
 import dal.FeedbackDao;
 import dal.RequestDAO;
@@ -73,15 +75,15 @@ public class ShowAdminDasboardServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         // GET ALL DAO
-        CustomerDao courseDAO = new CustomerDao();
+        //CustomerDao courseDAO = new CustomerDao();
         UserDAO userDAO = new UserDAO();
         BlogDAO blogDAO = new BlogDAO();
         FeedbackDao feedbackDAO = new FeedbackDao();
         AdminDao requestDAO = new AdminDao();
         AdminDao adao = new AdminDao();
-
+        CourseDao cdao = new CourseDao();
         // Get all list
-        List<CustomerCourse> courses = courseDAO.getAllCourses();
+        List<CoursePrint> courses = cdao.getAllCourseForAdmin();
         List<Blog> blogs = blogDAO.getAllBlogs();
         List<User> experts = userDAO.getAllExpert();
         List<User> sales = userDAO.getAllSale();
