@@ -6,6 +6,7 @@ package dal;
 
 import java.sql.*;
 import Model.Courses;
+import Model.History;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +15,16 @@ import java.util.List;
  * @author Administrator
  */
 public class CourseDao extends DBContext {
-
+    
     public List<Courses> searchCoursesByName(String keyword) {
         List<Courses> courses = new ArrayList<>();
         String sql = "SELECT * FROM Courses WHERE Name LIKE ?";
-
+        
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, "%" + keyword + "%");
             ResultSet rs = stmt.executeQuery();
-
+            
             while (rs.next()) {
                 courses.add(new Courses(
                         rs.getInt("CourseID"),
@@ -37,15 +38,15 @@ public class CourseDao extends DBContext {
         }
         return courses;
     }
-
+    
     public List<Courses> getAllCourses() {
         List<Courses> courses = new ArrayList<>();
         String query = "SELECT CourseID, Name, Description, imageCources FROM Courses";
-
+        
         try {
             PreparedStatement ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
-
+            
             while (rs.next()) {
                 courses.add(new Courses(
                         rs.getInt("CourseID"),
@@ -59,12 +60,12 @@ public class CourseDao extends DBContext {
         }
         return courses;
     }
-
+    
     public Courses getCourseByIdd(int courseId) {
         String query = "SELECT CourseID, Name,Price, imageCources,Description FROM Courses WHERE CourseID = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(query);
-
+            
             ps.setInt(1, courseId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -82,7 +83,7 @@ public class CourseDao extends DBContext {
         }
         return null;
     }
-
+    
     public Courses getCourseDetails(int courseId) {
         Courses course = null;
         String sql = "SELECT c.CourseID, c.Name, u.FullName AS ExpertName, c.Price, "
@@ -92,7 +93,7 @@ public class CourseDao extends DBContext {
                 + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
                 + "WHERE c.CourseID = ? "
                 + "GROUP BY c.CourseID, c.Name, u.FullName, c.Price";
-
+        
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, courseId);
@@ -112,17 +113,17 @@ public class CourseDao extends DBContext {
         }
         return course;
     }
-
+    
     public List<Courses> getCourseByUserId(int userID) {
         List<Courses> courseList = new ArrayList<>();
         String query = "SELECT c.CourseID, c.Name, c.Description, c.Price FROM Courses c "
                 + "JOIN Users u ON c.UserID = u.UserID "
                 + "WHERE c.UserID = ? AND u.RoleID = 2";
-
+        
         try {
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setInt(1, userID);
-
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Courses course = new Courses(
@@ -137,10 +138,10 @@ public class CourseDao extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         return courseList; // Return the list of courses
     }
-
+    
     public void addCourse(String courseName, String description, double price, String imageCourses, String expertId, int categoryId) {
         String sql = "INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, GETDATE())";
         try {
@@ -156,7 +157,7 @@ public class CourseDao extends DBContext {
             e.printStackTrace();
         }
     }
-
+    
     public void deleteCourse(String courseId) {
         String sql = "DELETE FROM Courses WHERE CourseID = ?";
         try {
@@ -167,7 +168,7 @@ public class CourseDao extends DBContext {
             e.printStackTrace();
         }
     }
-
+    
     public Courses getCourseById(int courseId) {
         String query = "SELECT CourseID, Name, Description, imageCources FROM Courses WHERE CourseID = ?";
         try {
@@ -189,7 +190,7 @@ public class CourseDao extends DBContext {
         // Nếu không tìm thấy, trả về một đối tượng mặc định thay vì null
         return new Courses(0, "Unknown", "default.jpg", "No description available");
     }
-
+    
     public List<Courses> getFilteredCourses(String category, String priceOrder, String ratingOrder, int offset, int limit) {
         List<Courses> courses = new ArrayList<>();
         String sql = "SELECT c.CourseID, c.Name, c.Description, c.Price, c.imageCources, "
@@ -198,12 +199,12 @@ public class CourseDao extends DBContext {
                 + "JOIN Category cat ON c.CategoryID = cat.CategoryID "
                 + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
                 + "JOIN Users u ON c.UserID = u.UserID ";
-
+        
         List<String> conditions = new ArrayList<>();
         if (category != null) {
             conditions.add("cat.CategoryID = ?");
         }
-
+        
         sql += conditions.isEmpty() ? "" : " WHERE " + String.join(" AND ", conditions);
         sql += " GROUP BY c.CourseID, c.Name, c.Description, c.Price, c.imageCources, cat.CategoryName, u.FullName ";
 
@@ -219,7 +220,7 @@ public class CourseDao extends DBContext {
         } else if ("low".equals(ratingOrder)) {
             orderList.add("AvgRating ASC");
         }
-
+        
         if (!orderList.isEmpty()) {
             sql += " ORDER BY " + String.join(", ", orderList);
         } else {
@@ -228,7 +229,7 @@ public class CourseDao extends DBContext {
 
         // Phân trang
         sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
-
+        
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             int index = 1;
             if (category != null) {
@@ -236,7 +237,7 @@ public class CourseDao extends DBContext {
             }
             ps.setInt(index++, offset);
             ps.setInt(index++, limit);
-
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     courses.add(new Courses(
@@ -256,24 +257,24 @@ public class CourseDao extends DBContext {
         }
         return courses;
     }
-
+    
     public int countFilteredCourses(String category, String priceOrder, String ratingOrder) {
         int count = 0;
         String sql = "SELECT COUNT(*) AS total FROM Courses c JOIN Category cat ON c.CategoryID = cat.CategoryID ";
-
+        
         List<String> conditions = new ArrayList<>();
         if (category != null && !category.isEmpty()) {
             conditions.add("cat.CategoryID = ?");
         }
-
+        
         sql += conditions.isEmpty() ? "" : " WHERE " + String.join(" AND ", conditions);
-
+        
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             int index = 1;
             if (category != null && !category.isEmpty()) {
                 ps.setInt(index++, Integer.parseInt(category));
             }
-
+            
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     count = rs.getInt("total");
@@ -284,7 +285,41 @@ public class CourseDao extends DBContext {
         }
         return count;
     }
-
+    
+    public List<Courses> getCompletedCourses(int userId) {
+        List<Courses> completedCourses = new ArrayList<>();
+        String sql = "SELECT DISTINCT \n"
+                + "    c.CourseID, \n"
+                + "    c.Name, \n"
+                + "    c.imageCources, \n"
+                + "    c.Description, \n"
+                + "    CASE \n"
+                + "        WHEN h.CourseStatus = 1 THEN 'Hoàn thành' \n"
+                + "        ELSE 'Chưa hoàn thành' \n"
+                + "    END AS CourseStatus\n"
+                + "FROM History h\n"
+                + "JOIN Courses c ON h.CourseID = c.CourseID\n"
+                + "WHERE h.UserID = ? AND h.CourseStatus = 1;";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    completedCourses.add(new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("Name"),
+                            rs.getString("imageCources"),
+                            rs.getString("Description"),
+                            rs.getString("CourseStatus")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return completedCourses;
+    }
+    
     public static void main(String[] args) {
         CourseDao coursedao = new CourseDao();
         String category = "1"; // ID của category cần lọc
@@ -301,5 +336,5 @@ public class CourseDao extends DBContext {
             System.out.println("CourseID: " + course.getCourseID() + ", Name: " + course.getName() + ", Price: " + course.getPrice() + ", Rating: " + course.getAverageRating());
         }
     }
-
+    
 }

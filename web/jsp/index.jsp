@@ -40,7 +40,7 @@
                 <h1 class="text-white mt-4 mb-4">Learn From Home</h1>
                 <h1 class="text-white display-1 mb-5">Education Courses</h1>
                 <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
-                   
+
                 </div>
             </div>
         </div>
@@ -50,10 +50,10 @@
         <!-- Header End -->
 
 
-        
+
 
         <!-- Feature Start -->
-      
+
         <!-- Feature Start -->
 
 
@@ -75,17 +75,19 @@
             <div class="owl-carousel courses-carousel">
                 <c:forEach var="course" items="${courses}">
                     <div class="courses-item position-relative">
-                        <img class="img-fluid" src="${course.image}" alt="${course.courseName}">
+                        <img class="img-fluid" src="${course.image}" alt="${course.name}">
                         <div class="courses-text">
-                            <h4 class="text-center text-white px-3">${course.courseName}</h4>
+                            <h4 class="text-center text-white px-3">${course.name}</h4>
                             <div class="border-top w-100 mt-3">
                                 <div class="d-flex justify-content-between p-4">
-                                    <span class="text-white"><i class="fa fa-user mr-2"></i>${course.instructor}</span>
+                                    <span class="text-white"><i class="fa fa-user mr-2"></i>${course.expertName}</span>
                                     <span class="text-white"><i class="fa fa-star mr-2"></i>${course.price} $</span>
+                                    <span class="text-white"><i class="fa fa-star mr-2"></i>${course.averageRating} $</span>
+                                    <span class="text-white"><i class="fa fa-star mr-2"></i>${course.totalenrollment} $</span>
                                 </div>
                             </div>
                             <div class="w-100 bg-white text-center p-4">
-                                <a class="btn btn-primary" href="detail?courseId=${course.courseId}">Course Detail</a>
+                                <a class="btn btn-primary" href="detail?courseId=${course.courseID}">Course Detail</a>
                             </div>
                         </div>
                     </div>
@@ -221,7 +223,7 @@
                                 <select name="courseId" class="form-control border-top-0 border-right-0 border-left-0 p-0 bg-white text-body" required>
                                     <option value="">Select a Course</option>
                                     <c:forEach var="course" items="${courses}">
-                                        <option value="${course.courseId}">${course.courseName}</option>
+                                        <option value="${course.courseID}">${course.name}</option>
                                     </c:forEach>
 
                                 </select>

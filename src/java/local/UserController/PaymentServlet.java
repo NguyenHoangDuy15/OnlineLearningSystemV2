@@ -95,7 +95,7 @@ public class PaymentServlet extends HttpServlet {
 
         // Kiểm tra nếu userID hoặc courseID null
         if (userID == null || courseID == null) {
-            request.setAttribute("message", "Lỗi: Không tìm thấy thông tin đăng nhập hoặc khóa học.");
+            request.setAttribute("message", "Lỗi: Not course.");
             request.getRequestDispatcher("jsp/Payment.jsp").forward(request, response);
             return;
         }
@@ -107,7 +107,7 @@ public class PaymentServlet extends HttpServlet {
         try {
             amount = Double.parseDouble(amountStr);
         } catch (NumberFormatException e) {
-            request.setAttribute("message", "Lỗi: Số tiền thanh toán không hợp lệ.");
+            request.setAttribute("message", "Lỗi: Suitable money.");
             request.getRequestDispatcher("jsp/Payment.jsp").forward(request, response);
             return;
         }
@@ -115,7 +115,7 @@ public class PaymentServlet extends HttpServlet {
         // Lấy phương thức thanh toán
         String paymentMethod = request.getParameter("paymentMethod");
         if (paymentMethod == null || paymentMethod.isEmpty()) {
-            request.setAttribute("message", "Lỗi: Vui lòng chọn phương thức thanh toán.");
+            request.setAttribute("message", "Lỗi: Choose method.");
             request.getRequestDispatcher("jsp/Payment.jsp").forward(request, response);
             return;
         }
@@ -123,7 +123,7 @@ public class PaymentServlet extends HttpServlet {
         // Kiểm tra xem user đã đăng ký khóa học chưa
         TransactionDAO paymentDAO = new TransactionDAO();
         if (paymentDAO.isUserEnrolled(userID, courseID)) {
-            request.setAttribute("message", "Bạn đã đăng ký khóa học này!");
+            request.setAttribute("message", "You enrolled in course!");
             request.getRequestDispatcher("jsp/Payment.jsp").forward(request, response);
             return;
         }
@@ -137,9 +137,9 @@ public class PaymentServlet extends HttpServlet {
             paymentDAO.insertTransaction(transaction);
             paymentDAO.enrollUser(userID, courseID);
 
-            request.setAttribute("message", "Thanh toán thành công! Bạn đã được ghi danh vào khóa học.");
+            request.setAttribute("message", "Paid sucessfully");
         } else {
-            request.setAttribute("message", "Thanh toán thất bại! Vui lòng thử lại.");
+            request.setAttribute("message", "Paid no success");
         }
 
         // Chuyển hướng về trang thanh toán

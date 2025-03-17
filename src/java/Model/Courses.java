@@ -4,7 +4,6 @@
  */
 package Model;
 
-import java.sql.Date;
 
 public class Courses {
 
@@ -19,8 +18,53 @@ public class Courses {
     int totalReviews;
     String category;
     String description;
-
+    int courseStatus;
+    String creatat;
+    String status;
+    int totalenrollment;
     public Courses() {
+    }
+ public Courses(int courseID, String name, String image, String expertName, float price, double averageRating, int totalenrollment) {
+        this.courseID = courseID;
+        this.name = name;
+        this.image = image;
+        this.expertName = expertName;
+        this.price = price;
+        this.averageRating = averageRating;
+        this.totalenrollment = totalenrollment;
+    }
+    public Courses(int courseID, String name, String description, String image, int courseStatus, String creatat) {
+        this.courseID = courseID;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+
+        this.courseStatus = courseStatus;
+        this.creatat = creatat;
+    }
+
+    public int getCourseStatus() {
+        return courseStatus;
+    }
+
+    public void setCourseStatus(int courseStatus) {
+        this.courseStatus = courseStatus;
+    }
+
+    public String getCreatat() {
+        return creatat;
+    }
+
+    public void setCreatat(String creatat) {
+        this.creatat = creatat;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Courses(int userid, int courseID, String name, String expertName, String image, String description, float price, double averageRating, int totalReviews) {
@@ -69,6 +113,14 @@ public class Courses {
         this.name = name;
         this.image = image;
         this.description = description;
+      
+    }
+    public Courses(int courseID, String name, String image, String description, String status) {
+        this.courseID = courseID;
+        this.name = name;
+        this.image = image;
+        this.description = description;
+        this.status = status;
     }
 
     public Courses(int courseID, String name, float price, String image, String description) {
@@ -160,9 +212,19 @@ public class Courses {
         this.price = price;
     }
 
+    public int getTotalenrollment() {
+        return totalenrollment;
+    }
+
+    public void setTotalenrollment(int totalenrollment) {
+        this.totalenrollment = totalenrollment;
+    }
+
     @Override
     public String toString() {
-        return "Courses{" + "courseID=" + courseID + ", name=" + name + ", description=" + description + ", price=" + price + '}';
+        return "Courses{" + "userid=" + userid + ", courseID=" + courseID + ", name=" + name + ", expertName=" + expertName + ", price=" + price + ", image=" + image + ", averageRating=" + averageRating + ", totalReviews=" + totalReviews + ", category=" + category + ", description=" + description + ", courseStatus=" + courseStatus + ", creatat=" + creatat + ", status=" + status + ", totalenrollment=" + totalenrollment + '}';
     }
+
+   
 
 }

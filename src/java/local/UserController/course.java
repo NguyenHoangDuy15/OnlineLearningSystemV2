@@ -28,8 +28,8 @@ public class course extends HttpServlet {
         request.setAttribute("categories", categories);
 
         CourseDao courseDAO = new CourseDao();
-
-        // Lấy tham số từ request
+       
+      
         String category = request.getParameter("category");
         String priceOrder = request.getParameter("priceOrder");
         String ratingOrder = request.getParameter("ratingOrder");
@@ -47,7 +47,7 @@ public class course extends HttpServlet {
 
         // Nhận số trang từ request
         int page = 1;
-        int limit = 3; // Hiển thị 9 khóa học trên mỗi trang
+        int limit = 3; 
         if (request.getParameter("page") != null) {
             try {
                 page = Integer.parseInt(request.getParameter("page"));
@@ -57,11 +57,11 @@ public class course extends HttpServlet {
         }
 
         int offset = (page - 1) * limit;
-       
+
         // Lấy danh sách khóa học có phân trang
         List<Courses> courses = courseDAO.getFilteredCourses(category, priceOrder, ratingOrder, offset, limit);
         request.setAttribute("courses", courses);
-        
+
         // Lấy tổng số khóa học để tính tổng số trang
         int totalCourses = courseDAO.countFilteredCourses(category, priceOrder, ratingOrder);
         int totalPages = (int) Math.ceil((double) totalCourses / limit);

@@ -63,7 +63,7 @@
     </head>
     <body>
         <div class="container">
-            <h2>Thanh toán khóa học</h2>
+            <h2>Pay course</h2>
 
             <c:if test="${not empty message}">
                 <p class="${message.contains('thành công') ? 'success' : 'error'}">${message}</p>
@@ -71,30 +71,30 @@
 
             <form action="PaymentServlet" method="post">
                 <div class="form-group">
-                    <label>Tên khóa học:</label>
+                    <label>Name Course:</label>
                     <input name="name" value="${course.name}" readonly />
                 </div>
 
                 <div class="form-group">
-                    <label>Giá khóa học:</label>
+                    <label>Price:</label>
                     <input name="price" value="${course.price}" readonly />
                 </div>
 
                 <div class="form-group">
-                    <label>Số tiền thanh toán:</label>
+                    <label>Money:</label>
                     <input name="amount" type="number" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Phương thức thanh toán:</label>
+                    <label>Method:</label>
                     <select name="paymentMethod" required>
                         <option value="vnpay">VNPay</option>
                         <option value="momo">MoMo</option>
-                        <option value="cod">Thanh toán khi nhận hàng</option>
+                   
                     </select>
                 </div>
 
-                <button type="submit" class="btn">Tiến hành thanh toán</button>
+                <button type="submit" class="btn">Proceed to Pay</button>
             </form>
             <a href="detail">Quay lại</a>
         </div>

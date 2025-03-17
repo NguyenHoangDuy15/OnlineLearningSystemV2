@@ -23,37 +23,37 @@
         </div>
         <div class="container-fluid py-5">
             <div class="container py-5">
-    <div class="section-title position-relative mb-4 text-left"> <!-- Dịch tiêu đề sang trái -->
-        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Enrollments</h6>
-        <h1 class="display-4 text-left">Courses You Have Enrolled In</h1>
-    </div>
-    <div class="row">
-        <c:choose>
-            <c:when test="${not empty enrollments}">
-                <c:forEach var="e" items="${enrollments}">
-                    <div class="col-lg-12 mb-4"> <!-- Sử dụng col-lg-12 để mỗi hàng chỉ có 1 khóa học -->
-                        <div class="card border-0 shadow d-flex flex-row align-items-center p-3">
-                            <!-- Ảnh bên trái -->
-                            <div style="flex: 0 0 30%;">
-                                <img class="img-fluid rounded" src="${e.imageCourses}" alt="${e.courseName}" style="width: 100%; height: 250px; object-fit: cover;">
-                            </div>
-                            <!-- Nội dung bên phải -->
-                            <div class="card-body ml-4" style="flex: 1;">
-                                <h5 class="card-title mb-2">${e.courseName}</h5>
-                                <p class="card-text">${e.description}</p>
-                               <a href="Lessonservlet?courseId=${e.courseId}" class="btn btn-primary text-white" style="background-color: #007bff; border-color: #007bff;">Go to Course</a>
+                <div class="section-title position-relative mb-4 text-left"> <!-- Dịch tiêu đề sang trái -->
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Enrollments</h6>
+                    <h1 class="display-4 text-left">Courses You Have Enrolled In</h1>
+                </div>
+                <div class="row">
+                    <c:choose>
+                        <c:when test="${not empty enrollments}">
+                            <c:forEach var="e" items="${enrollments}">
+                                <div class="col-lg-12 mb-4"> <!-- Sử dụng col-lg-12 để mỗi hàng chỉ có 1 khóa học -->
+                                    <div class="card border-0 shadow d-flex flex-row align-items-center p-3">
+                                        <!-- Ảnh bên trái -->
+                                        <div style="flex: 0 0 30%;">
+                                            <img class="img-fluid rounded" src="${e.imageCourses}" alt="${e.courseName}" style="width: 100%; height: 250px; object-fit: cover;">
+                                        </div>
+                                        <!-- Nội dung bên phải -->
+                                        <div class="card-body ml-4" style="flex: 1;">
+                                            <h5 class="card-title mb-2">${e.courseName}</h5>
+                                            <p class="card-text">${e.description}</p>
+                                            <a href="Lessonservlet?courseId=${e.courseId}" class="btn btn-primary text-white" style="background-color: #007bff; border-color: #007bff;">Go to Course</a>
 
-                            </div>
-                        </div>
-                    </div>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <p class="text-center">Bạn chưa đăng ký khóa học nào.</p>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="text-center">You do not enroll in course. </p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
 
         </div>
         <%@ include file="footer.jsp" %>
@@ -64,8 +64,8 @@
         <script>
             $(document).ready(function () {
                 const enrollments = [
-                    { name: "Web Development" },
-                    { name: "Data Science" }
+                    {name: "Web Development"},
+                    {name: "Data Science"}
                 ];
                 let html = "";
                 enrollments.forEach(course => {
