@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class BlogDAO extends DBContext {
 
     // 1.Create Blog
-    public void createBlog(String title, String detail, String image,int userID, int roleID) {
+    public void createBlog(String title, String detail, String image, int userID, int roleID) {
         if (roleID != 3) {
             System.out.println("Bạn không có quyền tạo blog.");
             return;
@@ -135,11 +135,14 @@ public class BlogDAO extends DBContext {
     //6. Get Blog by Title 
     public List<Blog> searchBlogs(String keyword) {
         List<Blog> list = new ArrayList<>();
-        String sql = "SELECT * FROM Blogs WHERE BlogTitle LIKE ? ORDER BY BlogDate DESC";
+        String sql = "SELECT * FROM Blogs WHERE BlogTitle COLLATE Vietnamese_CI_AI LIKE ? OR BlogDetail COLLATE Vietnamese_CI_AI LIKE ? ORDER BY BlogDate DESC";
+
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, "%" + keyword + "%");
+            st.setString(2, "%" + keyword + "%");
             ResultSet rs = st.executeQuery();
+
             while (rs.next()) {
                 Blog b = new Blog(
                         rs.getInt("BlogID"),
@@ -219,9 +222,11 @@ public class BlogDAO extends DBContext {
         }
         return list;
     }
+    //9. Search Blog
 
     public static void main(String[] args) {
         BlogDAO dao = new BlogDAO();
+        System.out.println(dao.searchBlogs("tri tue nhan tao"));
 //        System.out.println(dao.deleteBlog(6, 3);
     }
 

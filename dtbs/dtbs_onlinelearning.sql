@@ -135,6 +135,11 @@ CREATE TABLE Enrollments (
     Status INT CHECK (Status IN (0,1)),
     EnrolledAt DATETIME
 );
+ALTER TABLE Blogs  
+ALTER COLUMN BlogTitle NVARCHAR(255) COLLATE Vietnamese_CI_AS;  
+
+ALTER TABLE Blogs  
+ALTER COLUMN BlogDetail NVARCHAR(MAX) COLLATE Vietnamese_CI_AS;
 
 INSERT INTO Roles (RoleID, RoleName) 
 VALUES 
@@ -670,6 +675,7 @@ INSERT INTO [dbo].[Enrollments]
            ,1
 
            ,GETDATE());
+
 
 
 
