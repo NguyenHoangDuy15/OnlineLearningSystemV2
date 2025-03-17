@@ -43,7 +43,6 @@ public class index extends HttpServlet {
         request.setAttribute("coursedao", coursesdao);
         request.setAttribute("feedbacks", feedbacks);
 
-       
         request.setAttribute("categories", categories);
 
         request.getRequestDispatcher("jsp/index.jsp").forward(request, response);
