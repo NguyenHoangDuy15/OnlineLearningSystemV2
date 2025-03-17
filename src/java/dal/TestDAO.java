@@ -241,12 +241,15 @@ public class TestDAO extends DBContext {
         String countCorrectSql = "SELECT COUNT(*) FROM UserAnswers WHERE UserID = ? AND TestID = ? AND HistoryID = ? AND IsCorrectAnswer = 1";
         String countTotalSql = "SELECT COUNT(*) FROM Question WHERE TestID = ?";
         String updateTestStatusSql = "UPDATE History SET TestStatus = ? WHERE UserID = ? AND TestID = ? AND HistoryID = ?";
-        String getCourseIdSql = "SELECT CourseID FROM History WHERE TestID = ? AND UserID = ? AND HistoryID = ?";
-        String checkTestsSql = "SELECT (CASE WHEN NOT EXISTS (SELECT 1 FROM History WHERE CourseID = ? AND UserID = ? AND TestStatus != 1) THEN 1 ELSE 0 END) AS ShouldUpdateCourse";
-        String updateCourseStatusSql = "UPDATE History SET CourseStatus = ? WHERE CourseID = ? AND UserID = ?";
+        String getCourseIdSql = "SELECT CourseID, COALESCE(CourseStatus, -1) FROM History WHERE TestID = ? AND UserID = ? AND HistoryID = ?";
+        String checkTestsSql = "SELECT (CASE WHEN NOT EXISTS ("
+                + "    SELECT 1 FROM History WHERE CourseID = ? AND UserID = ? AND HistoryID = ? "
+                + "    AND (TestStatus IS NULL OR TestStatus = 0)) "
+                + "    THEN 1 ELSE 0 END) AS ShouldUpdateCourse";
+        String updateCourseStatusSql = "UPDATE History SET CourseStatus = ? WHERE CourseID = ? AND UserID = ? AND HistoryID = ?";
 
         try {
-            //  Lấy số câu đúng
+            // 1️⃣ Lấy số câu trả lời đúng
             PreparedStatement psCorrect = connection.prepareStatement(countCorrectSql);
             psCorrect.setInt(1, userId);
             psCorrect.setInt(2, testId);
@@ -254,18 +257,18 @@ public class TestDAO extends DBContext {
             ResultSet rsCorrect = psCorrect.executeQuery();
             int correctCount = (rsCorrect.next()) ? rsCorrect.getInt(1) : 0;
 
-            //  Lấy tổng số câu hỏi
+            // 2️⃣ Lấy tổng số câu hỏi
             PreparedStatement psTotal = connection.prepareStatement(countTotalSql);
             psTotal.setInt(1, testId);
             ResultSet rsTotal = psTotal.executeQuery();
             int totalCount = (rsTotal.next()) ? rsTotal.getInt(1) : 1;
 
-            // Tính phần trăm đúng
+            // 3️⃣ Tính phần trăm đúng và xác định trạng thái bài test
             double percentage = (correctCount * 100.0) / totalCount;
-            int testStatus = (percentage >= 80) ? 1 : 0; // ✅ Đạt ≥80% thì 1, ngược lại 0
+            int testStatus = (percentage >= 80) ? 1 : 0;
             String status = (percentage >= 80) ? "Finished courses" : "You must have the results over 80%";
 
-            // ? Cập nhật TestStatus (0  hoặc 1 )
+            // 4️⃣ Cập nhật TestStatus trong bảng History
             PreparedStatement psUpdateTest = connection.prepareStatement(updateTestStatusSql);
             psUpdateTest.setInt(1, testStatus);
             psUpdateTest.setInt(2, userId);
@@ -273,34 +276,42 @@ public class TestDAO extends DBContext {
             psUpdateTest.setInt(4, historyId);
             psUpdateTest.executeUpdate();
 
-            // ? Kiểm tra CourseStatus nếu bài kiểm tra đạt 80%
-            int courseStatus = 0; // Mặc định chưa hoàn thành khóa học
-            if (testStatus == 1) { // Nếu bài test này đã hoàn thành
-                PreparedStatement psGetCourse = connection.prepareStatement(getCourseIdSql);
-                psGetCourse.setInt(1, testId);
-                psGetCourse.setInt(2, userId);
-                psGetCourse.setInt(3, historyId);
-                ResultSet rsCourse = psGetCourse.executeQuery();
+            // 5️⃣ Lấy CourseID và CourseStatus hiện tại
+            PreparedStatement psGetCourse = connection.prepareStatement(getCourseIdSql);
+            psGetCourse.setInt(1, testId);
+            psGetCourse.setInt(2, userId);
+            psGetCourse.setInt(3, historyId);
+            ResultSet rsCourse = psGetCourse.executeQuery();
 
-                if (rsCourse.next()) {
-                    int courseId = rsCourse.getInt(1);
+            if (rsCourse.next()) {
+                int courseId = rsCourse.getInt(1);
+                int courseStatus = rsCourse.getInt(2); // Nếu NULL, mặc định trả về -1
 
-                    // Kiểm tra nếu tất cả các bài kiểm tra trong khóa học đã hoàn thành
-                    PreparedStatement psCheck = connection.prepareStatement(checkTestsSql);
-                    psCheck.setInt(1, courseId);
-                    psCheck.setInt(2, userId);
-                    ResultSet rsCheck = psCheck.executeQuery();
+                // 6️⃣ Nếu CourseStatus đang NULL (-1), cập nhật thành 0
+                if (courseStatus == -1) {
+                    PreparedStatement psInitCourse = connection.prepareStatement(updateCourseStatusSql);
+                    psInitCourse.setInt(1, 0);
+                    psInitCourse.setInt(2, courseId);
+                    psInitCourse.setInt(3, userId);
+                    psInitCourse.setInt(4, historyId);
+                    psInitCourse.executeUpdate();
+                }
 
-                    if (rsCheck.next() && rsCheck.getInt(1) == 1) {
-                        courseStatus = 1; // ✅ Nếu tất cả bài test trong khóa học đã đạt, đánh dấu hoàn thành khóa học
+                // 7️⃣ Kiểm tra nếu tất cả bài test đã hoàn thành (CourseStatus => 1)
+                PreparedStatement psCheck = connection.prepareStatement(checkTestsSql);
+                psCheck.setInt(1, courseId);
+                psCheck.setInt(2, userId);
+                psCheck.setInt(3, historyId);
+                ResultSet rsCheck = psCheck.executeQuery();
 
-                        //  Cập nhật CourseStatus (0  hoặc 1 )
-                        PreparedStatement psUpdateCourse = connection.prepareStatement(updateCourseStatusSql);
-                        psUpdateCourse.setInt(1, courseStatus);
-                        psUpdateCourse.setInt(2, courseId);
-                        psUpdateCourse.setInt(3, userId);
-                        psUpdateCourse.executeUpdate();
-                    }
+                if (rsCheck.next() && rsCheck.getInt(1) == 1) {
+                    // ✅ Nếu tất cả bài test hoàn thành, cập nhật CourseStatus = 1
+                    PreparedStatement psUpdateCourse = connection.prepareStatement(updateCourseStatusSql);
+                    psUpdateCourse.setInt(1, 1);
+                    psUpdateCourse.setInt(2, courseId);
+                    psUpdateCourse.setInt(3, userId);
+                    psUpdateCourse.setInt(4, historyId);
+                    psUpdateCourse.executeUpdate();
                 }
             }
 
@@ -370,7 +381,10 @@ public class TestDAO extends DBContext {
 
     public Integer getHistoryId(int userId, int testId, int courseId) {
         Integer historyId = null;
-        String sql = "SELECT HistoryID FROM History WHERE UserID = ? AND TestID = ? AND CourseID = ?";
+        String sql = "SELECT TOP 1 HistoryID \n"
+                + "FROM History \n"
+                + "WHERE UserID = ? AND TestID = ? AND CourseID = ? \n"
+                + "ORDER BY HistoryID DESC;";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -407,23 +421,4 @@ public class TestDAO extends DBContext {
         return null;
     }
 
-    public static void main(String[] args) {
-        TestDAO dao = new TestDAO();
-        int userId = 6;
-        int historyId = 2;
-        List<UserAnswer> userAnswers = dao.getUserAnswersByHistoryId(userId, historyId);
-
-        // Hiển thị kết quả
-        System.out.println("Danh sách câu trả lời của người dùng:");
-        for (UserAnswer ua : userAnswers) {
-            System.out.println("Câu hỏi: " + ua.getQuestionContent());
-            System.out.println("A: " + ua.getOptionA());
-            System.out.println("B: " + ua.getOptionB());
-            System.out.println("C: " + ua.getOptionC());
-            System.out.println("D: " + ua.getOptionD());
-            System.out.println("Đáp án đã chọn: " + ua.getAnswerOption());
-            System.out.println("Đúng/Sai: " + (ua.isIsCorrectAnswer() ? "✔ Đúng" : "✖ Sai"));
-            System.out.println("---------------------------");
-        }
-    }
 }

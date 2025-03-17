@@ -68,10 +68,10 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Page</a>
                             <div class="dropdown-menu m-0">
-                           
-                            
+
+
                                 <a href="Instructor" class="dropdown-item">Instructors</a>
-                               
+
                             </div>
                         </div>
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
@@ -92,11 +92,12 @@
                     <div class="dropdown">
                         <img src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown">
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
-                            <li><a class="dropdown-item" href="ViewProfile">View My Profile</a></li>
-                            <li><a class="dropdown-item" href="myenrollment">View My Enrollments</a></li>
+                            <li><a class="dropdown-item" href="ViewProfile">My Profile</a></li>
+                            <li><a class="dropdown-item" href="myenrollment">My Enrollments</a></li>
+                            <li><a class="dropdown-item" href="Mycourses">My courses</a></li>
                             <li><a class="dropdown-item" href="ChangePasswordServlet">Change Password</a></li>
 
-                            <li><a class="dropdown-item" href="Historytransaction">View history of transaction</a></li>
+                            <li><a class="dropdown-item" href="Historytransaction">History of transaction</a></li>
                             <li><a class="dropdown-item" href="Role">Want to become Expert or Sale</a></li>
                             <li><a class="dropdown-item" href="Request">Wait for application approval</a></li>
                             <li><a class="dropdown-item" href="LogoutServlet">Logout</a></li>
