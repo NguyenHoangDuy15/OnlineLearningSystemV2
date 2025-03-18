@@ -152,6 +152,14 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("jsp/verify.jsp").forward(request, response);
+        } else{
+            request.setAttribute("err", "Email isn't Existed");
+            request.setAttribute("username", user);
+            request.setAttribute("password", pass);
+            request.setAttribute("repassword", repass);
+            request.setAttribute("name", fullname);
+            request.setAttribute("email", mail);
+            request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
         }
 
     }
