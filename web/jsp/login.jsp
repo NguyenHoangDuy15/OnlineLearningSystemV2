@@ -20,8 +20,8 @@
                         <td align="right"><a href="RegisterServlet">Sign Up</a></td>
                     </tr>
                 </table>
-                <button type="submit">Login</button>
                 ${err}
+                <button type="submit">Login</button>
             </form>
         </div>
     </body>

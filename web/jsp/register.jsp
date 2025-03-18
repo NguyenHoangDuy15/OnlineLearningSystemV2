@@ -17,15 +17,6 @@
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="password" name="repassword" placeholder="Re-Password" required>
                 ${err}
-                <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                     data-context="signin"
-                     data-ux_mode="redirect"
-                     data-login_uri="http://localhost:8080/your_project/LoginGoogleServlet"
-                     data-auto_prompt="false">
-                </div>
-                <div class="g_id_signin" data-type="standard"></div>
-
                 <button type="submit">Register</button>
             </form>
         </div>

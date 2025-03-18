@@ -114,32 +114,6 @@
                                 </ul>
                             </div>
                         </li>
-                        <!--                        <li class="nav-item">
-                                                    <a data-bs-toggle="collapse" href="#guestForms" aria-expanded="false" aria-controls="guestForms">
-                                                        <i class="fas fa-pen-square"></i>
-                                                        <p>Manage Course</p>
-                                                        <span class="caret"></span>
-                                                    </a>
-                                                    <div class="collapse" id="guestForms">
-                                                        <ul class="nav nav-collapse">
-                                                            <li>
-                                                                <a href="ListOfCourseByAdminServlet">
-                                                                    <span class="sub-item">List Course</span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="ListOfCourseRequestByAdminServlet">
-                                                                    <span class="sub-item">List Courses Request</span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="ListOfTopCourseByAdminServlet">
-                                                                    <span class="sub-item">List Top Courses</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </li>-->
                         <li class="nav-item">
                             <a data-bs-toggle="collapse" href="#maps">
                                 <i class="fas fa-comment-dots"></i>

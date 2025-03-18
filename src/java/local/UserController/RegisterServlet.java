@@ -5,6 +5,7 @@
 package local.UserController;
 
 import Model.User;
+import Model.VerifyCode;
 import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,8 +13,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import util.MaHoa;
+import util.SendEmail;
 import util.Validator;
 
 /**
@@ -87,11 +90,13 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        HttpSession session = request.getSession();
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
-        String repass = request.getParameter("repassword");
         String fullname = request.getParameter("name");
         String mail = request.getParameter("email");
+        String repass = request.getParameter("repassword");
         UserDAO d = new UserDAO();
         if (getuserById(d.getAll(), user, mail) != null) {
             request.setAttribute("err", "UserName or Gmail Dublicate");
@@ -125,20 +130,28 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
-        } else {
-            if (pass.equals(repass)) {
-                pass = MaHoa.toSHA1(pass);
-                d.add(user, pass, fullname, mail);
-                response.sendRedirect("LoginServlet");
-            } else {
-                request.setAttribute("err", "password or re-password invalid");
-                request.setAttribute("username", user);
-                request.setAttribute("password", pass);
-                request.setAttribute("repassword", repass);
-                request.setAttribute("name", fullname);
-                request.setAttribute("email", mail);
-                request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
-            }
+        }
+        if (!pass.equals(repass)) {
+            request.setAttribute("err", "password or re-password invalid");
+            request.setAttribute("username", user);
+            request.setAttribute("password", pass);
+            request.setAttribute("repassword", repass);
+            request.setAttribute("name", fullname);
+            request.setAttribute("email", mail);
+            request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
+        }
+        SendEmail sendEmail = new SendEmail();
+        String code = sendEmail.getRandom();
+        VerifyCode verifyCode = new VerifyCode(code);
+        boolean test = sendEmail.sendEmail(verifyCode, mail);
+        if (test) {
+            session.setAttribute("verifyCode", verifyCode);
+            request.setAttribute("username", user);
+            request.setAttribute("password", pass);
+            request.setAttribute("repassword", repass);
+            request.setAttribute("name", fullname);
+            request.setAttribute("email", mail);
+            request.getRequestDispatcher("jsp/verify.jsp").forward(request, response);
         }
 
     }
