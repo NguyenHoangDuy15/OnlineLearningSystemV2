@@ -5,10 +5,8 @@
 
 package local.AdminController;
 
-import Model.CoursePrint;
-import Model.User;
+import dal.AdminDao;
 import dal.CourseDao;
-import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,15 +14,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  *
  * @author DELL
  */
-@WebServlet(name="ListOfCourseByAdminServlet", urlPatterns={"/ListOfCourseByAdminServlet"})
-public class ListOfCourseByAdminServlet extends HttpServlet {
+@WebServlet(name="UpdateRoleCourse", urlPatterns={"/UpdateRoleCourse"})
+public class UpdateRoleCourse extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +37,10 @@ public class ListOfCourseByAdminServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ListOfCourseByAdminServlet</title>");  
+            out.println("<title>Servlet UpdateRoleCourse</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ListOfCourseByAdminServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateRoleCourse at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,31 +54,13 @@ public class ListOfCourseByAdminServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    public int getNoPage(List<CoursePrint> list) {
-        double page = (double) list.size() / 5;
-        page = Math.ceil(page);
-        return (int) page;
-    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        HttpSession session = request.getSession();
         CourseDao cdao = new CourseDao();
-        int index = 1;
-        int NoPage = getNoPage(cdao.getAllCourseForAdmin());
-        if (request.getParameter("index") != null) {
-            index = Integer.parseInt(request.getParameter("index"));
-        }
-        if (NoPage == 0) {
-            request.setAttribute("noti", "No Course found");
-        }
-        List<CoursePrint> listCourse = cdao.get5CourseForAdmin(index);
-        session.setAttribute("Nopage", NoPage);
-        session.setAttribute("currentindex", index);
-        session.setAttribute("listCourse", listCourse);
-        request.getRequestDispatcher("jsp/ListOfCoursesByAdmin.jsp").forward(request, response);
+        String CourseID = request.getParameter("CourseID");
+        cdao.updateRequest(CourseID, "4");
+        request.getRequestDispatcher("ListOfCourseByAdminServlet").forward(request, response);
     } 
 
     /** 
