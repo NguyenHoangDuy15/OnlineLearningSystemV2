@@ -324,19 +324,7 @@ public class CourseDao extends DBContext {
 
     public static void main(String[] args) {
         CourseDao coursedao = new CourseDao();
-        String category = "1"; // ID của category cần lọc
-        String priceOrder = "low-high"; // Sắp xếp giá từ thấp đến cao
-        String ratingOrder = "high"; // Sắp xếp đánh giá từ cao xuống thấp
-        int totalCourses = coursedao.countFilteredCourses(category, priceOrder, ratingOrder);
-        System.out.println("Total courses found: " + totalCourses);
-        int offset = 0; // Trang đầu tiên
-        int limit = 5; // Số lượng kết quả tối đa mỗi lần truy vấn
-        List<Courses> courses = coursedao.getFilteredCourses(category, priceOrder, ratingOrder, offset, limit);
-
-        // In danh sách khóa học
-        for (Courses course : courses) {
-            System.out.println("CourseID: " + course.getCourseID() + ", Name: " + course.getName() + ", Price: " + course.getPrice() + ", Rating: " + course.getAverageRating());
-        }
+        System.out.println(coursedao.get5CourseRequestForAdmin(1));
     }
 
     public List<CoursePrint> getAllCourseForAdmin() {
@@ -398,4 +386,79 @@ public class CourseDao extends DBContext {
         }
         return list;
     }
+
+    public List<CoursePrint> getAllCourseRequestForAdmin() {
+        List<CoursePrint> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    c.CourseID, \n"
+                + "    c.Name AS CourseName, \n"
+                + "    c.Description, \n"
+                + "    u.FullName AS CreatedBy, \n"
+                + "    c.Price\n"
+                + "FROM \n"
+                + "    Courses c\n"
+                + "JOIN \n"
+                + "    Users u ON c.UserID = u.UserID\n"
+                + "Where\n"
+                + "	c.Status = 2;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                CoursePrint m = new CoursePrint(rs.getInt("CourseID"),
+                        rs.getString("CourseName"), rs.getString("Description"),
+                        rs.getString("CreatedBy"), rs.getFloat("Price"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public List<CoursePrint> get5CourseRequestForAdmin(int index) {
+        List<CoursePrint> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    c.CourseID, \n"
+                + "    c.Name AS CourseName, \n"
+                + "    c.Description, \n"
+                + "    u.FullName AS CreatedBy, \n"
+                + "    c.Price\n"
+                + "FROM \n"
+                + "    Courses c\n"
+                + "JOIN \n"
+                + "    Users u ON c.UserID = u.UserID\n"
+                + "Where\n"
+                + "	c.Status = 2\n"
+                + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, 5 * (index - 1));
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                CoursePrint m = new CoursePrint(rs.getInt("CourseID"),
+                        rs.getString("CourseName"), rs.getString("Description"),
+                        rs.getString("CreatedBy"), rs.getFloat("Price"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public void updateRequest(String id, String status) {
+        String sql = "UPDATE [dbo].[Courses]\n"
+                + "   SET [Status] = ?\n"
+                + " WHERE CourseID = ?";
+        try {
+            PreparedStatement rs = connection.prepareStatement(sql);
+            rs.setString(1, status);
+            rs.setString(2, id);
+            rs.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
 }
