@@ -18,8 +18,8 @@ import javax.mail.internet.MimeMessage;
 
 public class SendEmail {
 
-    private static final String fromEmail = "duyh3061@gmail.com";
-    private static final String password = "akjc gike ffnu shdp";
+    private static final String fromEmail = "hoangduytech16@gmail.com";
+    private static final String password = "evok pazv cgmq crix";
 
     public String getRandom() {
         Random rnd = new Random();

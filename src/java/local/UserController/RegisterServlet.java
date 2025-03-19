@@ -106,6 +106,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("RegisterServlet").forward(request, response);
+            return;
         } else if (!Validator.isValidUsername(user)) {
             request.setAttribute("err", "Invalid username! Must be 5-20 characters, no spaces, not starting with a number.");
             request.setAttribute("username", user);
@@ -114,6 +115,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
+            return;
         } else if (!Validator.isValidEmail(mail)) {
             request.setAttribute("err", "Invalid email format!");
             request.setAttribute("username", user);
@@ -122,6 +124,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
+            return;
         } else if (!Validator.isValidPassword(pass)) {
             request.setAttribute("err", "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
             request.setAttribute("username", user);
@@ -130,6 +133,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
+            return;
         }
         if (!pass.equals(repass)) {
             request.setAttribute("err", "password or re-password invalid");
@@ -139,6 +143,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
+            return;
         }
         SendEmail sendEmail = new SendEmail();
         String code = sendEmail.getRandom();
