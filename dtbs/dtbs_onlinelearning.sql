@@ -6,17 +6,14 @@ CREATE TABLE Roles (
 );
 CREATE TABLE Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
-    FullName NVARCHAR(255) NOT NULL,
-    UserName NVARCHAR(255) NOT NULL,
+    FullName NVARCHAR(255) NULL,
+    UserName NVARCHAR(255) NULL,
     Email NVARCHAR(255) UNIQUE NOT NULL,
-    Password VARCHAR(1000) NOT NULL,
+    Password VARCHAR(1000) NULL,
     Avartar nvarchar(max),  -- Giữ lại cột Avartar từ nhánh `customer`
     RoleID INT FOREIGN KEY REFERENCES Roles(RoleID),
     Status TINYINT NOT NULL DEFAULT 1  -- Giữ lại kiểu dữ liệu TINYINT với DEFAULT 1 từ nhánh `customer`
 );
-
-
-
 
 CREATE TABLE Category (
     CategoryID INT PRIMARY KEY IDENTITY(1,1),
