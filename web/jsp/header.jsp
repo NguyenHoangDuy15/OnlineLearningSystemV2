@@ -62,7 +62,21 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto py-0">
+                        <%
+        Integer userId = (Integer) session.getAttribute("userid");
+        if (userId != null) {
+                        %>
                         <a href="index" class="nav-item nav-link active">Home</a>
+                        <%
+                            } else {
+                        %>
+                        <a href="Landingpage" class="nav-item nav-link active">Home</a>
+                        <%
+                            }
+                        %>
+
+
+
 
                         <a href="course" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">

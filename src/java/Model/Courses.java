@@ -4,7 +4,6 @@
  */
 package Model;
 
-
 public class Courses {
 
     int userid;
@@ -22,17 +21,35 @@ public class Courses {
     String creatat;
     String status;
     int totalenrollment;
+    int statusss;
+
     public Courses() {
     }
- public Courses(int courseID, String name, String image, String expertName, float price, double averageRating, int totalenrollment) {
+
+    public Courses(int courseID, String name, String image, String expertName, float price, int courseStatus, double averageRating, int totalenrollment) {
         this.courseID = courseID;
         this.name = name;
         this.image = image;
         this.expertName = expertName;
         this.price = price;
+        this.courseStatus = courseStatus;
         this.averageRating = averageRating;
         this.totalenrollment = totalenrollment;
+
     }
+
+    public Courses(int courseID, String name, String image, String expertName, float price, int courseStatus, double averageRating, int totalenrollment, int statusss) {
+        this.courseID = courseID;
+        this.name = name;
+        this.image = image;
+        this.expertName = expertName;
+        this.price = price;
+        this.courseStatus = courseStatus;
+        this.averageRating = averageRating;
+        this.totalenrollment = totalenrollment;
+        this.statusss = statusss;
+    }
+
     public Courses(int courseID, String name, String description, String image, int courseStatus, String creatat) {
         this.courseID = courseID;
         this.name = name;
@@ -49,6 +66,14 @@ public class Courses {
 
     public void setCourseStatus(int courseStatus) {
         this.courseStatus = courseStatus;
+    }
+
+    public int getStatusss() {
+        return statusss;
+    }
+
+    public void setStatusss(int statusss) {
+        this.statusss = statusss;
     }
 
     public String getCreatat() {
@@ -79,7 +104,7 @@ public class Courses {
         this.totalReviews = totalReviews;
     }
 
-    public Courses(int courseID, String name, String description, float price, String image, String category, String expertName, double averageRating) {
+    public Courses(int courseID, String name, String description, float price, String image, String category, String expertName, double averageRating, int totalenrollment) {
         this.courseID = courseID;
         this.name = name;
 
@@ -89,16 +114,17 @@ public class Courses {
         this.category = category;
         this.expertName = expertName;
         this.averageRating = averageRating;
-
+        this.totalenrollment = totalenrollment;
     }
 
-    public Courses(int courseID, String name, String expertName, float price, double averageRating, int totalReviews) {
+    public Courses(int courseID, String name, String expertName, float price, double averageRating, int totalenrollment) {
         this.courseID = courseID;
         this.name = name;
         this.expertName = expertName;
         this.price = price;
         this.averageRating = averageRating;
         this.totalReviews = totalReviews;
+        this.totalenrollment = totalenrollment;
     }
 
     public Courses(int courseID, String name, String description, float price) {
@@ -113,8 +139,9 @@ public class Courses {
         this.name = name;
         this.image = image;
         this.description = description;
-      
+
     }
+
     public Courses(int courseID, String name, String image, String description, String status) {
         this.courseID = courseID;
         this.name = name;
@@ -224,7 +251,5 @@ public class Courses {
     public String toString() {
         return "Courses{" + "userid=" + userid + ", courseID=" + courseID + ", name=" + name + ", expertName=" + expertName + ", price=" + price + ", image=" + image + ", averageRating=" + averageRating + ", totalReviews=" + totalReviews + ", category=" + category + ", description=" + description + ", courseStatus=" + courseStatus + ", creatat=" + creatat + ", status=" + status + ", totalenrollment=" + totalenrollment + '}';
     }
-
-   
 
 }

@@ -86,34 +86,41 @@ public class CourseDao extends DBContext {
         return null;
     }
 
-    public Courses getCourseDetails(int courseId) {
-        Courses course = null;
-        String sql = "SELECT c.CourseID, c.Name, u.FullName AS ExpertName, c.Price, "
-                + "COALESCE(AVG(f.Rating), 0) AS AverageRating, COUNT(f.Rating) AS TotalReviews "
+    public Courses getCourseDetail(int courseId) {
+        String query = "SELECT "
+                + "    c.CourseID, "
+                + "    c.Name, "
+                + "    u.FullName AS ExpertName, "
+                + "    c.Price, "
+                + "    COALESCE(AVG(f.Rating), 0) AS AverageRating, "
+                + "    COUNT(e.EnrollmentID) AS TotalEnrollment "
                 + "FROM Courses c "
                 + "JOIN Users u ON c.UserID = u.UserID "
                 + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
+                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID "
                 + "WHERE c.CourseID = ? "
                 + "GROUP BY c.CourseID, c.Name, u.FullName, c.Price";
 
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, courseId);
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement stmt = connection.prepareStatement(query);
+
+            stmt.setInt(1, courseId);
+            ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                course = new Courses(
+                return new Courses(
                         rs.getInt("CourseID"),
                         rs.getString("Name"),
                         rs.getString("ExpertName"),
                         rs.getFloat("Price"),
                         rs.getDouble("AverageRating"),
-                        rs.getInt("TotalReviews")
+                        rs.getInt("TotalEnrollment")
                 );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return course;
+        return null;
     }
 
     public List<Courses> getCourseByUserId(int userID) {
@@ -196,19 +203,27 @@ public class CourseDao extends DBContext {
     public List<Courses> getFilteredCourses(String category, String priceOrder, String ratingOrder, int offset, int limit) {
         List<Courses> courses = new ArrayList<>();
         String sql = "SELECT c.CourseID, c.Name, c.Description, c.Price, c.imageCources, "
-                + "cat.CategoryName, u.FullName AS InstructorName, COALESCE(AVG(f.Rating), 0) AS AvgRating "
+                + "cat.CategoryName, u.FullName AS InstructorName, "
+                + "COALESCE(AVG(f.Rating), 0) AS AvgRating, "
+                + "COUNT(DISTINCT e.UserID) AS EnrollmentCount " // Đếm số người tham gia
                 + "FROM Courses c "
                 + "JOIN Category cat ON c.CategoryID = cat.CategoryID "
+                + "JOIN Users u ON c.UserID = u.UserID "
                 + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
-                + "JOIN Users u ON c.UserID = u.UserID ";
+                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID " // Tham gia Enrollments
+                + "WHERE c.Status = 4 ";  // Chỉ lấy Course có Status = 4
 
         List<String> conditions = new ArrayList<>();
         if (category != null) {
             conditions.add("cat.CategoryID = ?");
         }
 
-        sql += conditions.isEmpty() ? "" : " WHERE " + String.join(" AND ", conditions);
-        sql += " GROUP BY c.CourseID, c.Name, c.Description, c.Price, c.imageCources, cat.CategoryName, u.FullName ";
+        if (!conditions.isEmpty()) {
+            sql += " AND " + String.join(" AND ", conditions);
+        }
+
+        sql += " GROUP BY c.CourseID, c.Name, c.Description, c.Price, c.imageCources, "
+                + "cat.CategoryName, u.FullName ";
 
         // Thêm điều kiện sắp xếp nếu có
         List<String> orderList = new ArrayList<>();
@@ -250,7 +265,8 @@ public class CourseDao extends DBContext {
                             rs.getString("imageCources"),
                             rs.getString("CategoryName"),
                             rs.getString("InstructorName"),
-                            rs.getDouble("AvgRating")
+                            rs.getDouble("AvgRating"),
+                            rs.getInt("EnrollmentCount") // Số người tham gia
                     ));
                 }
             }

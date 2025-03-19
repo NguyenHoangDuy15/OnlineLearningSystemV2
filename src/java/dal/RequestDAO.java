@@ -29,7 +29,8 @@ public class RequestDAO extends DBContext {
         }
         return list;
     }
-     public boolean insertRequest(int userId, int requestedRole) {
+
+    public boolean insertRequest(int userId, int requestedRole) {
         String sql = "INSERT INTO Requests (UserID, RequestedRole) VALUES (?, ?)";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -43,15 +44,17 @@ public class RequestDAO extends DBContext {
     }
 
     public boolean hasPendingRequest(int userId, int requestedRole) {
-        String query = "SELECT COUNT(*) FROM Requests WHERE UserID = ? AND RequestedRole = ?";
+        String query = "SELECT TOP 1 Status FROM Requests WHERE UserID = ? AND RequestedRole = ? ORDER BY RequestID DESC";
 
         try {
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setInt(1, userId);
             ps.setInt(2, requestedRole);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
-                return rs.getInt(1) > 0;
+                int status = rs.getInt("Status");
+                return status == 0; // Chỉ chặn nếu trạng thái là "đang chờ" (0)
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,7 +66,7 @@ public class RequestDAO extends DBContext {
         List<RequestPrint> requests = new ArrayList<>();
         String sql = "SELECT r.RequestID, r.UserID, ro.RoleName AS RequestedRole, "
                 + "CASE "
-                + "WHEN r.Status IS NULL THEN N'Pending' "
+                + "WHEN r.Status IS null THEN N'Pending' "
                 + "WHEN r.Status = 0 THEN N'Rejected' "
                 + "WHEN r.Status = 1 THEN N'Approved' "
                 + "ELSE N'Unknown' "
@@ -89,7 +92,8 @@ public class RequestDAO extends DBContext {
         }
         return requests;
     }
-     public static void main(String[] args) {
+
+    public static void main(String[] args) {
 
         RequestDAO dao = new RequestDAO();
 

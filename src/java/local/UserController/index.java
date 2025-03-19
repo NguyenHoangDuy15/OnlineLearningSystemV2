@@ -4,6 +4,8 @@
  */
 package local.UserController;
 
+import java.sql.SQLException;
+
 import Model.Category;
 import Model.Courses;
 import Model.CustomerCourse;
@@ -19,6 +21,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -31,8 +35,20 @@ public class index extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute("userid");
+
         CustomerDao courseDAO = new CustomerDao();
-        List<Courses> courses = courseDAO.getTop5Courses();
+        List<Courses> courses = new ArrayList<>();
+
+        try {
+            if (userId != null) {
+                courses = courseDAO.getTopCourses(userId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         request.setAttribute("courses", courses);
         CategoryDao category = new CategoryDao();
         List<Category> categories = category.getAllCategories();
