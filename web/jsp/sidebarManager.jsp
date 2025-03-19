@@ -106,9 +106,8 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
-                                            <!--                                        <a href=""> ListOfTopCourseByAdminServlet-->
-                                            <span class="sub-item">List Top Courses</span>
+                                        <a href="ListOfTopCourseByAdminServlet">
+                                            <span class="sub-item">Top Courses</span>
                                         </a>
                                     </li>
                                 </ul>

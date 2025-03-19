@@ -1,5 +1,6 @@
 package dal;
 
+import Model.CatergoryPrint;
 import Model.MoneyHistoryByAdmin;
 import Model.RequestPrint;
 import Model.User;
@@ -10,6 +11,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AdminDao extends DBContext {
+
+    public List<CatergoryPrint> getAllCat() {
+        List<CatergoryPrint> list = new ArrayList<>();
+        String sql = "SELECT [CategoryID]\n"
+                + "      ,[CategoryName]\n"
+                + "  FROM [dbo].[Category]";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                CatergoryPrint m = new CatergoryPrint(rs.getInt("CategoryID"), rs.getString("CategoryName"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
 
     public List<MoneyHistoryByAdmin> getAllHistory() {
         List<MoneyHistoryByAdmin> list = new ArrayList<>();
@@ -173,6 +192,6 @@ public class AdminDao extends DBContext {
 
     public static void main(String[] args) {
         AdminDao dao = new AdminDao();
-        dao.UpdateUserForAdmin("9", "sale123", "sale1@gmail.com", "3", "1");
+        System.out.println(dao.getAllCat());
     }
 }

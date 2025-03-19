@@ -7,10 +7,8 @@ package local.AdminController;
 
 import Model.CatergoryPrint;
 import Model.CoursePrint;
-import Model.User;
 import dal.AdminDao;
 import dal.CourseDao;
-import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -25,8 +23,8 @@ import java.util.List;
  *
  * @author DELL
  */
-@WebServlet(name="ListOfCourseByAdminServlet", urlPatterns={"/ListOfCourseByAdminServlet"})
-public class ListOfCourseByAdminServlet extends HttpServlet {
+@WebServlet(name="ListOfTopCourseByAdminServlet", urlPatterns={"/ListOfTopCourseByAdminServlet"})
+public class ListOfTopCourseByAdminServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -43,10 +41,10 @@ public class ListOfCourseByAdminServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ListOfCourseByAdminServlet</title>");  
+            out.println("<title>Servlet ListOfTopCourseByAdminServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ListOfCourseByAdminServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ListOfTopCourseByAdminServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -74,20 +72,20 @@ public class ListOfCourseByAdminServlet extends HttpServlet {
         CourseDao cdao = new CourseDao();
         AdminDao adao = new AdminDao();
         int index = 1;
-        int NoPage = getNoPage(cdao.getAllCourseForAdmin());
+        int NoPage = getNoPage(cdao.getAllCourseTopForAdmin());
         if (request.getParameter("index") != null) {
             index = Integer.parseInt(request.getParameter("index"));
         }
         if (NoPage == 0) {
             request.setAttribute("noti", "No Course found");
         }
-        List<CoursePrint> listCourse = cdao.get5CourseForAdmin(index);
+        List<CoursePrint> listTopCourse = cdao.get5CourseTopForAdmin(index);
         List<CatergoryPrint> categories = adao.getAllCat();
         session.setAttribute("categories", categories);
         session.setAttribute("Nopage", NoPage);
         session.setAttribute("currentindex", index);
-        session.setAttribute("listCourse", listCourse);
-        request.getRequestDispatcher("jsp/ListOfCoursesByAdmin.jsp").forward(request, response);
+        session.setAttribute("listTopCourse", listTopCourse);
+        request.getRequestDispatcher("jsp/TopCourse.jsp").forward(request, response);
     } 
 
     /** 
