@@ -91,7 +91,7 @@ public class ShowAdminDasboardServlet extends HttpServlet {
         List<RequestPrint> requests = requestDAO.getAllRequest();
         List<User> users = userDAO.getAll();
         List<MoneyHistoryByAdmin> money = adao.getAllHistory();
-
+        List<CoursePrint> coursesRequest = cdao.getAllCourseRequestForAdmin();
         //
         float price = 0;
         for (MoneyHistoryByAdmin moneyHistoryByAdmin : money) {
@@ -106,6 +106,7 @@ public class ShowAdminDasboardServlet extends HttpServlet {
         session.setAttribute("numberOfSale", sales.size());
         session.setAttribute("numberOfFeedback", feedbacks.size());
         session.setAttribute("numberOfRequest", requests.size());
+        session.setAttribute("numberOfCourseRequest", coursesRequest.size());
         session.setAttribute("numberOfUsers", (users.size() - 1));
         session.setAttribute("TotalMoney", price);
         request.getRequestDispatcher("jsp/dashboard.jsp").forward(request, response);

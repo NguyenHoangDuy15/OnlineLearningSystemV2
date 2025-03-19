@@ -324,7 +324,7 @@ public class CourseDao extends DBContext {
 
     public static void main(String[] args) {
         CourseDao coursedao = new CourseDao();
-        System.out.println(coursedao.get5CourseRequestForAdmin(1));
+        System.out.println(coursedao.get5CourseTopForAdmin(1));
     }
 
     public List<CoursePrint> getAllCourseForAdmin() {
@@ -431,6 +431,67 @@ public class CourseDao extends DBContext {
                 + "Where\n"
                 + "	c.Status = 2\n"
                 + "ORDER BY CourseID OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, 5 * (index - 1));
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                CoursePrint m = new CoursePrint(rs.getInt("CourseID"),
+                        rs.getString("CourseName"), rs.getString("Description"),
+                        rs.getString("CreatedBy"), rs.getFloat("Price"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public List<CoursePrint> getAllCourseTopForAdmin() {
+        List<CoursePrint> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    c.CourseID, \n"
+                + "    c.Name AS 'CourseName', \n"
+                + "    c.Description, \n"
+                + "    u.FullName AS 'CreatedBy', \n"
+                + "    c.Price, \n"
+                + "    COUNT(th.TransactionID) AS 'PurchaseCount'\n"
+                + "FROM Courses c\n"
+                + "JOIN Users u ON c.UserID = u.UserID\n"
+                + "LEFT JOIN TransactionHistory th ON c.CourseID = th.CourseID\n"
+                + "WHERE c.Status = 4  \n"
+                + "GROUP BY c.CourseID, c.Name, c.Description, u.FullName, c.Price\n"
+                + "ORDER BY PurchaseCount DESC; ";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                CoursePrint m = new CoursePrint(rs.getInt("CourseID"),
+                        rs.getString("CourseName"), rs.getString("Description"),
+                        rs.getString("CreatedBy"), rs.getFloat("Price"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public List<CoursePrint> get5CourseTopForAdmin(int index) {
+        List<CoursePrint> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    c.CourseID, \n"
+                + "    c.Name AS 'CourseName', \n"
+                + "    c.Description, \n"
+                + "    u.FullName AS 'CreatedBy', \n"
+                + "    c.Price, \n"
+                + "    COUNT(th.TransactionID) AS 'PurchaseCount'\n"
+                + "FROM Courses c\n"
+                + "JOIN Users u ON c.UserID = u.UserID\n"
+                + "LEFT JOIN TransactionHistory th ON c.CourseID = th.CourseID\n"
+                + "WHERE c.Status = 4  \n"
+                + "GROUP BY c.CourseID, c.Name, c.Description, u.FullName, c.Price\n"
+                + "ORDER BY PurchaseCount DESC OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY; ";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, 5 * (index - 1));
