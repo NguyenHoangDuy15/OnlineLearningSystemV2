@@ -34,6 +34,7 @@
                 opacity: 1 !important;
             }
 
+
         </style>
     </head>
 
@@ -61,56 +62,36 @@
                                 <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Course Detail</h6>
                                 <h1 class="display-4">${course.name}</h1>
                             </div>
-                            <img class="img-fluid rounded w-100 mb-4" src="${course.image}"  >    
+                            <img class="img-fluid rounded w-100 mb-4 course-detail-image" src="${course.image}">
+
                             <p>${course.description}</p>
 
                         </div>
 
 
-                        <h2 class="mb-3">Related Courses</h2>
+
+                        <h2 class="mb-3">Top 5  Courses</h2>
                         <div class="owl-carousel related-carousel position-relative" style="padding: 0 30px;">
-                            <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.jsp">
-                                <img class="img-fluid" src="../img/courses-1.jpg" alt="">
-                                <div class="courses-text">
-                                    <h4 class="text-center text-white px-3">Web design & development courses for
-                                        beginners</h4>
-                                    <div class="border-top w-100 mt-3">
-                                        <div class="d-flex justify-content-between p-4">
-                                            <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                                <small>(250)</small></span>
+                            <c:forEach items="${courses}" var="c">
+                                <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail?courseId=${c.courseID}">
+                                    <img class="img-fluid related-course-image" src="${c.image}" alt="${c.name}" style="width: 100%; height: 300px; object-fit: cover;">
+
+
+
+                                    <div class="courses-text">
+                                        <h4 class="text-center text-white px-3">${c.name}</h4>
+                                        <div class="border-top w-100 mt-3">
+                                            <div class="d-flex justify-content-between p-4">
+                                                <span class="text-white"><i class="fa fa-user mr-2"></i>${c.expertName}</span>
+                                                <span class="text-white"><i class="fa fa-money-bill-wave mr-2"></i>${c.price} VNĐ</span>
+                                                <span class="text-white"><i class="fa fa-star mr-2"></i>${c.averageRating}</span>
+                                                <small>(${c.totalenrollment})</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
-                            <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.jsp">
-                                <img class="img-fluid" src="img/courses-2.jpg" alt="">
-                                <div class="courses-text">
-                                    <h4 class="text-center text-white px-3">Web design & development courses for
-                                        beginners</h4>
-                                    <div class="border-top w-100 mt-3">
-                                        <div class="d-flex justify-content-between p-4">
-                                            <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                                <small>(250)</small></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.jsp">
-                                <img class="img-fluid" src="img/courses-3.jpg" alt="">
-                                <div class="courses-text">
-                                    <h4 class="text-center text-white px-3">Web design & development courses for
-                                        beginners</h4>
-                                    <div class="border-top w-100 mt-3">
-                                        <div class="d-flex justify-content-between p-4">
-                                            <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5
-                                                <small>(250)</small></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
+                                </a>
+                            </c:forEach>
+
                         </div>
                     </div>
 
@@ -118,19 +99,22 @@
                         <div class="bg-primary mb-5 py-3">
                             <h3 class="text-white py-3 px-4 m-0">Course Features</h3>
                             <div class="d-flex justify-content-between border-bottom px-4">
-                                <h6 class="text-white my-3">Instructor</h6>
+                                <h6 class="text-white my-3"><i class="fa fa-user"></i></h6>
                                 <h6 class="text-white my-3">${coursedetails.expertName}</h6>
                             </div>
                             <div class="d-flex justify-content-between border-bottom px-4">
-                                <h6 class="text-white my-3">Rating</h6>
+                                <h6 class="text-white my-3"><i class="fa fa-star"></i></h6>
                                 <h6 class="text-white my-3">${coursedetails.averageRating}</h6>
                             </div>
                             <div class="d-flex justify-content-between border-bottom px-4">
-                                <h6 class="text-white my-3">Feedbacks</h6>
-                                <h6 class="text-white my-3">${coursedetails.totalReviews}</h6>
+                                <h6 class="text-white my-3"><i class="fa fa-users"></i></h6>
+                                <h6 class="text-white my-3">${coursedetails.totalenrollment}</h6>
                             </div>
 
-                            <h5 class="text-white py-3 px-4 m-0">Course Price: $${coursedetails.price}</h5>
+                            <h5 class="text-white py-3 px-4 m-0">
+                                <i class="fa fa-money-bill-wave"></i> ${coursedetails.price} VND
+                            </h5>
+
                             <div class="py-3 px-4">
                                 <a class="btn btn-block py-3 px-5" href="PaymentServlet" style="background-color: red; color: white;">
                                     Enroll Now
@@ -141,61 +125,9 @@
                             </div>
                         </div>
 
-                        <div class="mb-5">
-                            <h2 class="mb-3">Categories</h2>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <a href="" class="text-decoration-none h6 m-0">Web Design</a>
-                                    <span class="badge badge-primary badge-pill">150</span>
-                                </li>
 
 
-                            </ul>
-                        </div>
 
-                        <div class="mb-5">
-                            <h2 class="mb-4">Recent Courses</h2>
-                            <a class="d-flex align-items-center text-decoration-none mb-4" href="">
-                                <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                                <div class="pl-3">
-                                    <h6>Web design & development courses for beginners</h6>
-                                    <div class="d-flex">
-                                        <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Jhon Doe</small>
-                                        <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>4.5 (250)</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="d-flex align-items-center text-decoration-none mb-4" href="">
-                                <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                                <div class="pl-3">
-                                    <h6>Web design & development courses for beginners</h6>
-                                    <div class="d-flex">
-                                        <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Jhon Doe</small>
-                                        <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>4.5 (250)</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="d-flex align-items-center text-decoration-none mb-4" href="">
-                                <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                                <div class="pl-3">
-                                    <h6>Web design & development courses for beginners</h6>
-                                    <div class="d-flex">
-                                        <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Jhon Doe</small>
-                                        <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>4.5 (250)</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="d-flex align-items-center text-decoration-none" href="">
-                                <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                                <div class="pl-3">
-                                    <h6>Web design & development courses for beginners</h6>
-                                    <div class="d-flex">
-                                        <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Jhon Doe</small>
-                                        <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>4.5 (250)</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>

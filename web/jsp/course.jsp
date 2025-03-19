@@ -115,8 +115,9 @@
                                                 <div class="border-top w-100 mt-3">
                                                     <div class="d-flex justify-content-between p-4">
                                                         <span class="text-white"><i class="fa fa-user mr-2"></i>${c.expertName}</span>
-                                                        <span class="text-white"><i class="fa fa-star mr-2"></i>${c.averageRating}</span>
-                                                        <span class="text-white"><i class="fa fa-dollar-sign mr-2"></i>${c.price} $</span>
+                                                        <span class="text-white"><i class="fa fa-money-bill-wave mr-2"></i>${c.price} VNĐ</span>
+                                                        <span class="text-white"><i class="fa fa-star mr-2"></i>${c.averageRating} </span>
+                                                        <span class="text-white"><i class="fa fa-users mr-2"></i>${c.totalenrollment} People</span>
                                                     </div>
                                                 </div>
                                             </div>

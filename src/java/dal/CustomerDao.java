@@ -49,7 +49,7 @@ public class CustomerDao extends DBContext {
         return courses;
     }
 
-    public List<Courses> getTop5Courses() {
+    public List<Courses> getTop5PopularCourses() {
         List<Courses> courses = new ArrayList<>();
         String sql = "SELECT TOP 5 "
                 + "    c.CourseID, "
@@ -57,47 +57,81 @@ public class CustomerDao extends DBContext {
                 + "    c.imageCources, "
                 + "    u.FullName AS ExpertName, "
                 + "    c.Price, "
+                + "    c.Status, "
                 + "    COALESCE(AVG(f.Rating), 0) AS AverageRating, "
-                + "    (SELECT COUNT(*) FROM Enrollments e WHERE e.CourseID = c.CourseID) AS TotalEnrollments "
+                + "    COUNT(DISTINCT e.EnrollmentID) AS TotalStudents, "
+                + "    COUNT(DISTINCT f.FeedbackID) AS TotalFeedbacks "
                 + "FROM Courses c "
                 + "INNER JOIN Users u ON c.UserID = u.UserID "
                 + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
-                + "GROUP BY c.CourseID, c.Name, c.imageCources, u.FullName, c.Price "
-                + "ORDER BY AverageRating DESC, TotalEnrollments DESC";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID "
+                + "WHERE c.Status = 4 "
+                + "GROUP BY c.CourseID, c.Name, c.imageCources, u.FullName, c.Price, c.Status "
+                + "ORDER BY TotalStudents DESC, TotalFeedbacks DESC;";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Courses course = new Courses(
-                        rs.getInt("CourseID"),
-                        rs.getString("CourseName"),
-                        rs.getString("imageCources"),
-                        rs.getString("ExpertName"),
-                        rs.getFloat("Price"),
-                        rs.getDouble("AverageRating"),
-                        rs.getInt("TotalEnrollments")
-                );
+                Courses course = new Courses();
+                course.setCourseID(rs.getInt("CourseID"));
+                course.setName(rs.getString("CourseName"));
+                course.setImage(rs.getString("imageCources"));
+                course.setExpertName(rs.getString("ExpertName"));
+                course.setPrice(rs.getFloat("Price"));
+                course.setCourseStatus(rs.getInt("Status"));
+                course.setAverageRating(rs.getDouble("AverageRating"));
+                course.setTotalenrollment(rs.getInt("TotalStudents"));
+
                 courses.add(course);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return courses;
     }
 
-    public static void main(String[] args) {
-        CustomerDao customerDao = new CustomerDao();
-     
-            List<Courses> courses = customerDao.getTop5Courses();
+    public List<Courses> getTopCourses(int userId) throws SQLException {
+        List<Courses> courses = new ArrayList<>();
+        String sql = "WITH TopCourses AS ("
+                + "    SELECT c.CourseID, c.Name AS CourseName, c.imageCources, "
+                + "        u.FullName AS ExpertName, c.Price, c.Status, "
+                + "        COALESCE(AVG(f.Rating), 0) AS AverageRating "
+                + "    FROM Courses c "
+                + "    INNER JOIN Users u ON c.UserID = u.UserID "
+                + "    LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
+                + "    WHERE c.Status = 4 "
+                + "    GROUP BY c.CourseID, c.Name, c.imageCources, u.FullName, c.Price, c.Status "
+                + ") "
+                + "SELECT TOP 5 tc.CourseID, tc.CourseName, tc.imageCources, "
+                + "    tc.ExpertName, tc.Price, tc.Status, tc.AverageRating, "
+                + "    COUNT(DISTINCT e.UserID) AS TotalStudents, "
+                + "    MAX(e.Status) AS EnrollmentStatus, "
+                + "    MAX(CASE WHEN e.UserID = ? THEN e.Status ELSE NULL END) AS UserEnrollStatus "
+                + "FROM TopCourses tc "
+                + "LEFT JOIN Enrollments e ON tc.CourseID = e.CourseID "
+                + "GROUP BY tc.CourseID, tc.CourseName, tc.imageCources, tc.ExpertName, "
+                + "    tc.Price, tc.Status, tc.AverageRating "
+                + "ORDER BY tc.AverageRating DESC, TotalStudents DESC;";
 
-            // Hiển thị danh sách khóa học
-            for (Courses course : courses) {
-                System.out.println("ID: " + course.getCourseID());
-                System.out.println("Tên khóa học: " + course.getName());
-                System.out.println("Giá: " + course.getPrice());
-                System.out.println("Giảng viên: " + course.getExpertName());
-                System.out.println("Đánh giá trung bình: " + course.getAverageRating());
-                System.out.println("Số lượng đăng ký: " + course.getTotalenrollment());
-                System.out.println("-------------------------");
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Courses course = new Courses();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setName(rs.getString("CourseName"));
+                    course.setImage(rs.getString("imageCources"));
+                    course.setExpertName(rs.getString("ExpertName"));
+                    course.setPrice(rs.getFloat("Price"));
+                    course.setCourseStatus(rs.getInt("Status"));
+                    course.setAverageRating(rs.getDouble("AverageRating"));
+                    course.setTotalenrollment(rs.getInt("TotalStudents"));
+                    course.setStatusss(rs.getInt("UserEnrollStatus"));
+                    courses.add(course);
+                }
             }
-        } 
+        }
+        return courses;
+    }
+
 }

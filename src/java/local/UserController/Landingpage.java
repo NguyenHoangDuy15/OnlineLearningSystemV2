@@ -4,7 +4,14 @@
  */
 package local.UserController;
 
-import dal.RequestDAO;
+import Model.Category;
+import Model.Courses;
+import Model.Expert;
+import Model.Feedback;
+import dal.CategoryDao;
+import dal.CustomerDao;
+import dal.ExpertDao;
+import dal.FeedbackDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,14 +19,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  *
  * @author Administrator
  */
-@WebServlet(name = "Role", urlPatterns = {"/Role"})
-public class Role extends HttpServlet {
+@WebServlet(name = "Landingpage", urlPatterns = {"/Landingpage"})
+public class Landingpage extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,57 +45,46 @@ public class Role extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Role</title>");
+            out.println("<title>Servlet Landingpage</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Role at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Landingpage at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("jsp/Role.jsp").forward(request, response);
+        CustomerDao courseDAO = new CustomerDao();
+        List<Courses> courses = courseDAO.getTop5PopularCourses();
+        request.setAttribute("courses", courses);
+        CategoryDao category = new CategoryDao();
+        List<Category> categories = category.getAllCategories();
+        FeedbackDao dao = new FeedbackDao();
+        List<Feedback> feedbacks = dao.getCustomerFeedbacks();
+        ExpertDao expertdao = new ExpertDao();
+        List<Expert> coursesdao = expertdao.getAllInstructorCoursesss();
+        request.setAttribute("coursedao", coursesdao);
+        request.setAttribute("feedbacks", feedbacks);
+
+        request.setAttribute("categories", categories);
+
+        request.getRequestDispatcher("jsp/Landingpage.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("userid");
-
-        if (userId == null) {
-            response.sendRedirect("LoginServlet");
-            return;
-        }
-
-        int requestedRole = Integer.parseInt(request.getParameter("role"));
-        RequestDAO requestDAO = new RequestDAO();
-
-        if (requestDAO.hasPendingRequest(userId, requestedRole)) {
-            request.setAttribute("message", "You have already submitted a request. Please wait for Admin approval.");
-        } else {
-            boolean success = requestDAO.insertRequest(userId, requestedRole);
-            if (success) {
-                request.setAttribute("message", "Request submitted successfully! Please wait for Admin approval.");
-            } else {
-                request.setAttribute("message", "Request submission failed!");
-            }
-        }
-        request.getRequestDispatcher("jsp/Role.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
     @Override
     public String getServletInfo() {
         return "Short description";

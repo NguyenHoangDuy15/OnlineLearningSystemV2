@@ -7,6 +7,7 @@ package local.UserController;
 
 import Model.Courses;
 import dal.CourseDao;
+import dal.CustomerDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,9 @@ public class detail extends HttpServlet {
             throws ServletException, IOException {
         String courseIdParam = request.getParameter("courseId");
 
+        CustomerDao coDAO = new CustomerDao();
+        List<Courses> courses = coDAO.getTop5PopularCourses();
+        request.setAttribute("courses", courses);
         Courses course = null;
         Courses coursedetails = null;
         Integer courseId = null;
@@ -36,7 +40,7 @@ public class detail extends HttpServlet {
                 courseId = Integer.parseInt(courseIdParam); // Chuyển thành Integer
                 CourseDao courseDAO = new CourseDao();
                 course = courseDAO.getCourseByIdd(courseId);
-                coursedetails = courseDAO.getCourseDetails(courseId);
+                coursedetails = courseDAO.getCourseDetail(courseId);
             } catch (NumberFormatException e) {
                 e.printStackTrace(); // Debug lỗi nếu có
             }
