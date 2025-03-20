@@ -105,7 +105,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("repassword", repass);
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
-            request.getRequestDispatcher("RegisterServlet").forward(request, response);
+            request.getRequestDispatcher("jsp/register.jsp").forward(request, response);
             return;
         } else if (!Validator.isValidUsername(user)) {
             request.setAttribute("err", "Invalid username! Must be 5-20 characters, no spaces, not starting with a number.");
