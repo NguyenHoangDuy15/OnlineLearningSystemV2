@@ -83,7 +83,7 @@ public class LoginServlet extends HttpServlet {
 
         if (a == null) {  // Hợp nhất logic từ cả hai nhánh
             sec.setAttribute("isLoggedIn", false);
-            request.setAttribute("err", "Username or password invalid " + pass);
+            request.setAttribute("err", "Username or password invalid ");
             request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
         } else if (a.getStatus() == 0) {
             sec.setAttribute("isLoggedIn", false);
