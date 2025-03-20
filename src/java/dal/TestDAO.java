@@ -202,8 +202,8 @@ public class TestDAO extends DBContext {
         return -1;
     }
 
-    public void insertUserAnswer(int userId, int testId, int questionId, String answerOption, int answerId, int historyId) {
-        String sql = "INSERT INTO UserAnswers (UserID, TestID, QuestionID, AnswerOption, AnswerID, IsCorrectAnswer, HistoryID) VALUES (?, ?, ?, ?, ?, NULL, ?)";
+    public void insertUserAnswer(int userId ,int testId, int questionId, String answerOption, int answerId, int historyId) {
+        String sql = "INSERT INTO UserAnswers (UserID, TestID, QuestionID, AnswerOption, AnswerID, IsCorrectAnswer, HistoryID) VALUES (?, ?, ?, ?, ?, null, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, testId);
@@ -420,5 +420,33 @@ public class TestDAO extends DBContext {
         }
         return null;
     }
+    public static void main(String[] args) {
+        TestDAO testdao = new TestDAO();
+        int userId = 1;      // Giả lập UserID
+        int testId = 1;      // Giả lập TestID
+        int courseId = 1;    // Giả lập CourseID
 
+        // 1. Chèn bản ghi History và lấy HistoryID
+        int historyId = testdao.insertHistory(userId, testId, courseId);
+        if (historyId == -1) {
+            System.out.println("Failed to insert History record. Exiting...");
+            return;
+        }
+
+        // 2. Giả lập 30 câu hỏi và câu trả lời ngẫu nhiên
+        Random random = new Random();
+        String[] options = {"A", "B", "C", "D"};
+        for (int questionId = 1; questionId <= 30; questionId++) {
+            String answerOption = options[random.nextInt(options.length)]; // Chọn ngẫu nhiên A, B, C, D
+            int answerId = questionId; // Giả lập AnswerID bằng QuestionID (tăng dần từ 1-30)
+          testdao.insertUserAnswer(userId, testId, questionId, answerOption, answerId, historyId);
+        }
+
+        // 3. Cập nhật trạng thái đúng/sai
+        testdao.updateCorrectAnswers(userId, testId, historyId);
+
+        // 4. Lấy và in kết quả
+       
+        System.out.println("Test Result: " +  testdao.getTestResult(userId, testId, historyId));
+    }
 }

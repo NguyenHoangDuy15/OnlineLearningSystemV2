@@ -17,7 +17,7 @@ public class Transaction {
     int status;
     Date createdAt;
     int courseID;
-    String paymentMethod;
+  
     String courseName;
     double paidAmount;
 
@@ -26,23 +26,23 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(int transactionID, int userID, int courseID, String courseName, double paidAmount, String paymentMethod, int status, Date createdAt) {
+    public Transaction(int transactionID, int userID, int courseID, String courseName, double paidAmount, int status, Date createdAt) {
         this.transactionID = transactionID;
         this.userID = userID;
         this.courseID = courseID;
         this.courseName = courseName;
         this.paidAmount = paidAmount;
-        this.paymentMethod = paymentMethod;
+     
         this.status = status;
         this.createdAt = createdAt;
     }
 
-    public Transaction(int payid, int courseID, String paymentMethod) {
+    public Transaction(int payid, int courseID) {
         this.transactionID = transactionID;
         this.payid = payid;
 
         this.courseID = courseID;
-        this.paymentMethod = paymentMethod;
+     
     }
 
     public int getTransactionID() {
@@ -85,13 +85,7 @@ public class Transaction {
         this.paidAmount = paidAmount;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
+ 
 
     public int getStatus() {
         return status;
@@ -119,7 +113,9 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" + "transactionID=" + transactionID + ", userID=" + userID + ", courseID=" + courseID + ", courseName=" + courseName + ", paidAmount=" + paidAmount + ", paymentMethod=" + paymentMethod + ", status=" + status + ", createdAt=" + createdAt + '}';
+        return "Transaction{" + "transactionID=" + transactionID + ", payid=" + payid + ", status=" + status + ", createdAt=" + createdAt + ", courseID=" + courseID + ", courseName=" + courseName + ", paidAmount=" + paidAmount + ", userID=" + userID + '}';
     }
+
+   
 
 }
