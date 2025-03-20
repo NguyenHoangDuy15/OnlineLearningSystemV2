@@ -5,6 +5,7 @@
 package dal;
 
 import Model.Lesson;
+
 import dal.DBContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class LessonsDao extends DBContext {
                 + "    l.Title AS Name, \n"
                 + "    l.Content\n"
                 + "FROM Lessons l \n"
-                + "WHERE l.CourseID = ?\n"
+                + "WHERE l.CourseID = ? and l.Status = 1\n"
                 + "\n"
                 + "UNION ALL\n"
                 + "\n"
@@ -35,7 +36,7 @@ public class LessonsDao extends DBContext {
                 + "    t.Name AS Name, \n"
                 + "    NULL AS Content\n"
                 + "FROM Test t \n"
-                + "WHERE t.CourseID = ?;";
+                + "WHERE t.CourseID = ? and t.Status = 1";
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -58,25 +59,4 @@ public class LessonsDao extends DBContext {
         return list;
     }
 
-    public static void main(String[] args) {
-        LessonsDao dao = new LessonsDao();
-        Scanner scanner = new Scanner(System.in);
-
-        int courseId = 1; // Thay bằng ID khóa học thực tế
-
-        List<Lesson> lessons = dao.getLessonsAndTests(courseId);
-
-        for (Lesson lesson : lessons) {
-            System.out.println("\n--------------------------");
-            System.out.println("Loại: " + lesson.getType());
-            System.out.println("ID: " + lesson.getId());
-            System.out.println("Tên: " + lesson.getName());
-            System.out.println("Nội dung: " + lesson.getContent());
-          
-
-            // Nếu đây là một bài học, cập nhật trạng thái đã xem
-        }
-
-        scanner.close();
-    }
 }

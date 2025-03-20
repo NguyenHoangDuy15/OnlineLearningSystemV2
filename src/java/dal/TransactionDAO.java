@@ -20,7 +20,7 @@ public class TransactionDAO extends DBContext {
     public List<Transaction> getTransactionHistoryByUserId(int userId) {
         List<Transaction> historyList = new ArrayList<>();
         String sql = "SELECT t.TransactionID, p.UserID, t.CourseID, c.Name AS CourseName, "
-                + "p.Amount AS PaidAmount, t.PaymentMethod, t.Status, t.CreatedAt "
+                + "p.Amount AS PaidAmount,  t.Status, t.CreatedAt "
                 + "FROM TransactionHistory t "
                 + "JOIN Payment p ON t.PayID = p.PayID "
                 + "JOIN Courses c ON t.CourseID = c.CourseID "
@@ -37,7 +37,6 @@ public class TransactionDAO extends DBContext {
                             rs.getInt("CourseID"),
                             rs.getString("CourseName"),
                             rs.getDouble("PaidAmount"),
-                            rs.getString("PaymentMethod"),
                             rs.getInt("Status"),
                             rs.getDate("CreatedAt")
                     );
@@ -48,19 +47,6 @@ public class TransactionDAO extends DBContext {
             e.printStackTrace();
         }
         return historyList;
-    }
-
-    public boolean isUserEnrolled(int userID, int courseID) {
-        String sql = "SELECT * FROM Enrollments WHERE UserID = ? AND CourseID = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, userID);
-            ps.setInt(2, courseID);
-            ResultSet rs = ps.executeQuery();
-            return rs.next(); // Trả về true nếu có bản ghi
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public int insertPayment(Payments payment) {
@@ -81,13 +67,13 @@ public class TransactionDAO extends DBContext {
         return -1; // Trả về -1 nếu có lỗi
     }
 
-    public void insertTransaction(Transaction transaction) {
-        String sql = "INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMethod) VALUES (?, 1, GETDATE(), ?, ?)";
+    public void insertTransaction(Transaction transaction, boolean isSuccess) {
+        String sql = "INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) VALUES (?, ?, GETDATE(), ?, GETDATE())";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, transaction.getPayid());
+            ps.setInt(1, transaction.getPayid());               // Set PayID
+            ps.setInt(2, isSuccess ? 1 : 0);                   // Set Status: 1 for success, 0 for failure
+            ps.setInt(3, transaction.getCourseID());           // Set CourseID
 
-            ps.setInt(2, transaction.getCourseID());
-            ps.setString(3, transaction.getPaymentMethod());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,41 +92,14 @@ public class TransactionDAO extends DBContext {
     }
 
     public static void main(String[] args) {
-        TransactionDAO dao = new TransactionDAO();
-        int userID = 6; // ID người dùng
-        int courseID = 8; // ID khóa học
-        double amount = 170.000; // Số tiền thanh toán
-        String paymentMethod = "Credit Card"; // Phương thức thanh toán
+        TransactionDAO transactionDAO = new TransactionDAO();
 
-        // 1. Kiểm tra nếu user đã đăng ký khóa học chưa
-        if (dao.isUserEnrolled(userID, courseID)) {
-            System.out.println("Người dùng đã đăng ký khóa học này!");
+        int userId = 6; // Thay bằng UserID thực tế cần kiểm tra
+        List<Transaction> transactions = transactionDAO.getTransactionHistoryByUserId(userId);
 
-            return;
+        // Hiển thị kết quả
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
         }
-
-        // 2. Thêm thanh toán vào bảng Payments
-        // 2. Thêm thanh toán vào bảng Payments
-        // 2. Thêm thanh toán vào bảng Payments
-        Payments payment = new Payments(userID, courseID, amount);
-        int payID = dao.insertPayment(payment);
-
-        if (payID <= 0) {  // Kiểm tra nếu payID không hợp lệ
-            System.out.println("Lỗi khi thêm thanh toán! Không thể tiếp tục.");
-            return;
-        }
-
-        System.out.println("Thanh toán thành công, PayID: " + payID); // Debug xem PayID có hợp lệ không
-
-// 3. Thêm vào bảng TransactionHistory
-        Transaction transaction = new Transaction(payID, courseID, paymentMethod);
-        dao.insertTransaction(transaction);
-
-        // 4. Cập nhật đăng ký khóa học
-        dao.enrollUser(userID, courseID);
-
-        // Commit giao dịch sau khi tất cả thành công
-        System.out.println("Giao dịch thành công!");
-
     }
 }

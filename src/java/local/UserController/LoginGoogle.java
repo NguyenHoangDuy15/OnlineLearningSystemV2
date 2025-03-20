@@ -85,7 +85,7 @@ public class LoginGoogle extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         HttpSession sec = request.getSession();
-        
+
         String code = request.getParameter("code");
 
         // Kiểm tra nếu không có code
@@ -129,14 +129,17 @@ public class LoginGoogle extends HttpServlet {
             // Đặt tài khoản vào session
             sec.setAttribute("account", account);
             sec.setAttribute("isLoggedIn", true);
+            sec.setAttribute("userid", account.getUserID());
             if (account.getRoleID() == 1) {
                 response.sendRedirect("ShowAdminDasboardServlet");
-            } else if(account.getRoleID() == 2)
+            } else if (account.getRoleID() == 2) {
                 response.sendRedirect("ShowexpertServlet");
-            else if (account.getRoleID() == 3) {
+            } else if (account.getRoleID() == 3) {
                 response.sendRedirect("viewownerbloglist");
                 sec.setAttribute("isSale", true);
             } else {
+                User u = new User();
+
                 response.sendRedirect("index");
             }
 

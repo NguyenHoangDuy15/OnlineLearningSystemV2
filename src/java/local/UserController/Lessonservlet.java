@@ -5,6 +5,7 @@
 package local.UserController;
 
 import Model.Lesson;
+
 import dal.LessonsDao;
 import dal.TestDAO;
 import java.io.IOException;
@@ -103,7 +104,7 @@ public class Lessonservlet extends HttpServlet {
                     testStatuses.put(lesson.getId(), status != null ? status : 0);
                 }
             }
-
+           
             request.setAttribute("lessonsAndTests", lessonsAndTests);
             request.setAttribute("testStatuses", testStatuses);
             request.getRequestDispatcher("jsp/lessons.jsp").forward(request, response);
