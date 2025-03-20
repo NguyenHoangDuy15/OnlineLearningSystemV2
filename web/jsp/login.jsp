@@ -40,8 +40,8 @@
         <div class="container">
             <h2>Login</h2>
             <form action="LoginServlet" method="post">
-                <input type="text" name="username" placeholder="User name" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="text" name="username" value="${username}" placeholder="User name" required>
+                <input type="password" name="password" value="${password}" placeholder="Password" required>
                 <table width="100%" style="margin: 10px">
                     <tr>
                         <td align="left"><a href="ForgotPassword">Forgot password</a></td>
