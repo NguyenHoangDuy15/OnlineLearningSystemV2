@@ -80,10 +80,16 @@ public class ForgotPassword extends HttpServlet {
         UserDAO d = new UserDAO();
         User a = d.checkWithGmail(user, mail);
         if (a == null) {
-            request.setAttribute("err", "Mail and user invalid");
+            request.setAttribute("username", user);
+            request.setAttribute("email", mail);
+            request.setAttribute("err", "Mail or user invalid");
             request.getRequestDispatcher("jsp/forgotPassword.jsp").forward(request, response);
         } else {
             if (!Validator.isValidPassword(pass)) {
+                request.setAttribute("username", user);
+                request.setAttribute("email", mail);
+                request.setAttribute("newpassword", pass);
+                request.setAttribute("repassword", repass);
                 request.setAttribute("err", "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
                 request.getRequestDispatcher("jsp/forgotPassword.jsp").forward(request, response);
             } else if (pass.equals(repass)) {
@@ -91,7 +97,7 @@ public class ForgotPassword extends HttpServlet {
                 d.changePass(pass, a.getUserID());
                 response.sendRedirect("LoginServlet");
             } else {
-                request.setAttribute("err", "Password or re-password invalid");
+                request.setAttribute("err", "Password or re-password DIFFERENT");
                 request.getRequestDispatcher("jsp/forgotPassword.jsp").forward(request, response);
             }
         }

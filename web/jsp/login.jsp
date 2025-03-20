@@ -8,8 +8,6 @@
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <link href="css/login.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
         <style>
 
             /* Google login button style */
