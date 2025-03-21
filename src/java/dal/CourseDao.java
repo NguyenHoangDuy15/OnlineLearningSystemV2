@@ -173,7 +173,7 @@ public class CourseDao extends DBContext {
                 + "    u.FullName AS ExpertName, "
                 + "    c.Price, "
                 + "     COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS AverageRating, "
-                + "    COUNT(e.EnrollmentID) AS TotalEnrollment "
+                + "    COUNT(distinct e.EnrollmentID) AS TotalEnrollment "
                 + "FROM Courses c "
                 + "JOIN Users u ON c.UserID = u.UserID "
                 + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "

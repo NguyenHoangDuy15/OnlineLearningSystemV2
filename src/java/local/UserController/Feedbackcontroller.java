@@ -39,7 +39,6 @@ public class Feedbackcontroller extends HttpServlet {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
 
-        // Kiểm tra người dùng đã đăng nhập chưa
         if (userId == null) {
             request.setAttribute("errorMessage", "You must be logged in to perform this action.");
             request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
@@ -72,12 +71,6 @@ public class Feedbackcontroller extends HttpServlet {
                     return;
                 }
 
-                Feedback feedback = new Feedback();
-                feedback.setUserId(userId);
-                feedback.setCourseId(courseId);
-                feedback.setRating(rating);
-                feedback.setComment(comment);
-
                 boolean added = feedbackDao.addFeedback(userId, courseId, rating, comment);
                 if (added) {
                     response.sendRedirect("detail?courseId=" + courseId);
@@ -94,7 +87,6 @@ public class Feedbackcontroller extends HttpServlet {
             String ratingParam = request.getParameter("rating");
             String comment = request.getParameter("comment");
 
-            // Debug dữ liệu nhận được
             System.out.println("Update request: feedbackId=" + feedbackIdParam + ", rating=" + ratingParam + ", comment=" + comment);
 
             try {
@@ -112,7 +104,7 @@ public class Feedbackcontroller extends HttpServlet {
                 if (updated) {
                     response.sendRedirect("detail?courseId=" + courseId);
                 } else {
-                    request.setAttribute("errorMessage", "Failed to update the comment.");
+                    request.setAttribute("errorMessage", "Failed to update the comment. It may not exist or is inactive.");
                     request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
                 }
             } catch (NumberFormatException e) {

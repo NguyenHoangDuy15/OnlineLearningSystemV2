@@ -18,7 +18,7 @@
             }
 
             .sidebar {
-                width: 17%; /* Giảm từ 20% xuống 17% */
+                width: 19%; /* Giảm từ 20% xuống 17% */
                 height: 100vh;
                 position: fixed;
                 left: 0;
