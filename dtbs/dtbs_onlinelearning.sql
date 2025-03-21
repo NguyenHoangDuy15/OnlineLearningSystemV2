@@ -432,21 +432,3 @@ VALUES
 
 
 
-
-
-	INSERT INTO [dbo].[Requests]
-           ([RequestedRole]
-           ,[UserID]
-           ,[Status])
-     VALUES
-           (2
-           ,6
-           ,null)	
-INSERT INTO [dbo].[Requests]
-           ([RequestedRole]
-           ,[UserID]
-           ,[Status])
-     VALUES
-           (3
-           ,6
-           ,null)
