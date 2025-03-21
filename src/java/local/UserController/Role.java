@@ -13,6 +13,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -68,30 +71,57 @@ public class Role extends HttpServlet {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
 
+        // Kiểm tra nếu người dùng chưa đăng nhập
         if (userId == null) {
             response.sendRedirect("LoginServlet");
             return;
         }
 
-        int requestedRole = Integer.parseInt(request.getParameter("role"));
+        // Lấy vai trò yêu cầu từ form
+        int requestedRole;
+        try {
+            requestedRole = Integer.parseInt(request.getParameter("role"));
+        } catch (NumberFormatException e) {
+            request.setAttribute("message", "Invalid role selected.");
+            request.getRequestDispatcher("jsp/Role.jsp").forward(request, response);
+            return;
+        }
+
         RequestDAO requestDAO = new RequestDAO();
 
-        if (requestDAO.hasPendingRequest(userId, requestedRole)) {
-            request.setAttribute("message", "You have already submitted a request. Please wait for Admin approval.");
-        } else {
-            boolean success = requestDAO.insertRequest(userId, requestedRole);
-            if (success) {
-                request.setAttribute("message", "Request submitted successfully! Please wait for Admin approval.");
-            } else {
-                request.setAttribute("message", "Request submission failed!");
+        try {
+            // Kiểm tra trạng thái yêu cầu gần nhất
+            Integer latestStatus = requestDAO.getLatestRequestStatus(userId, requestedRole);
+
+            if (latestStatus == null) {
+                // Status = NULL: Đang chờ phê duyệt
+                request.setAttribute("message", "You have a pending request. Please wait for Admin approval.");
+            } else if (latestStatus == 1) {
+                // Status = 1: Đã được phê duyệt
+                request.setAttribute("message", "Your request has already been approved. You cannot submit another request for this role.");
+            } else if (latestStatus == 0) {
+                // Status = 0: Bị từ chối, cho phép gửi lại
+                boolean success = requestDAO.insertRequest(userId, requestedRole);
+                if (success) {
+                    request.setAttribute("message", "Request submitted successfully! Please wait for Admin approval.");
+                } else {
+                    request.setAttribute("message", "Request submission failed!");
+                }
+            } else if (latestStatus == -1) {
+                // Không có yêu cầu trước đó, cho phép gửi yêu cầu mới
+                boolean success = requestDAO.insertRequest(userId, requestedRole);
+                if (success) {
+                    request.setAttribute("message", "Request submitted successfully! Please wait for Admin approval.");
+                } else {
+                    request.setAttribute("message", "Request submission failed!");
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Error processing your request.");
         }
+
+        // Chuyển hướng đến trang Role.jsp để hiển thị thông báo
         request.getRequestDispatcher("jsp/Role.jsp").forward(request, response);
     }
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

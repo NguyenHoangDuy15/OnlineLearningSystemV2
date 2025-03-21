@@ -12,6 +12,7 @@ import Model.CustomerCourse;
 import Model.Expert;
 import Model.Feedback;
 import dal.CategoryDao;
+import dal.CourseDao;
 import dal.CustomerDao;
 import dal.ExpertDao;
 import dal.FeedbackDao;
@@ -37,13 +38,16 @@ public class index extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
-
+        int registeredCourses = 0;
+        int completedCourses = 0;
         CustomerDao courseDAO = new CustomerDao();
         List<Courses> courses = new ArrayList<>();
-
+        CourseDao courseDAL = new CourseDao();
         try {
             if (userId != null) {
                 courses = courseDAO.getTopCourses(userId);
+                registeredCourses = courseDAL.countRegisteredCourses(userId);
+                completedCourses = courseDAL.countCompletedCourses(userId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,9 +60,11 @@ public class index extends HttpServlet {
         List<Feedback> feedbacks = dao.getCustomerFeedbacks();
         ExpertDao expertdao = new ExpertDao();
         List<Expert> coursesdao = expertdao.getAllInstructorCoursesss();
+
         request.setAttribute("coursedao", coursesdao);
         request.setAttribute("feedbacks", feedbacks);
-
+        session.setAttribute("registeredCourses", registeredCourses);
+        session.setAttribute("completedCourses", completedCourses);
         request.setAttribute("categories", categories);
 
         request.getRequestDispatcher("jsp/index.jsp").forward(request, response);

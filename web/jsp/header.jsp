@@ -5,8 +5,14 @@
     User user = (User) session.getAttribute("account"); // Lấy User từ session
     Usernew userNew = null;
     Integer userId = (Integer) session.getAttribute("userid");
-    int enrollmentCount = 10; // Hard-code để test giao diện
-    int completedCoursesCount = 3; // Hard-code để test giao diện
+
+    // Lấy số lượng khóa học từ session
+    Integer registeredCourses = (Integer) session.getAttribute("registeredCourses");
+    Integer completedCourses = (Integer) session.getAttribute("completedCourses");
+
+    // Gán giá trị mặc định nếu không có dữ liệu trong session
+    int enrollmentCount = (registeredCourses != null) ? registeredCourses : 0;
+    int completedCoursesCount = (completedCourses != null) ? completedCourses : 0;
 
     if (user != null) {
         userNew = new Usernew(user);
@@ -254,10 +260,6 @@
         </style>
     </head>
     <body>
-        <!-- Topbar Start -->
-       
-        <!-- Topbar End -->
-
         <!-- Navbar Start -->
         <div class="container-fluid p-0">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
@@ -318,23 +320,46 @@
                             <!-- Stats -->
                             <li class="dropdown-stats">
                                 <div class="stat-item enrollments">
-                                    <i class="fas fa-book"></i> My Enrollments: <%= enrollmentCount %>
-                                    <span class="tooltip-text">Bạn đã đăng ký <%= enrollmentCount %> khóa học</span>
+                                    <a href="myenrollment" style="text-decoration: none; color: inherit;">
+                                        <i class="fas fa-book"></i> My Enrollments: <%= enrollmentCount %>
+                                        <span class="tooltip-text">Bạn đã đăng ký <%= enrollmentCount %> khóa học</span>
+                                    </a>
                                 </div>
                                 <div class="stat-item completed">
-                                    <i class="fas fa-check-circle"></i> My Courses: <%= completedCoursesCount %>
-                                    <span class="tooltip-text">Bạn đã hoàn thành <%= completedCoursesCount %> khóa học</span>
+                                    <a href="Mycourses" style="text-decoration: none; color: inherit;">
+                                        <i class="fas fa-check-circle"></i> My Courses: <%= completedCoursesCount %>
+                                        <span class="tooltip-text">Bạn đã hoàn thành <%= completedCoursesCount %> khóa học</span>
+                                    </a>
                                 </div>
                             </li>
                             <!-- Menu Items -->
-                            <li><a class="dropdown-item" href="ViewProfile">My Profile</a></li>
-                            <li><a class="dropdown-item" href="myenrollment">My Enrollments</a></li>
-                            <li><a class="dropdown-item" href="Mycourses">My Courses</a></li>
-                            <li><a class="dropdown-item" href="ChangePasswordServlet">Change Password</a></li>
-                            <li><a class="dropdown-item" href="Historytransaction">History of Transaction</a></li>
-                            <li><a class="dropdown-item" href="Role">Become Expert or Sale</a></li>
-                            <li><a class="dropdown-item" href="Request">Wait for Approval</a></li>
-                            <li><a class="dropdown-item" href="LogoutServlet">Logout</a></li>
+
+                            
+                            <li>
+                                <a class="dropdown-item" href="ChangePasswordServlet">
+                                    <i class="fas fa-lock mr-2"></i> Change Password
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="Historytransaction">
+                                    <i class="fas fa-history mr-2"></i> History of Transaction
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="Role">
+                                    <i class="fas fa-user-tie mr-2"></i> Become Expert or Sale
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="Request">
+                                    <i class="fas fa-hourglass-half mr-2"></i> Wait for Approval
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="LogoutServlet">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </li>
                         </ul>
                     </div>
                     <%
