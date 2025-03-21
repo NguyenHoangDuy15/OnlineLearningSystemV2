@@ -7,9 +7,11 @@ package local.UserController;
 
 import Model.Courses;
 import Model.Enrollment;
+import Model.Feedback;
 import dal.CourseDao;
 import dal.CustomerDao;
 import dal.EnrollmentDAO;
+import dal.FeedbackDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -32,6 +34,7 @@ public class detail extends HttpServlet {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
 
+        // Lấy top 5 khóa học phổ biến
         CustomerDao coDAO = new CustomerDao();
         List<Courses> courses = coDAO.getTop5PopularCourses();
         request.setAttribute("courses", courses);
@@ -41,15 +44,17 @@ public class detail extends HttpServlet {
         Integer courseId = null;
         Enrollment enrollment = null;
         EnrollmentDAO enrollmentDAL = new EnrollmentDAO();
+        List<Feedback> feedbacks = null;
 
         if (courseIdParam != null && !courseIdParam.isEmpty()) {
             try {
-                courseId = Integer.parseInt(courseIdParam); // Chuyển thành Integer
+                courseId = Integer.parseInt(courseIdParam);
                 CourseDao courseDAO = new CourseDao();
                 course = courseDAO.getCourseByIdd(courseId);
                 coursedetails = courseDAO.getCourseDetail(courseId);
 
-                // Chỉ lấy enrollment nếu userId tồn tại (người dùng đã đăng nhập)
+                FeedbackDao feedbackDAL = new FeedbackDao();
+                feedbacks = feedbackDAL.getFeedbacksByCourseId(courseId);
                 if (userId != null) {
                     enrollment = enrollmentDAL.getEnrollmentStatus(userId, courseId);
                 }
@@ -71,7 +76,8 @@ public class detail extends HttpServlet {
             return;
         }
 
-        // Lưu courseId vào session
+        // Đặt các thuộc tính vào request
+        request.setAttribute("feedbacks", feedbacks);
         session.setAttribute("courseId", courseId);
         request.setAttribute("enrollment", enrollment);
         request.setAttribute("coursedetails", coursedetails);

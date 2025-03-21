@@ -25,37 +25,127 @@ public class Feedbackcontroller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("userid");
-
-        if (userId == null) {
-            response.sendRedirect("Loginservlet");
-            return;
-        }
-
-        int courseId = Integer.parseInt(request.getParameter("courseId"));
-        int rating = Integer.parseInt(request.getParameter("rating"));
-        String comment = request.getParameter("comment");
-
-        Feedback feedback = new Feedback(userId, courseId, rating, comment);
-
-        FeedbackDao feedbackDAO = new FeedbackDao();
-
-        boolean success = feedbackDAO.insertFeedback(feedback);
-
-        if (success) {
-            session.setAttribute("message", "Send sucessfully!");
+        String courseId = request.getParameter("courseId");
+        if (courseId != null) {
+            response.sendRedirect("detail?courseId=" + courseId);
         } else {
-            session.setAttribute("message", "Comment Fails");
+            response.sendRedirect("jsp/Error.jsp");
         }
-
-        response.sendRedirect("index");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute("userid");
 
+        // Kiểm tra người dùng đã đăng nhập chưa
+        if (userId == null) {
+            request.setAttribute("errorMessage", "You must be logged in to perform this action.");
+            request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+            return;
+        }
+
+        String action = request.getParameter("action");
+        FeedbackDao feedbackDao = new FeedbackDao();
+        String courseIdParam = request.getParameter("courseId");
+        int courseId;
+
+        try {
+            courseId = Integer.parseInt(courseIdParam);
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "Invalid course ID.");
+            request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+            return;
+        }
+
+        if ("add".equals(action)) {
+            String ratingParam = request.getParameter("rating");
+            String comment = request.getParameter("comment");
+
+            try {
+                int rating = Integer.parseInt(ratingParam);
+
+                if (!feedbackDao.hasPurchasedCourse(userId, courseId)) {
+                    request.setAttribute("errorMessage", "You must purchase the course to leave a comment.");
+                    request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                    return;
+                }
+
+                Feedback feedback = new Feedback();
+                feedback.setUserId(userId);
+                feedback.setCourseId(courseId);
+                feedback.setRating(rating);
+                feedback.setComment(comment);
+
+                boolean added = feedbackDao.addFeedback(userId, courseId, rating, comment);
+                if (added) {
+                    response.sendRedirect("detail?courseId=" + courseId);
+                } else {
+                    request.setAttribute("errorMessage", "Failed to add the comment.");
+                    request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("errorMessage", "Invalid rating value.");
+                request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+            }
+        } else if ("update".equals(action)) {
+            String feedbackIdParam = request.getParameter("feedbackId");
+            String ratingParam = request.getParameter("rating");
+            String comment = request.getParameter("comment");
+
+            // Debug dữ liệu nhận được
+            System.out.println("Update request: feedbackId=" + feedbackIdParam + ", rating=" + ratingParam + ", comment=" + comment);
+
+            try {
+                int feedbackId = Integer.parseInt(feedbackIdParam);
+                int rating = Integer.parseInt(ratingParam);
+
+                if (!feedbackDao.isFeedbackOwner(feedbackId, userId)) {
+                    request.setAttribute("errorMessage", "You are not authorized to update this comment.");
+                    request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                    return;
+                }
+
+                boolean updated = feedbackDao.updateFeedback(feedbackId, rating, comment);
+                System.out.println("Update result: " + updated);
+                if (updated) {
+                    response.sendRedirect("detail?courseId=" + courseId);
+                } else {
+                    request.setAttribute("errorMessage", "Failed to update the comment.");
+                    request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("errorMessage", "Invalid input data.");
+                request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+            }
+        } else if ("delete".equals(action)) {
+            String feedbackIdParam = request.getParameter("feedbackId");
+
+            try {
+                int feedbackId = Integer.parseInt(feedbackIdParam);
+
+                if (!feedbackDao.isFeedbackOwner(feedbackId, userId)) {
+                    request.setAttribute("errorMessage", "You are not authorized to delete this comment.");
+                    request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                    return;
+                }
+
+                boolean deleted = feedbackDao.deleteFeedback(feedbackId);
+                if (deleted) {
+                    response.sendRedirect("detail?courseId=" + courseId);
+                } else {
+                    request.setAttribute("errorMessage", "Failed to delete the comment.");
+                    request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("errorMessage", "Invalid feedback ID.");
+                request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+            }
+        } else {
+            request.setAttribute("errorMessage", "Invalid action.");
+            request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+        }
     }
 
 }
