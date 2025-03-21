@@ -264,7 +264,7 @@
                                 <div class="w-100 bg-white text-center p-4">
                                     <c:choose>
                                         <c:when test="${course.statusss == 1}">
-                                            <a class="btn btn-success" href="myenrollment?courseId=${course.courseID}">Go to Course</a>
+                                            <a class="btn btn-success" href="Lessonservlet?courseId=${course.courseID}&userid=${userid}">Go to Course</a>
                                         </c:when>
                                         <c:otherwise>
                                             <a class="btn btn-primary" href="detail?courseId=${course.courseID}">Course Detail</a>

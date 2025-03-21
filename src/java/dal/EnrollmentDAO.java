@@ -57,7 +57,35 @@ public class EnrollmentDAO extends DBContext {
         return enrollments;
     }
 
-   public static void main(String[] args) {
+    public Enrollment getEnrollmentStatus(int userId, int courseId) {
+        String sql = "SELECT u.UserID, c.CourseID, c.Description AS CourseTitle, e.Status AS EnrollmentStatus "
+                + "FROM Users u "
+                + "CROSS JOIN Courses c "
+                + "LEFT JOIN Enrollments e ON e.UserID = u.UserID AND e.CourseID = c.CourseID "
+                + "WHERE u.UserID = ? AND c.CourseID = ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setInt(2, courseId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Enrollment enrollment = new Enrollment();
+                    enrollment.setUserId(rs.getInt("UserID"));
+                    enrollment.setCourseId(rs.getInt("CourseID"));
+                    enrollment.setCourseName(rs.getString("CourseTitle"));
+                    enrollment.setPaymentStatus(rs.getInt("EnrollmentStatus"));
+                    return enrollment;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
         // Tạo đối tượng DAO giả lập (giả sử đã có kết nối)
         EnrollmentDAO enrollmentDAO = new EnrollmentDAO(); // Truyền null vì không cần kết nối
 
