@@ -101,6 +101,7 @@ CREATE TABLE Question (
     OptionB NVARCHAR(255),
     OptionC NVARCHAR(255),
     OptionD NVARCHAR(255),
+	 Status INT NULL CHECK (Status IN (0,1)) DEFAULT 1,
     TestID INT FOREIGN KEY REFERENCES Test(TestID)
 );
 
