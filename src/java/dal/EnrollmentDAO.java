@@ -17,20 +17,18 @@ public class EnrollmentDAO extends DBContext {
 
     public List<Enrollment> getEnrollmentsByUserId(int userId) {
         List<Enrollment> enrollments = new ArrayList<>();
-        String sql = "SELECT \n"
+        String sql = "SELECT DISTINCT \n" // Use DISTINCT to avoid duplicates
                 + "    e.EnrollmentID, \n"
                 + "    e.UserID, \n"
                 + "    u.FullName, \n"
                 + "    c.CourseID, \n"
                 + "    c.Name AS CourseName, \n"
                 + "    c.imageCources, \n"
-                + "    c.Description, \n"
-                + "    COALESCE(t.Status, 0) AS PaymentStatus -- Nếu chưa thanh toán, đặt mặc định là 0\n"
+                + "    c.Description \n"
                 + "FROM Enrollments e\n"
                 + "JOIN Users u ON e.UserID = u.UserID\n"
                 + "JOIN Courses c ON e.CourseID = c.CourseID\n"
-                + "LEFT JOIN TransactionHistory t ON t.CourseID = e.CourseID AND t.Status = 1 -- Giữ các khóa học dù chưa thanh toán\n"
-                + "WHERE u.RoleID = 4 \n"
+                + "WHERE e.Status = 1 \n" // Only get enrollments with Status = 1
                 + "AND e.UserID = ?;";
 
         try {
@@ -46,8 +44,7 @@ public class EnrollmentDAO extends DBContext {
                         rs.getInt("CourseID"),
                         rs.getString("CourseName"),
                         rs.getString("imageCources"),
-                        rs.getString("Description"),
-                        rs.getInt("PaymentStatus")
+                        rs.getString("Description")
                 );
                 enrollments.add(enrollment);
             }
