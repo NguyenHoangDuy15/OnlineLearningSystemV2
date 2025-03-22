@@ -21,13 +21,13 @@ public class Enrollment {
         this.courseName = courseName;
         this.paymentStatus = paymentStatus;
     }
-    
+
     public Enrollment() {
     }
 
     // Constructor
     public Enrollment(int enrollmentId, int userId, String fullName, int courseId, String courseName,
-            String imageCourses, String description, int paymentStatus) {
+            String imageCourses, String description) {
         this.enrollmentId = enrollmentId;
         this.userId = userId;
         this.fullName = fullName;
@@ -35,7 +35,7 @@ public class Enrollment {
         this.courseName = courseName;
         this.imageCourses = imageCourses;
         this.description = description;
-        this.paymentStatus = paymentStatus;
+
     }
 
     // Getters and Setters
