@@ -37,7 +37,7 @@
                         <h4 class="mb-4">Correct Answers: ${correctCount}</h4>
                         <div class="d-flex justify-content-center gap-3">
                             <a href="ReviewTest?historyId=${historyId}" class="btn btn-primary">History of Test</a>
-                           <a href="Lessonservlet?userid=${userid}&courseId=${courseId}&historyId=${historyId}&testId=${testId}" class="btn btn-primary">Back to Course</a>
+                            <a href="Lessonservlet?userid=${userid}&courseId=${courseId}&historyId=${historyId}&testId=${testId}" class="btn btn-primary">Back to Course</a>
 
 
                         </div>
@@ -58,6 +58,7 @@
         <script src="lib/counterup/counterup.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
         <script src="js/main.js"></script>
+        <%@ include file="chatbot-widget.jsp" %>
     </body>
 
 </html>
