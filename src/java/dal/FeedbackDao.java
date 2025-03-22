@@ -32,13 +32,7 @@ public class FeedbackDao extends DBContext {
 
     public List<Feedback> getAllFeedback() {
         List<Feedback> list = new ArrayList<>();
-        String sql = "SELECT [FeedbackID]\n"
-                + "      ,[UserID]\n"
-                + "      ,[CourseID]\n"
-                + "      ,[Rating]\n"
-                + "      ,[Comment]\n"
-                + "      ,[CreatedAt]\n"
-                + "  FROM [dbo].[Feedbacks]";
+        String sql = "SELECT [FeedbackID],[UserID],[CourseID],[Rating],[Comment],[CreatedAt] FROM [dbo].[Feedbacks] Where [Status] = 1";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -64,16 +58,16 @@ public class FeedbackDao extends DBContext {
                 + "    f.CreatedAt\n"
                 + "FROM Feedbacks f\n"
                 + "JOIN Users u ON f.UserID = u.UserID\n"
-                + "JOIN Courses c ON f.CourseID = c.CourseID\n"
+                + "JOIN Courses c ON f.CourseID = c.CourseID Where f.Status = 1\n"
                 + "ORDER BY c.CourseID \n"
                 + "OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1,  5 * (index - 1));
+            st.setInt(1, 5 * (index - 1));
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 FeedbackPrint f = new FeedbackPrint(rs.getInt("FbID"), rs.getString("Username"), rs.getString("CourseName"),
-                         rs.getInt("Rating"), rs.getString("Comment"), rs.getDate("CreatedAt"));
+                        rs.getInt("Rating"), rs.getString("Comment"), rs.getDate("CreatedAt"));
                 list.add(f);
             }
         } catch (SQLException e) {
@@ -104,6 +98,19 @@ public class FeedbackDao extends DBContext {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public void deleteFeedback(String id) {
+        String sql = "UPDATE [dbo].[Feedbacks]\n"
+                + "   SET [Status] = 0\n"
+                + " WHERE FeedbackID = ?";
+        try {
+            PreparedStatement rs = connection.prepareStatement(sql);
+            rs.setString(1, id);
+            rs.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }
 
     public static void main(String[] args) {

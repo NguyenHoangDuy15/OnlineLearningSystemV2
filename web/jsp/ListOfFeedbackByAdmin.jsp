@@ -57,7 +57,7 @@
 
                         <div class="col-md-12">
                             <div class="card">
-                                
+
                                 <div class="card-body">
                                     <!-- Modal -->
 
@@ -72,23 +72,38 @@
                                                     <th>Rating</th>
                                                     <th>Comment</th>
                                                     <th>CreateAt</th>
+                                                    <th style="width: 10%; text-align: center">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <c:forEach items="${sessionScope.listFeedbackPrint}" var="s">
-                                                <tr>
-                                                    <td>${s.getFbID()}</td>
-                                                    <td>${s.getUsername()}</td>
-                                                    <td>${s.getCourseName()}</td>
-                                                    <td>${s.getRating()}</td>
-                                                    <td>${s.getComment()}</td>
-                                                    <td>${s.getCreateAt()}</td>
-                                                </tr>
-                                            </c:forEach>
-                                            <c:if test="${requestScope.noti != null}">
-                                                <tr >
-                                                    <td style="text-align: center; font-weight: bold" colspan="9"><p class="text-danger">${requestScope.noti}</p></td><!-- comment --></tr>
-                                            </c:if>
+                                                <c:forEach items="${sessionScope.listFeedbackPrint}" var="s">
+                                                    <tr>
+                                                        <td>${s.getFbID()}</td>
+                                                        <td>${s.getUsername()}</td>
+                                                        <td>${s.getCourseName()}</td>
+                                                        <td>${s.getRating()}</td>
+                                                        <td>${s.getComment()}</td>
+                                                        <td>${s.getCreateAt()}</td>
+                                                        <td style="display: flex; justify-content: center;">
+                                                            <div class="form-button-action">
+                                                                <button
+                                                                    type="button"
+                                                                    title=""
+                                                                    class="btn btn-link btn-danger"
+                                                                    data-original-title="Remove"
+                                                                    onclick="doDelete(${s.getFbID()})"
+
+                                                                    >
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                <c:if test="${requestScope.noti != null}">
+                                                    <tr >
+                                                        <td style="text-align: center; font-weight: bold" colspan="9"><p class="text-danger">${requestScope.noti}</p></td><!-- comment --></tr>
+                                                        </c:if>
                                             </tbody>
                                         </table>
                                     </div>
@@ -167,9 +182,9 @@
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="assets/js/setting-demo2.js"></script>
     <script>
-                                                                document.querySelector('.close').addEventListener('click', function () {
-                                                                    $('#addUserModal').modal('hide');
-                                                                });
+                                                                        document.querySelector('.close').addEventListener('click', function () {
+                                                                            $('#addUserModal').modal('hide');
+                                                                        });
     </script>
     <script>
         function doClose() {
@@ -195,10 +210,10 @@
         }
     </script>
     <script>
-        function doDelete(userid) {
+        function doDelete(FbID) {
             var option = confirm("Are you sure to ban this user?");
             if (option === true) {
-                window.location = "deleteUser?userid=" + userid;
+                window.location = "DeleteFeedbackByAdminServlet?FbID=" + FbID;
             }
         }
     </script>
