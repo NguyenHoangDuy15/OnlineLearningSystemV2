@@ -4,9 +4,11 @@
  */
 package local.UserController;
 
+import Model.Certificate;
 import Model.Courses;
 import Model.Enrollment;
 import Model.History;
+import dal.CertificateDAO;
 import dal.CourseDao;
 import dal.EnrollmentDAO;
 import java.io.IOException;
@@ -68,14 +70,13 @@ public class Mycourses extends HttpServlet {
 
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
-        CourseDao courseDAO = new CourseDao();
+        CertificateDAO certificate = new CertificateDAO();
         if (userId == null) {
             response.sendRedirect("LoginServlet");
             return;
         }
 
-        List<Courses> completedCourses = courseDAO.getCompletedCourses(userId);
-       
+        List<Certificate> completedCourses = certificate.getCompletedCoursesByUser(userId);
 
         request.setAttribute("courses", completedCourses);
 
