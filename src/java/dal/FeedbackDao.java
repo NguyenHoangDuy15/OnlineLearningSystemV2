@@ -14,22 +14,6 @@ import java.util.List;
 
 public class FeedbackDao extends DBContext {
 
-    public boolean insertFeedback(Feedback feedback) {
-        String sql = "INSERT INTO Feedbacks (UserID, CourseID, Rating, Comment, CreatedAt) VALUES (?, ?, ?, ?, GETDATE())";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, feedback.getUserId());
-            stmt.setInt(2, feedback.getCourseId());
-            stmt.setInt(3, feedback.getRating());
-            stmt.setString(4, feedback.getComment());
-
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public List<Feedback> getAllFeedback() {
         List<Feedback> list = new ArrayList<>();
         String sql = "SELECT [FeedbackID],[UserID],[CourseID],[Rating],[Comment],[CreatedAt] FROM [dbo].[Feedbacks] Where [Status] = 1";
@@ -45,6 +29,130 @@ public class FeedbackDao extends DBContext {
             System.out.println(e);
         }
         return list;
+    }
+
+    public List<Feedback> getFeedbacksByCourseId(int courseId) {
+        List<Feedback> feedbacks = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "f.FeedbackID,\n"
+                + "    u.UserName, \n"
+                + "    u.UserID, \n"
+                + "    f.CourseID, \n"
+                + "    u.Avartar, \n"
+                + "    f.Rating, \n"
+                + "    f.Comment, \n"
+                + "    f.CreatedAt \n"
+                + "FROM Feedbacks f \n"
+                + "JOIN Users u ON f.UserID = u.UserID \n"
+                + "WHERE f.CourseID = ? AND f.Status = 1 \n"
+                + "ORDER BY f.CreatedAt DESC;";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Feedback feedback = new Feedback();
+                feedback.setFeedbackid(rs.getInt("FeedbackID"));
+                feedback.setName(rs.getString("UserName"));
+                feedback.setUserId(rs.getInt("UserID"));
+                feedback.setCourseId(rs.getInt("CourseID"));
+                feedback.setAvartar(rs.getString("Avartar"));
+                feedback.setRating(rs.getInt("Rating"));
+                feedback.setComment(rs.getString("Comment"));
+                feedback.setCreatedAt(rs.getDate("CreatedAt"));
+
+                feedbacks.add(feedback);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedbacks;
+    }
+
+    // Cập nhật feedback (Rating và Comment)
+    public boolean updateFeedback(int feedbackId, int rating, String comment) {
+        String sql = "UPDATE Feedbacks SET Rating = ?, Comment = ? WHERE FeedbackID = ? AND Status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, rating);
+            ps.setString(2, comment);
+            ps.setInt(3, feedbackId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Ẩn feedback (cập nhật Status thành 0)
+    public boolean deleteFeedback(int feedbackId) {
+        String sql = "UPDATE Feedbacks SET Status = 0 WHERE FeedbackID = ? AND Status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, feedbackId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Kiểm tra quyền sở hữu feedback
+    public boolean isFeedbackOwner(int feedbackId, int userId) {
+        String sql = "SELECT UserID FROM Feedbacks WHERE FeedbackID = ? AND Status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, feedbackId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int ownerId = rs.getInt("UserID");
+                return ownerId == userId;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Thêm feedback mới
+    public boolean addFeedback(int userId, int courseId, int rating, String comment) {
+        String sql = "INSERT INTO Feedbacks (UserID, CourseID, Rating, Comment, Status, CreatedAt) VALUES (?, ?, ?, ?, 1, GETDATE())";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setInt(2, courseId);
+            ps.setInt(3, rating);
+            ps.setString(4, comment);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Kiểm tra xem người dùng đã mua khóa học chưa
+    public boolean hasPurchasedCourse(int userId, int courseId) {
+        String sql = "SELECT * FROM Enrollments WHERE UserID = ? AND CourseID = ? AND Status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setInt(2, courseId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // Trả về true nếu có bản ghi (người dùng đã mua khóa học)
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public List<FeedbackPrint> getAllFeedbackForAdmin(int index) {

@@ -18,13 +18,33 @@ import java.util.List;
  */
 public class CourseDao extends DBContext {
 
-    public List<Courses> searchCoursesByName(String keyword) {
+    public List<Courses> searchCoursesByName(String keyword, int offset, int limit) {
         List<Courses> courses = new ArrayList<>();
-        String sql = "SELECT * FROM Courses WHERE Name LIKE ?";
+        String sql = "SELECT "
+                + "    c.CourseID, "
+                + "    c.Name, "
+                + "    c.Description, "
+                + "    c.Price, "
+                + "    c.imageCources, "
+                + "    cat.CategoryName, "
+                + "    u.FullName AS InstructorName, "
+                + "    COALESCE(AVG(f.Rating), 0) AS AvgRating, "
+                + "    COUNT(DISTINCT e.UserID) AS EnrollmentCount "
+                + "FROM Courses c "
+                + "LEFT JOIN Category cat ON c.CategoryID = cat.CategoryID "
+                + "LEFT JOIN Users u ON c.UserID = u.UserID "
+                + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
+                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID "
+                + "WHERE c.Status = 4 AND c.Name LIKE ? "
+                + "GROUP BY c.CourseID, c.Name, c.Description, c.Price, c.imageCources, cat.CategoryName, u.FullName "
+                + "ORDER BY c.CourseID "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, "%" + keyword + "%");
+            stmt.setInt(2, offset);
+            stmt.setInt(3, limit);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -32,13 +52,41 @@ public class CourseDao extends DBContext {
                         rs.getInt("CourseID"),
                         rs.getString("Name"),
                         rs.getString("Description"),
-                        rs.getFloat("Price")
+                        rs.getFloat("Price"),
+                        rs.getString("imageCources"),
+                        rs.getString("CategoryName"),
+                        rs.getString("InstructorName"),
+                        rs.getDouble("AvgRating"),
+                        rs.getInt("EnrollmentCount")
                 ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return courses;
+    }
+
+    public int countSearchCoursesss(String keyword) {
+        int count = 0;
+        String sql = "SELECT COUNT(DISTINCT c.CourseID) AS total "
+                + "FROM Courses c "
+                + "LEFT JOIN Category cat ON c.CategoryID = cat.CategoryID "
+                + "LEFT JOIN Users u ON c.UserID = u.UserID "
+                + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
+                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID "
+                + "WHERE c.Status = 4 AND c.Name LIKE ?";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, "%" + keyword + "%");
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     public List<Courses> getAllCourses() {
@@ -61,6 +109,38 @@ public class CourseDao extends DBContext {
             e.printStackTrace();
         }
         return courses;
+    }
+
+    public int countRegisteredCourses(int userId) {
+        String sql = "SELECT COUNT(*) AS RegisteredCourses FROM Enrollments WHERE UserID = ? AND Status = 1";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("RegisteredCourses");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countCompletedCourses(int userId) {
+        String sql = "SELECT COUNT(DISTINCT CourseID) AS CompletedCourses FROM History WHERE UserID = ? AND CourseStatus = 1";
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("CompletedCourses");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public Courses getCourseByIdd(int courseId) {
@@ -92,7 +172,7 @@ public class CourseDao extends DBContext {
                 + "    c.Name, "
                 + "    u.FullName AS ExpertName, "
                 + "    c.Price, "
-                + "    COALESCE(AVG(f.Rating), 0) AS AverageRating, "
+                + "     COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS AverageRating, "
                 + "    COUNT(e.EnrollmentID) AS TotalEnrollment "
                 + "FROM Courses c "
                 + "JOIN Users u ON c.UserID = u.UserID "
@@ -204,7 +284,7 @@ public class CourseDao extends DBContext {
         List<Courses> courses = new ArrayList<>();
         String sql = "SELECT c.CourseID, c.Name, c.Description, c.Price, c.imageCources, "
                 + "cat.CategoryName, u.FullName AS InstructorName, "
-                + "COALESCE(AVG(f.Rating), 0) AS AvgRating, "
+                + " COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS  AvgRating, "
                 + "COUNT(DISTINCT e.UserID) AS EnrollmentCount " // Đếm số người tham gia
                 + "FROM Courses c "
                 + "JOIN Category cat ON c.CategoryID = cat.CategoryID "

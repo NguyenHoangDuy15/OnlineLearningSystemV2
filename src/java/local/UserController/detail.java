@@ -6,8 +6,12 @@
 package local.UserController;
 
 import Model.Courses;
+import Model.Enrollment;
+import Model.Feedback;
 import dal.CourseDao;
 import dal.CustomerDao;
+import dal.EnrollmentDAO;
+import dal.FeedbackDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -27,29 +31,55 @@ public class detail extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String courseIdParam = request.getParameter("courseId");
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute("userid");
 
+        // Lấy top 5 khóa học phổ biến
         CustomerDao coDAO = new CustomerDao();
         List<Courses> courses = coDAO.getTop5PopularCourses();
         request.setAttribute("courses", courses);
+
         Courses course = null;
         Courses coursedetails = null;
         Integer courseId = null;
+        Enrollment enrollment = null;
+        EnrollmentDAO enrollmentDAL = new EnrollmentDAO();
+        List<Feedback> feedbacks = null;
 
         if (courseIdParam != null && !courseIdParam.isEmpty()) {
             try {
-                courseId = Integer.parseInt(courseIdParam); // Chuyển thành Integer
+                courseId = Integer.parseInt(courseIdParam);
                 CourseDao courseDAO = new CourseDao();
                 course = courseDAO.getCourseByIdd(courseId);
                 coursedetails = courseDAO.getCourseDetail(courseId);
+
+                FeedbackDao feedbackDAL = new FeedbackDao();
+                feedbacks = feedbackDAL.getFeedbacksByCourseId(courseId);
+                if (userId != null) {
+                    enrollment = enrollmentDAL.getEnrollmentStatus(userId, courseId);
+                }
+
             } catch (NumberFormatException e) {
-                e.printStackTrace(); // Debug lỗi nếu có
+                e.printStackTrace();
+                request.setAttribute("errorMessage", "Invalid course ID");
+                request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("errorMessage", "An error occurred while retrieving course details");
+                request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+                return;
             }
+        } else {
+            request.setAttribute("errorMessage", "Course ID is required");
+            request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
+            return;
         }
 
-        // Lưu vào session dưới dạng Integer
-        HttpSession session = request.getSession();
+        // Đặt các thuộc tính vào request
+        request.setAttribute("feedbacks", feedbacks);
         session.setAttribute("courseId", courseId);
-
+        request.setAttribute("enrollment", enrollment);
         request.setAttribute("coursedetails", coursedetails);
         request.setAttribute("course", course);
         request.getRequestDispatcher("jsp/detail.jsp").forward(request, response);

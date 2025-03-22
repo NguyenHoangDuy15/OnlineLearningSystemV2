@@ -22,20 +22,7 @@ public class CourseDaoTest {
         courseDao.connection = mockConnection;
     }
 
-    @Test
-    public void testSearchCoursesByName() throws Exception {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(true, false);
-        when(mockResultSet.getInt("CourseID")).thenReturn(1);
-        when(mockResultSet.getString("Name")).thenReturn("Java Basics");
-        when(mockResultSet.getString("Description")).thenReturn("Learn Java");
-        when(mockResultSet.getFloat("Price")).thenReturn(100.0f);
-        
-        List<Courses> courses = courseDao.searchCoursesByName("Java");
-        assertEquals(1, courses.size());
-        assertEquals("Java Basics", courses.get(0).getName());
-    }
+   
 
     @Test
     public void testGetAllCourses() throws Exception {

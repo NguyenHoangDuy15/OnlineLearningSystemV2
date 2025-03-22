@@ -6,15 +6,22 @@ package Model;
 
 public class Enrollment {
 
-    private int enrollmentId;
-    private int userId;
-    private String fullName;
-    private int courseId;
-    private String courseName;
-    private String imageCourses;
-    private String description;
-    private int paymentStatus;
+    int enrollmentId;
+    int userId;
+    String fullName;
+    int courseId;
+    String courseName;
+    String imageCourses;
+    String description;
+    int paymentStatus;
 
+    public Enrollment(int userId, int courseId, String courseName, int paymentStatus) {
+        this.userId = userId;
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.paymentStatus = paymentStatus;
+    }
+    
     public Enrollment() {
     }
 
@@ -100,6 +107,5 @@ public class Enrollment {
     public String toString() {
         return "Enrollment{" + "enrollmentId=" + enrollmentId + ", userId=" + userId + ", fullName=" + fullName + ", courseId=" + courseId + ", courseName=" + courseName + ", imageCourses=" + imageCourses + ", description=" + description + ", paymentStatus=" + paymentStatus + '}';
     }
-
 
 }

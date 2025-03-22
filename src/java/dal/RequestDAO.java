@@ -30,36 +30,35 @@ public class RequestDAO extends DBContext {
         return list;
     }
 
-    public boolean insertRequest(int userId, int requestedRole) {
+  public boolean insertRequest(int userId, int requestedRole) throws SQLException {
         String sql = "INSERT INTO Requests (UserID, RequestedRole) VALUES (?, ?)";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, requestedRole);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return false;
     }
 
-    public boolean hasPendingRequest(int userId, int requestedRole) {
+    // Lấy trạng thái của yêu cầu gần nhất
+    public Integer getLatestRequestStatus(int userId, int requestedRole) throws SQLException {
         String query = "SELECT TOP 1 Status FROM Requests WHERE UserID = ? AND RequestedRole = ? ORDER BY RequestID DESC";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(query);
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, userId);
             ps.setInt(2, requestedRole);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                int status = rs.getInt("Status");
-                return status == 0; // Chỉ chặn nếu trạng thái là "đang chờ" (0)
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Nếu Status là NULL, trả về null
+                    if (rs.getObject("Status") == null) {
+                        return null;
+                    }
+                    // Trả về giá trị Status (0 hoặc 1)
+                    return rs.getInt("Status");
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return false;
+        // Nếu không có yêu cầu trước đó, trả về -1
+        return -1;
     }
 
     public List<RequestPrint> getRoleRequestsByUserID(int userID) {

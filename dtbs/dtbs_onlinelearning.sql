@@ -42,6 +42,7 @@ CREATE TABLE Lessons (
    	 Status INT NULL CHECK (Status IN (0,1)) default 1
 );
 
+
 CREATE TABLE Blogs (
     BlogID INT IDENTITY(1,1) PRIMARY KEY,
     BlogTitle NVARCHAR(255) NOT NULL,
@@ -56,6 +57,7 @@ CREATE TABLE Feedbacks (
     UserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
     CourseID INT NOT NULL FOREIGN KEY REFERENCES Courses(CourseID),
     Rating INT CHECK (Rating BETWEEN 1 AND 5),
+	 Status TINYINT DEFAULT 1,
     Comment NVARCHAR(1000) NOT NULL,
     CreatedAt DATE,
 	Status INT NULL CHECK (Status IN (0,1)) default 1
@@ -74,7 +76,7 @@ CREATE TABLE TransactionHistory (
     Status INT CHECK (Status IN (0,1)),
     CreatedAt DATETIME,
     CourseID INT FOREIGN KEY REFERENCES Courses(CourseID),
-    PaymentMethod NVARCHAR(50),
+  
     PaymentDate DATETIME
 );
 
@@ -100,6 +102,7 @@ CREATE TABLE Question (
     OptionB NVARCHAR(255),
     OptionC NVARCHAR(255),
     OptionD NVARCHAR(255),
+	 Status INT NULL CHECK (Status IN (0,1)) DEFAULT 1,
     TestID INT FOREIGN KEY REFERENCES Test(TestID)
 );
 
@@ -111,9 +114,14 @@ CREATE TABLE Answer (
 
 CREATE TABLE History (
     HistoryID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT FOREIGN KEY REFERENCES Users(UserID),
-    TestID INT FOREIGN KEY REFERENCES Test(TestID)
+    UserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+    CourseID INT NOT NULL FOREIGN KEY REFERENCES Courses(CourseID),
+    TestID INT NOT NULL FOREIGN KEY REFERENCES Test(TestID),
+    TestStatus INT DEFAULT null, 
+    CourseStatus INT DEFAULT null,
+    CreatedAt DATETIME DEFAULT GETDATE() -- Thêm cột ngày giờ
 );
+
 
 CREATE TABLE UserAnswers (
     UserAnswerID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính tự tăng
@@ -346,25 +354,6 @@ INSERT INTO [dbo].[Feedbacks]
            ,GETDATE(),
 		   0)
 
-		   INSERT INTO Payment (UserID, CourseID, Amount) VALUES 
-(6, 3, 200.00),  -- Java Spring Boot Web Development
-(6, 5, 190.00),
-
-(6, 1, 150.00),
-(6, 2, 180.00);
-
--- Data Science with Python
--- Giao dịch cho khóa học "Java Spring Boot Web Development"
-INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMethod, PaymentDate) 
-VALUES (1, 1, GETDATE(), 3, N'VNPay', GETDATE());
-INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMethod, PaymentDate) 
-VALUES (1, 1, GETDATE(), 5, N'VNPay', GETDATE());
--- Giao dịch cho khóa học "Data Science with Python"
-INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMethod, PaymentDate) 
-VALUES (2, 1, GETDATE(), 1, N'VNPay', GETDATE());
-INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentMethod, PaymentDate) 
-VALUES (3, 1, GETDATE(), 2, N'VNPay', GETDATE());
-
 
 -- Insert answers into the Answer table (only correct answers)
 
@@ -441,6 +430,7 @@ VALUES
 
 
 
+
 INSERT INTO [dbo].[Enrollments]
            ([UserID]
            ,[CourseID]
@@ -501,3 +491,6 @@ INSERT INTO [dbo].[Requests]
            (3
            ,6
            ,null)
+           
+           
+           

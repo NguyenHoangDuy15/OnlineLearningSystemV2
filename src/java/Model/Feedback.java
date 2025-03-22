@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class Feedback {
 
+    int feedbackid;
     int userId;
     int courseId;
     int rating;
@@ -11,6 +12,8 @@ public class Feedback {
     Date createdAt;
     String customername;
     String course;
+    String avartar;
+    String name;
 
     public Feedback(int userId, int courseId, int rating, String comment, Date createdAt) {
         this.userId = userId;
@@ -18,6 +21,18 @@ public class Feedback {
         this.rating = rating;
         this.comment = comment;
         this.createdAt = createdAt;
+    }
+
+    public Feedback(int feedbackid, String name, int userId, int courseId, String avartar, int rating, String comment, Date createdAt) {
+        this.feedbackid = feedbackid;
+        this.name = name;
+        this.userId = userId;
+        this.courseId = courseId;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+        this.avartar = avartar;
+
     }
 
     // Constructor mặc định
@@ -30,7 +45,6 @@ public class Feedback {
         this.course = course;
     }
 
-
     // Constructor KHÔNG có createdAt (Dùng khi SQL tự lấy ngày)
     public Feedback(int userId, int courseId, int rating, String comment) {
         this.userId = userId;
@@ -40,9 +54,33 @@ public class Feedback {
 
     }
 
+    public int getFeedbackid() {
+        return feedbackid;
+    }
+
+    public void setFeedbackid(int feedbackid) {
+        this.feedbackid = feedbackid;
+    }
+
     // Getter & Setter
     public int getUserId() {
         return userId;
+    }
+
+    public String getAvartar() {
+        return avartar;
+    }
+
+    public void setAvartar(String avartar) {
+        this.avartar = avartar;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setUserId(int userId) {
