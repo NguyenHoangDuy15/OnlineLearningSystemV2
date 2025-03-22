@@ -15,6 +15,7 @@
                 margin: 0;
                 padding: 40px;
                 display: flex;
+                flex-direction: column; /* Sắp xếp các phần tử theo cột */
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
@@ -24,7 +25,7 @@
                 border: 5px solid #276FD7;
                 border-radius: 20px;
                 padding: 60px;
-                max-width: 900px;
+                max-width: 800px;
                 margin: auto;
                 box-shadow: 0 15px 30px rgba(39, 111, 215, 0.2);
                 position: relative;
@@ -121,14 +122,19 @@
                 display: inline-block;
                 padding: 10px 20px;
                 background-color: #276FD7;
-                color: #ffffff;
+                color: #ffffff; /* Màu chữ trắng để tương phản với nền xanh */
                 text-decoration: none;
                 border-radius: 5px;
-                margin-top: 20px;
+                margin: 10px; /* Khoảng cách giữa các nút */
                 font-weight: 500;
+                transition: background-color 0.3s ease;
             }
             .download-btn:hover {
                 background-color: #1e5bb5;
+            }
+            .button-container {
+                text-align: center;
+                margin-top: 20px; /* Khoảng cách giữa chứng chỉ và các nút */
             }
         </style>
     </head>
@@ -159,18 +165,17 @@
             </div>
             <div class="footer">
                 <p>The specialization named in this certificate may draw on material from courses taught on-campus, but the included courses are not equivalent to on-campus courses. Participation in this online specialization does not constitute enrollment at the university. This certificate does not confer a University grade, course credit or degree, and it does not verify the identity of the learner.</p>
-                <p>Verify this certificate at: <a href="https://platform.com/verify/9C1SRH67X8VA">https://platform.com/verify/9C1SRH67X8VA</a></p>
-                <!-- Nút Download PDF -->
-                <c:if test="${not empty certificate}">
-                    <a href="DownloadCertificateServlet?courseId=${certificate.courseId}" class="download-btn">Download PDF</a>
-                </c:if>
-                <!-- Debug Info -->
-                <div>
-                    <p>Debug Info:</p>
-                    <p>UserID: ${sessionScope.userid}</p>
-                    <p>Certificate: ${certificate.courseId}</p>
-                </div>
+             
             </div>
+        </div>
+        <!-- Container cho các nút -->
+        <div class="button-container">
+            <!-- Nút Download PDF -->
+            <c:if test="${not empty certificate}">
+                <a href="DownloadCertificateServlet?courseId=${certificate.courseId}" class="download-btn">Download PDF</a>
+            </c:if>
+            <!-- Nút Go home -->
+            <a href="index?courseId=${certificate.courseId}&userid=${userid}" class="download-btn">Go home</a>
         </div>
     </body>
 </html>

@@ -15,7 +15,7 @@
 </head>
 <body>
     <!-- Thêm nội dung tĩnh để kiểm tra -->
-    <h1>Debug: Page is rendering</h1>
+  
 
     <%@ include file="header.jsp" %>
 

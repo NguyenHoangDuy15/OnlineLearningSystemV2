@@ -233,5 +233,6 @@
             $("#enrollment-list").html(html);
         });
     </script>
+       <%@ include file="chatbot-widget.jsp" %>
 </body>
 </html>
