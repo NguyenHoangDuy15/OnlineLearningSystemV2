@@ -73,7 +73,7 @@ public class FeedbackDao extends DBContext {
 
     // Cập nhật feedback (Rating và Comment)
     public boolean updateFeedback(int feedbackId, int rating, String comment) {
-        String sql = "UPDATE Feedbacks SET Rating = ?, Comment = ? WHERE FeedbackID = ? AND Status = 1";
+        String sql = "UPDATE Feedbacks SET Rating = ?,Status = 1, Comment = ? WHERE FeedbackID = ?  ";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, rating);

@@ -148,7 +148,7 @@
                 transform: translateX(5px);
             }
 
-            /* Tooltip cho thông tin khóa học */
+            /* Tooltip for course information */
             .courses-text span .tooltip-text, .courses-text small .tooltip-text {
                 visibility: hidden;
                 width: 120px;
@@ -196,7 +196,7 @@
             }
 
             .bg-primary .d-flex:hover {
-                background: rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 0.1);
             }
 
             .bg-primary h6 {
@@ -226,7 +226,7 @@
                 transform: scale(1.02);
             }
 
-            /* Nút Enroll Now */
+            /* Enroll Now Button */
             .bg-primary .btn {
                 border: none;
                 border-radius: 25px;
@@ -277,7 +277,7 @@
             }
 
             .comment-box .rating {
-                color: #ff4d4f; /* Màu đỏ giống Shopee */
+                color: #ff4d4f; /* Red color like Shopee */
                 margin-bottom: 5px;
             }
 
@@ -286,7 +286,7 @@
             }
 
             .comment-box .rating .fa-star.empty {
-                color: #ddd; /* Màu xám cho sao rỗng */
+                color: #ddd; /* Gray color for empty stars */
             }
 
             .comment-box .timestamp {
@@ -303,6 +303,14 @@
 
             .comment-form, .edit-form {
                 margin-top: 30px;
+            }
+
+            .edit-form {
+                display: none; /* Ẩn mặc định */
+            }
+
+            .edit-form.active {
+                display: block; /* Hiển thị khi có class active */
             }
 
             .comment-form textarea, .edit-form textarea {
@@ -368,7 +376,7 @@
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             }
 
-            /* Thêm style cho avatar và user info */
+            /* Style for avatar and user info */
             .comment-box .avatar {
                 width: 40px;
                 height: 40px;
@@ -387,7 +395,7 @@
                 font-weight: 600;
             }
 
-            /* Style cho nút Edit và Delete */
+            /* Style for Edit and Delete buttons */
             .comment-actions {
                 margin-top: 10px;
             }
@@ -404,12 +412,11 @@
                 <h1 class="text-white display-1">Course Detail</h1>
             </div>
         </div>
-        <!-- Header End -->
 
         <c:if test="${not empty errorMessage}">
-            <h1 class="display-4" style="color: red;">${errorMessage}</h1>
+            <h1 class="display-4" style="color: red; text-align: center;">${errorMessage}</h1>
         </c:if>
-        <!-- Detail Start -->
+
         <div class="container-fluid py-5">
             <div class="container py-5">
                 <div class="row">
@@ -420,7 +427,6 @@
                                 <h1 class="display-4">${course.name}</h1>
                             </div>
                             <img class="img-fluid rounded w-100 mb-4 course-detail-image" src="${course.image}" alt="${course.name}">
-
                             <p>${course.description}</p>
                         </div>
 
@@ -433,10 +439,10 @@
                                         <h4 class="text-center text-white px-3">${c.name}</h4>
                                         <div class="border-top w-100 mt-3">
                                             <div class="d-flex justify-content-between p-4">
-                                                <span class="text-white"><i class="fa fa-user mr-2"></i>${c.expertName}<span class="tooltip-text">Giảng viên</span></span>
-                                                <span class="text-white"><i class="fa fa-money-bill-wave mr-2"></i>${c.price} VNĐ<span class="tooltip-text">Giá khóa học</span></span>
-                                                <span class="text-white"><i class="fa fa-star mr-2"></i>${c.averageRating}<span class="tooltip-text">Đánh giá trung bình</span></span>
-                                                <small class="text-white">(${c.totalenrollment})<span class="tooltip-text">Số người tham gia</span></small>
+                                                <span class="text-white"><i class="fa fa-user mr-2"></i>${c.expertName}<span class="tooltip-text">Instructor</span></span>
+                                                <span class="text-white"><i class="fa fa-money-bill-wave mr-2"></i>${c.price} VND<span class="tooltip-text">Course Price</span></span>
+                                                <span class="text-white"><i class="fa fa-star mr-2"></i>${c.averageRating}<span class="tooltip-text">Average Rating</span></span>
+                                                <small class="text-white">(${c.totalenrollment})<span class="tooltip-text">Total Enrollments</span></small>
                                             </div>
                                         </div>
                                     </div>
@@ -444,10 +450,8 @@
                             </c:forEach>
                         </div>
 
-                        <!-- Comment Section Start -->
-                        <<div class="comment-section">
+                        <div class="comment-section">
                             <h2 class="mb-4">Comments</h2>
-                            <!-- Display existing comments for all users -->
                             <c:if test="${empty feedbacks}">
                                 <p>No comments yet.</p>
                             </c:if>
@@ -466,8 +470,6 @@
                                     <div class="timestamp">
                                         <fmt:formatDate value="${feedback.createdAt}" pattern="dd-MM-yyyy HH:mm"/>
                                     </div>
-
-                                    <!-- Hiển thị nút Edit và Delete nếu bình luận thuộc về người dùng hiện tại -->
                                     <c:if test="${sessionScope.userid != null && sessionScope.userid == feedback.userId}">
                                         <div class="comment-actions">
                                             <button class="btn btn-sm btn-primary edit-comment" data-feedback-id="${feedback.feedbackid}">Edit</button>
@@ -478,9 +480,7 @@
                                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                             </form>
                                         </div>
-
-                                        <!-- Form chỉnh sửa bình luận (ẩn ban đầu) -->
-                                        <div class="edit-form" id="edit-form-${feedback.feedbackid}" style="display:none;">
+                                        <div class="edit-form" id="edit-form-${feedback.feedbackid}">
                                             <h4>Edit Comment</h4>
                                             <form action="Feedbackcontroller" method="POST">
                                                 <input type="hidden" name="action" value="update">
@@ -510,7 +510,6 @@
                                 </div>
                             </c:forEach>
 
-                            <!-- Comment Form: Only show for logged-in users who have purchased the course -->
                             <c:if test="${sessionScope.userid != null && enrollment != null && enrollment.paymentStatus == 1}">
                                 <div class="comment-form">
                                     <h4>Leave a Comment</h4>
@@ -561,23 +560,15 @@
                             <div class="py-3 px-4">
                                 <c:choose>
                                     <c:when test="${enrollment != null && enrollment.paymentStatus == 1}">
-                                        <a class="btn btn-block py-3 px-5" href="Lessonservlet?courseId=${enrollment.courseId}&userid=${userid}" style="background-color: green; color: white;">
-                                            Go to Course
-                                        </a>
+                                        <a class="btn btn-block py-3 px-5" href="Lessonservlet?courseId=${enrollment.courseId}&userid=${userid}" style="background-color: green; color: white;">Go to Course</a>
                                     </c:when>
                                     <c:otherwise>
                                         <c:choose>
                                             <c:when test="${sessionScope.userid != null}">
-                                                <!-- Người dùng đã đăng nhập -->
-                                                <a class="btn btn-block py-3 px-5" href="VNPAYServlet" style="background-color: red; color: white;">
-                                                    Enroll Now
-                                                </a>
+                                                <a class="btn btn-block py-3 px-5" href="VNPAYServlet" style="background-color: red; color: white;">Enroll Now</a>
                                             </c:when>
                                             <c:otherwise>
-                                                <!-- Guest: Chuyển hướng đến trang đăng nhập -->
-                                                <a class="btn btn-block py-3 px-5" href="LoginServlet?redirect=VNPAYServlet" style="background-color: red; color: white;">
-                                                    Enroll Now
-                                                </a>
+                                                <a class="btn btn-block py-3 px-5" href="LoginServlet?redirect=VNPAYServlet" style="background-color: red; color: white;">Enroll Now</a>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:otherwise>
@@ -604,50 +595,68 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+
         <script>
-                                                // Hiệu ứng click cho courses-list-item
-                                                document.querySelectorAll('.courses-list-item').forEach(item => {
-                                                    item.addEventListener('click', function () {
-                                                        // Xóa class active khỏi tất cả các item
-                                                        document.querySelectorAll('.courses-list-item').forEach(i => i.classList.remove('active'));
-                                                        // Thêm class active cho item được click
-                                                        this.classList.add('active');
-                                                        // Thêm hiệu ứng phóng to nhẹ
-                                                        this.style.transform = 'scale(1.02)';
-                                                    });
-                                                });
+            document.addEventListener('DOMContentLoaded', function () {
+                // Xử lý nút Edit
+                document.querySelectorAll('.edit-comment').forEach(button => {
+                    button.addEventListener('click', function () {
+                        // Tìm comment-box và edit-form bằng closest()
+                        const commentBox = button.closest('.comment-box');
+                        const editForm = commentBox.querySelector('.edit-form');
 
-                                                // Hiệu ứng click cho nút Enroll Now
-                                                document.querySelector('.bg-primary .btn').addEventListener('click', function () {
-                                                    this.style.transform = 'scale(1.1)';
-                                                });
+                        // Kiểm tra xem commentBox và editForm có tồn tại không
+                        if (!commentBox || !editForm) {
+                            console.error('Cannot find commentBox or editForm');
+                            return;
+                        }
 
-                                                // Hiệu ứng hover cho course detail image
-                                                document.querySelector('.course-detail-image').addEventListener('mouseover', function () {
-                                                    this.style.transform = 'scale(1.02)';
-                                                });
+                        // Toggle trạng thái form chỉnh sửa
+                        editForm.classList.toggle('active');
 
-                                                // Xử lý sự kiện nhấn nút Edit
+                        // Ẩn/hiện nội dung ban đầu
+                        const content = commentBox.querySelector('.content');
+                        const rating = commentBox.querySelector('.rating');
+                        const commentActions = commentBox.querySelector('.comment-actions');
 
-                                                document.querySelectorAll('.edit-comment').forEach(button => {
-                                                    button.addEventListener('click', function () {
-                                                        const feedbackId = this.getAttribute('data-feedback-id');
-                                                        document.querySelector(`#comment-${feedbackId} .content`).style.display = 'none';
-                                                        document.querySelector(`#comment-${feedbackId} .rating`).style.display = 'none';
-                                                        document.querySelector(`#comment-${feedbackId} .comment-actions`).style.display = 'none';
-                                                        document.getElementById(`edit-form-${feedbackId}`).style.display = 'block';
-                                                    });
-                                                });
+                        if (editForm.classList.contains('active')) {
+                            if (content) content.style.display = 'none';
+                            if (rating) rating.style.display = 'none';
+                            if (commentActions) commentActions.style.display = 'none';
+                        } else {
+                            if (content) content.style.display = 'block';
+                            if (rating) rating.style.display = 'block';
+                            if (commentActions) commentActions.style.display = 'block';
+                        }
+                    });
+                });
 
-                                                document.querySelectorAll('.cancel-edit').forEach(button => {
-                                                    button.addEventListener('click', function () {
-                                                        const feedbackId = this.getAttribute('data-feedback-id');
-                                                        document.querySelector(`#comment-${feedbackId} .content`).style.display = 'block';
-                                                        document.querySelector(`#comment-${feedbackId} .rating`).style.display = 'block';
-                                                        document.querySelector(`#comment-${feedbackId} .comment-actions`).style.display = 'block';
-                                                        document.getElementById(`edit-form-${feedbackId}`).style.display = 'none';
-                                                    });
-                                                });
+                // Xử lý nút Cancel
+                document.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('cancel-edit')) {
+                        // Tìm comment-box và edit-form bằng closest()
+                        const editForm = event.target.closest('.edit-form');
+                        const commentBox = event.target.closest('.comment-box');
+
+                        // Kiểm tra xem commentBox và editForm có tồn tại không
+                        if (!commentBox || !editForm) {
+                            console.error('Cannot find commentBox or editForm');
+                            return;
+                        }
+
+                        // Ẩn form chỉnh sửa
+                        editForm.classList.remove('active');
+
+                        // Hiển thị lại nội dung ban đầu
+                        const content = commentBox.querySelector('.content');
+                        const rating = commentBox.querySelector('.rating');
+                        const commentActions = commentBox.querySelector('.comment-actions');
+                        if (content) content.style.display = 'block';
+                        if (rating) rating.style.display = 'block';
+                        if (commentActions) commentActions.style.display = 'block';
+                    }
+                });
+            });
         </script>
     </body>
 </html>
