@@ -9,6 +9,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List" %>
 <%@page import="Model.Blog" %>
+<% 
+    Integer currentPage = (request.getParameter("page") != null) ? Integer.parseInt(request.getParameter("page")) : 1;
+    String search = request.getParameter("search");
+    if (search == null) search = ""; // Đảm bảo không bị lỗi null
+
+    Integer totalPages = (Integer) request.getAttribute("totalPages"); 
+    if (totalPages == null) totalPages = 1; // Đặt giá trị mặc định nếu không tồn tại
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -136,6 +144,26 @@
             .search-input:focus, .search-input:hover {
                 background-color: #66a3ff; /* Xanh đậm khi trỏ vào */
             }
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px;
+            }
+
+            .pagination a {
+                margin: 0 5px;
+                padding: 8px 12px;
+                text-decoration: none;
+                border: 1px solid #007bff;
+                color: #007bff;
+                border-radius: 5px;
+            }
+
+            .pagination a.active {
+                background-color: #007bff;
+                color: white;
+            }
         </style>
     </head>
 
@@ -168,7 +196,7 @@
                             <td>${b.blogDate}</td>
                             <td>
                                 <a href="EditBlog?blogID=${b.getBlogID()}"class="btn-edit" >Edit</a>
-                                <a href="DeleteBlog?blogID=${b.blogID}" onclick="return confirm('Are you sure?' + ${b.blogID})" class="btn-delete">Delete</a>
+                                <a href="DeleteBlog?blogID=${b.blogID}" onclick="return confirm('Are you sure to delete this blog ?')" class="btn-delete">Delete</a>
                             </td>
                         </tr>
                     </c:forEach>
