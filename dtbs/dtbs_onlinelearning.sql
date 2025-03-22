@@ -59,8 +59,7 @@ CREATE TABLE Feedbacks (
     Rating INT CHECK (Rating BETWEEN 1 AND 5),
 	 Status TINYINT DEFAULT 1,
     Comment NVARCHAR(1000) NOT NULL,
-    CreatedAt DATE,
-	Status INT NULL CHECK (Status IN (0,1)) default 1
+    CreatedAt DATE
 );
 
 CREATE TABLE Payment (
