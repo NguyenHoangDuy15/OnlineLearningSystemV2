@@ -133,9 +133,6 @@ CREATE TABLE UserAnswers (
     HistoryID INT FOREIGN KEY REFERENCES History(HistoryID) -- Liên kết với lần làm bài
 );
 
-
-
-
 CREATE TABLE Enrollments (
     EnrollmentID INT PRIMARY KEY  IDENTITY(1,1),
     UserID INT FOREIGN KEY REFERENCES Users(UserID),
@@ -313,43 +310,48 @@ N'Nhiều người nghĩ lập trình yêu cầu toán cao cấp, nhưng sự th
      N'Bạn có thể trở thành lập trình viên sau 100 ngày học tập? Hãy thử thách bản thân với kế hoạch này! Cam kết dành ít nhất 1 giờ mỗi ngày để code, học từ các nguồn uy tín như FreeCodeCamp, Codecademy. Mỗi tuần, chọn một chủ đề như HTML, CSS, JavaScript, API, hoặc database để thực hành. Theo dõi tiến trình bằng cách viết blog hoặc chia sẻ dự án trên GitHub. Nếu duy trì đủ 100 ngày, bạn sẽ không chỉ có kiến thức vững vàng mà còn hình thành thói quen lập trình, sẵn sàng cho công việc thực tế.',
      'https://niithanoi.edu.vn/pic/News/100-ngay-hoc-code.png', GETDATE(), 2);
 
-
-	 INSERT INTO [dbo].[Feedbacks]
+INSERT INTO [dbo].[Feedbacks]
            ([UserID]
            ,[CourseID]
            ,[Rating]
            ,[Comment]
-           ,[CreatedAt])
+           ,[CreatedAt]
+		   ,[Status])
      VALUES
            (6
            ,1
            ,5
            ,'Good'
-           ,GETDATE())
+           ,GETDATE()
+		   ,1)
 INSERT INTO [dbo].[Feedbacks]
            ([UserID]
            ,[CourseID]
            ,[Rating]
            ,[Comment]
-           ,[CreatedAt])
+           ,[CreatedAt]
+		   ,[Status])
      VALUES
            (6
            ,1
            ,4
            ,'Well'
-           ,GETDATE())
+           ,GETDATE()
+		   ,1)
 INSERT INTO [dbo].[Feedbacks]
            ([UserID]
            ,[CourseID]
            ,[Rating]
            ,[Comment]
-           ,[CreatedAt])
+           ,[CreatedAt]
+		   ,[Status])
      VALUES
            (6
            ,1
            ,3
            ,'Fantastic'
-           ,GETDATE())
+           ,GETDATE(),
+		   0)
 
 
 -- Insert answers into the Answer table (only correct answers)
@@ -428,8 +430,66 @@ VALUES
 
 
 
+INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (6
+           ,3
+           ,1
+           ,GETDATE())
+INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (6
+           ,5
+           ,1
+           ,GETDATE());
+		   INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (6
+           ,1
+           ,1
+           ,GETDATE());
+		   	   INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (6
+           ,2
+           ,1
 
+           ,GETDATE());
+		   	
+		
 
-
-
-
+	INSERT INTO [dbo].[Requests]
+           ([RequestedRole]
+           ,[UserID]
+           ,[Status])
+     VALUES
+           (2
+           ,6
+           ,null)	
+INSERT INTO [dbo].[Requests]
+           ([RequestedRole]
+           ,[UserID]
+           ,[Status])
+     VALUES
+           (3
+           ,6
+           ,null)
+           
+           
+           
