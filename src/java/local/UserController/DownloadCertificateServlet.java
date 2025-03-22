@@ -192,7 +192,7 @@ public class DownloadCertificateServlet extends HttpServlet {
             System.out.println("Error generating PDF: " + e.getMessage());
             e.printStackTrace();
             response.reset();
-            response.sendRedirect(request.getContextPath() + "/error.jsp?message=" + URLEncoder.encode("Error generating PDF: " + e.getMessage(), "UTF-8"));
+            response.sendRedirect(request.getContextPath() + "jsp/Error.jsp?message=" + URLEncoder.encode("Error generating PDF: " + e.getMessage(), "UTF-8"));
         } finally {
             if (document != null) {
                 try {
