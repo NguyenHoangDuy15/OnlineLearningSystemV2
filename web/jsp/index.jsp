@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -341,5 +341,8 @@
                 });
             });
         </script>
+
+        <!-- Nhúng chatbot widget -->
+        <%@ include file="chatbot-widget.jsp" %>
     </body>
 </html>

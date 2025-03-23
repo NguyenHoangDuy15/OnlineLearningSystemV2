@@ -531,5 +531,6 @@
                 this.style.transform = 'scale(1.05)';
             });
         </script>
+           <%@ include file="chatbot-widget.jsp" %>
     </body>
 </html>

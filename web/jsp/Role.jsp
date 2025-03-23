@@ -17,43 +17,43 @@
     </head>
     <body>
         <%@ include file="header.jsp" %>
-        
+
         <div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
             <div class="container text-center my-5 py-5">
                 <h1 class="text-white display-1 mb-5">Request to Sale or Expert</h1>
             </div>
         </div>
-        
-      <div class="container my-5">
-    <div class="card p-4 shadow-sm">
-        <h3 class="text-center mb-4">Submit Your Request</h3>
 
-       
+        <div class="container my-5">
+            <div class="card p-4 shadow-sm">
+                <h3 class="text-center mb-4">Submit Your Request</h3>
 
-        <form action="Role" method="post">
-            <div class="mb-3">
-                <label class="form-label">Role Request</label>
-                <select class="form-control" name="role">
-                    <option value="3">Sale</option>
-                    <option value="2">Expert</option>
-                </select>
+
+
+                <form action="Role" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Role Request</label>
+                        <select class="form-control" name="role">
+                            <option value="3" <c:if test="${selectedRole == 3}">selected</c:if>>Sale</option>
+                            <option value="2" <c:if test="${selectedRole == 2}">selected</c:if>>Expert</option>
+                            </select>
+                        </div>
+
+                        <!-- Hiển thị thông báo trước nút Submit -->
+                    <c:if test="${not empty message}">
+                        <div class="alert alert-warning text-center">
+                            ${message}
+                        </div>
+                    </c:if>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <!-- Hiển thị thông báo trước nút Submit -->
-            <c:if test="${not empty message}">
-                <div class="alert alert-warning text-center">
-                    ${message}
-                </div>
-            </c:if>
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Submit Request</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-        
         <%@ include file="footer.jsp" %>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>

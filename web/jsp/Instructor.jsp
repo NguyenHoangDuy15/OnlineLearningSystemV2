@@ -60,7 +60,7 @@
                             <img class="img-fluid w-100" src="${i.avatar}" alt="">
                             <div class="bg-light text-center p-4">
                                 <h5 class="mb-3">${i.username}</h5>
-                              
+
                                 <p class="mb-2">${i.courseName}</p>
                                 <div class="d-flex justify-content-center">
                                     <a class="mx-1 p-1" href="#"><i class="fab fa-twitter"></i></a>
@@ -98,6 +98,7 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+        <%@ include file="chatbot-widget.jsp" %>
     </body>
 
 </html>

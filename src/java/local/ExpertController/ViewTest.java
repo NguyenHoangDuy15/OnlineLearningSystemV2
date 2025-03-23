@@ -4,8 +4,8 @@
  */
 package local.ExpertController;
 
-import Model.Test;
-import dal.TestDAO;
+import Model.TestEX;
+import dal.TestEXDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -70,8 +70,8 @@ public class ViewTest extends HttpServlet {
             return;
         }
 
-        TestDAO testDAO = new TestDAO();
-        List<Test> tests = testDAO.getTestsByCreatorFullName(fullName);
+        TestEXDAO testDAO = new TestEXDAO();
+        List<TestEX> tests = testDAO.getTestsByCreatorFullName(fullName);
 
         request.setAttribute("tests", tests);
         request.getRequestDispatcher("jsp/viewTests.jsp").forward(request, response);
