@@ -49,7 +49,7 @@
                     </tr>
                 </table>
                 ${err}
-                <button type="submit">Login</button>
+                <button name="login" type="submit">Login</button>
             </form>
             <div class="g_id_signin" id="google-sign-in">
                 <a href="https://accounts.google.com/o/oauth2/auth?scope=email 

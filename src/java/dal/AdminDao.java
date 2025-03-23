@@ -38,19 +38,18 @@ public class AdminDao extends DBContext {
                 + "    t.CreatedAt, \n"
                 + "    t.CourseID, \n"
                 + "    c.Name AS CourseName, \n"
-                + "    t.PaymentMethod, \n"
                 + "    t.PaymentDate, \n"
                 + "    p.Amount AS Price\n"
                 + "FROM TransactionHistory t\n"
-                + "JOIN Payment p ON t.PayID = p.PayID\n"
-                + "JOIN Courses c ON t.CourseID = c.CourseID;";
+                + "JOIN Payment p ON t.PayID = p.PayID \n"
+                + "JOIN Courses c ON t.CourseID = c.CourseID Where t.Status = 1;";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 MoneyHistoryByAdmin m = new MoneyHistoryByAdmin(rs.getInt("PayID"), rs.getInt("Status"),
                         rs.getDate("CreatedAt"), rs.getInt("CourseID"),
-                        rs.getString("CourseName"), rs.getString("PaymentMethod"),
+                        rs.getString("CourseName"), null,
                         rs.getDate("PaymentDate"), rs.getFloat("Price"));
                 list.add(m);
             }
@@ -68,12 +67,11 @@ public class AdminDao extends DBContext {
                 + "    t.CreatedAt, \n"
                 + "    t.CourseID, \n"
                 + "    c.Name AS CourseName, \n"
-                + "    t.PaymentMethod, \n"
                 + "    t.PaymentDate, \n"
                 + "    p.Amount AS Price\n"
                 + "FROM TransactionHistory t\n"
                 + "JOIN Payment p ON t.PayID = p.PayID\n"
-                + "JOIN Courses c ON t.CourseID = c.CourseID\n"
+                + "JOIN Courses c ON t.CourseID = c.CourseID WHERE t.Status = 1\n"
                 + "ORDER BY PayID OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -82,7 +80,7 @@ public class AdminDao extends DBContext {
             while (rs.next()) {
                 MoneyHistoryByAdmin m = new MoneyHistoryByAdmin(rs.getInt("PayID"), rs.getInt("Status"),
                         rs.getDate("CreatedAt"), rs.getInt("CourseID"),
-                        rs.getString("CourseName"), rs.getString("PaymentMethod"),
+                        rs.getString("CourseName"), null,
                         rs.getDate("PaymentDate"), rs.getFloat("Price"));
                 list.add(m);
             }
@@ -192,6 +190,6 @@ public class AdminDao extends DBContext {
 
     public static void main(String[] args) {
         AdminDao dao = new AdminDao();
-        System.out.println(dao.getAllCat());
+        System.out.println(dao.getAllHistory());
     }
 }

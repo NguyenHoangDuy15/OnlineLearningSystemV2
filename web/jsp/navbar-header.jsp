@@ -46,7 +46,7 @@
                                     <div class="user-box">
                                         <div class="avatar-lg">
                                             <img
-                                                src="assets/img/profile.jpg"
+                                                src="./img/logo/logo.JPG"
                                                 alt="image profile"
                                                 class="avatar-img rounded"
                                                 />
@@ -54,17 +54,11 @@
                                         <div class="u-text">
                                             <h4>${sessionScope.account.getFullName()}</h4>
                                             <p class="text-muted">${sessionScope.user.email}</p>
-                                            <a
-                                                href="ViewProfileServlet?userId=${sessionScope.user.userID}"
-                                                class="btn btn-xs btn-secondary btn-sm"
-                                                >View Profile</a
-                                            >
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="ViewProfileServlet?userId=${sessionScope.user.userID}">My Profile</a>
                                     <a class="dropdown-item" href="ChangePasswordServlet">Change Password</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="LogoutServlet">Logout</a>
