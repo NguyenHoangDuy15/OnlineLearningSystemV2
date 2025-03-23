@@ -101,7 +101,7 @@ CREATE TABLE Question (
     OptionB NVARCHAR(255),
     OptionC NVARCHAR(255),
     OptionD NVARCHAR(255),
-	 Status INT NULL CHECK (Status IN (0,1)) DEFAULT 1,
+	Status INT NULL CHECK (Status IN (0,1)) DEFAULT 1,
     TestID INT FOREIGN KEY REFERENCES Test(TestID)
 );
 
@@ -273,7 +273,13 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 (N'JavaScript Essentials', N'JavaScript Essentials is a fundamental course designed for beginners and aspiring web developers. This course covers core JavaScript concepts, including variables, data types, functions, loops, and event handling. Learners will also explore the Document Object Model (DOM), asynchronous programming, and API interactions. Through hands-on exercises and real-world examples, students will gain practical coding experience to build interactive and dynamic web applications. Whether you are starting from scratch or looking to enhance your JavaScript skills, this course provides a strong foundation for modern web development.', 110000, 'https://img-c.udemycdn.com/course/750x422/1468694_d595_2.jpg', 2, 3, GETDATE(),4),
 (N'Frontend Development with JavaScript', N'Frontend Development with JavaScript is a comprehensive course designed to equip learners with essential skills for building dynamic and interactive web applications. This course covers key JavaScript concepts, including DOM manipulation, event handling, asynchronous programming, and API integration. Students will also explore modern frontend frameworks like React or Vue.js to create responsive user interfaces. Through hands-on projects, participants will gain practical experience in developing real-world web applications. Whether you are a beginner or looking to enhance your frontend skills, this course provides the foundation needed to become a proficient JavaScript developer.', 160000, 'https://media.geeksforgeeks.org/wp-content/uploads/20240703165023/Frontend-Development-(1).webp', 2, 3, GETDATE(),2),
 (N'Backend Development with Node.js', N'Backend Development with Node.js is a hands-on course designed to teach developers how to build scalable and efficient server-side applications. This course covers fundamental Node.js concepts, including event-driven programming, asynchronous operations, and working with modules. Students will also learn how to create RESTful APIs using Express.js, interact with databases like MongoDB and PostgreSQL, and implement authentication and authorization. With practical projects and real-world examples, this course provides the necessary skills to develop modern, high-performance backend applications using Node.js.', 200000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220517005132/Why-to-Use-NodeJS-for-Backend-Development.jpg', 2, 3, GETDATE(),2);
-
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) VALUES
+(1, 1, '2024-03-01 10:15:30', 1, '2024-03-01 10:16:00'),
+(2, 1, '2024-03-02 14:20:45', 2, '2024-03-02 14:21:00'),
+(3, 0, '2024-03-03 09:30:15', 3, NULL),
+(4, 1, '2024-03-04 16:45:50', 4, '2024-03-04 16:46:30'),
+(5, 1, '2024-03-05 11:10:25', 5, '2024-03-05 11:11:00'),
+(6, 0, '2024-03-06 08:05:40', 6, NULL);
 
 
 INSERT INTO Lessons (Title, Content, CourseID) VALUES 
@@ -316,6 +322,7 @@ N'Nhiều người nghĩ lập trình yêu cầu toán cao cấp, nhưng sự th
 
 INSERT INTO [dbo].[Test] ([Name],  [CreatedBy],[CourseID]) 
 VALUES ('Test 1','Hoang Cong Ninh', 1);
+('Test 2','Hoang Cong Ninh', 2);
 -- Insert questions into the Question table with TestID = 1
 INSERT INTO Question (QuestionType, QuestionContent, OptionA, OptionB, OptionC, OptionD, TestID) 
 VALUES 
@@ -348,7 +355,37 @@ VALUES
 ('multiple choice', 'Which access modifier allows a variable to be accessed only within the same package?', 'A. public', 'B. private', 'C. protected', 'D. default (no modifier)', 1),
 ('multiple choice', 'What is the parent class of all classes in Java?', 'A. Object', 'B. Class', 'C. Super', 'D. Base', 1),
 ('multiple choice', 'What happens when you divide an integer by zero in Java?', 'A. Throws ArithmeticException', 'B. Returns Infinity', 'C. Returns NaN', 'D. Returns 0', 1),
-('multiple choice', 'Which keyword is used to call the constructor of the parent class?', 'A. this', 'B. super', 'C. extends', 'D. parent', 1);
+('multiple choice', 'Which keyword is used to call the constructor of the parent class?', 'A. this', 'B. super', 'C. extends', 'D. parent', 1),
+('multiple choice', 'What is Spring Boot primarily used for?', 'A. Front-end development', 'B. Simplifying Java-based web applications', 'C. Managing databases', 'D. Writing JavaScript code', 2),
+('multiple choice', 'Which annotation is used to mark the main class in a Spring Boot application?', 'A. @SpringApplication', 'B. @SpringBootApplication', 'C. @SpringMain', 'D. @SpringConfig', 2),
+('multiple choice', 'Which dependency is required for creating RESTful APIs in Spring Boot?', 'A. spring-boot-starter-web', 'B. spring-boot-starter-data-jpa', 'C. spring-boot-starter-security', 'D. spring-boot-starter-test', 2),
+('multiple choice', 'What is the default embedded server in Spring Boot?', 'A. Tomcat', 'B. Jetty', 'C. Undertow', 'D. WildFly', 2),
+('multiple choice', 'Which file is used to configure properties in a Spring Boot application?', 'A. application.properties', 'B. spring.xml', 'C. config.json', 'D. settings.yaml', 2),
+('multiple choice', 'Which annotation is used to define a RESTful web service?', 'A. @RestService', 'B. @RestController', 'C. @WebService', 'D. @Controller', 2),
+('multiple choice', 'Which command is used to run a Spring Boot application?', 'A. mvn spring-boot:run', 'B. java -jar app.jar', 'C. gradle bootRun', 'D. All of the above', 2),
+('multiple choice', 'What does the @Autowired annotation do?', 'A. Handles HTTP requests', 'B. Enables automatic dependency injection', 'C. Creates database tables', 'D. Configures properties', 2),
+('multiple choice', 'Which database is embedded by default in Spring Boot?', 'A. MySQL', 'B. PostgreSQL', 'C. H2', 'D. SQLite', 2),
+('multiple choice', 'Which annotation is used to enable JPA repositories in Spring Boot?', 'A. @EnableJpaRepositories', 'B. @SpringData', 'C. @JpaConfig', 'D. @EnableORM', 2),
+('multiple choice', 'What is Spring Boot DevTools used for?', 'A. Security enhancements', 'B. Database migrations', 'C. Automatic restart and live reload', 'D. Logging improvements', 2),
+('multiple choice', 'Which annotation is used for exception handling at the controller level?', 'A. @ExceptionHandler', 'B. @HandleException', 'C. @RestException', 'D. @ErrorHandler', 2),
+('multiple choice', 'What is the default port for a Spring Boot application?', 'A. 8080', 'B. 9090', 'C. 8000', 'D. 8888', 2),
+('multiple choice', 'Which dependency is required for Spring Boot JPA?', 'A. spring-boot-starter-web', 'B. spring-boot-starter-jpa', 'C. spring-boot-starter-security', 'D. spring-boot-starter-test', 2),
+('multiple choice', 'Which annotation is used to map HTTP GET requests?', 'A. @PostMapping', 'B. @PutMapping', 'C. @DeleteMapping', 'D. @GetMapping', 2),
+('multiple choice', 'What is the purpose of the @Transactional annotation?', 'A. Manage transactions', 'B. Handle REST API calls', 'C. Define scheduled tasks', 'D. Enable logging', 2),
+('multiple choice', 'Which annotation is used to define scheduled tasks?', 'A. @Schedule', 'B. @EnableScheduling', 'C. @Scheduled', 'D. @TaskScheduler', 2),
+('multiple choice', 'What is Thymeleaf used for in Spring Boot?', 'A. Database management', 'B. Front-end templating', 'C. Dependency injection', 'D. Security', 2),
+('multiple choice', 'Which class is used to make RESTful API calls in Spring Boot?', 'A. RestClient', 'B. HttpClient', 'C. WebClient', 'D. RestTemplate', 2),
+('multiple choice', 'Which annotation is used for field-level validation in Spring Boot?', 'A. @NotNull', 'B. @Valid', 'C. @Validated', 'D. @Check', 2),
+('multiple choice', 'Which annotation enables global exception handling?', 'A. @ExceptionHandler', 'B. @ControllerAdvice', 'C. @RestControllerAdvice', 'D. Both B and C', 2),
+('multiple choice', 'What does Spring Boot Actuator provide?', 'A. Database migration tools', 'B. Security features', 'C. Monitoring and management endpoints', 'D. Logging mechanisms', 2),
+('multiple choice', 'Which annotation is used to inject values from properties files?', 'A. @PropertySource', 'B. @Value', 'C. @Autowired', 'D. @ConfigurationProperties', 2),
+('multiple choice', 'What is the purpose of the application.properties file?', 'A. Define business logic', 'B. Manage configurations', 'C. Create database connections', 'D. Compile Java code', 2),
+('multiple choice', 'Which annotation is used to define a service layer in Spring Boot?', 'A. @Component', 'B. @Service', 'C. @Repository', 'D. @RestController', 2),
+('multiple choice', 'What does the @SpringBootApplication annotation do?', 'A. Enables auto-configuration', 'B. Defines a main class', 'C. Enables component scanning', 'D. All of the above', 2),
+('multiple choice', 'Which Spring Boot component manages dependency injection?', 'A. Bean Factory', 'B. ApplicationContext', 'C. Spring Container', 'D. Dependency Manager', 2),
+('multiple choice', 'What is the purpose of the Spring Boot banner.txt file?', 'A. Configure logging', 'B. Customize the startup banner', 'C. Enable debugging mode', 'D. Manage security settings', 2),
+('multiple choice', 'How do you change the default port in Spring Boot?', 'A. Modify application.properties', 'B. Change server.xml', 'C. Edit boot.config', 'D. Set an environment variable', 2),
+('multiple choice', 'Which command is used to package a Spring Boot application as a JAR file?', 'A. mvn package', 'B. gradle build', 'C. java -jar', 'D. Both A and B', 2);
 
 
 INSERT INTO Answer (AnswerContent, QuestionID)
@@ -382,7 +419,13 @@ VALUES
 ('C', 27), -- Correct answer for question 27
 ('A', 28), -- Correct answer for question 28
 ('B', 29), -- Correct answer for question 29
-('C', 30); -- Correct answer for question 30
+('C', 30), -- Correct answer for question 30
+('B', 31), ('B', 32), ('D', 33), ('A', 34), ('B', 35),
+('B', 36), ('D', 37), ('B', 38), ('C', 39), ('A', 40),
+('A', 41), ('B', 42), ('A', 43), ('A', 44), ('B', 45),
+('B', 46), ('A', 47), ('D', 48), ('C', 49), ('B', 50),
+('C', 51), ('B', 52), ('C', 53), ('B', 54), ('B', 55),
+('A', 56), ('A', 57), ('B', 58), ('C', 59), ('D', 60);
 
 
 

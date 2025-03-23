@@ -422,41 +422,65 @@
                 }
             };
             function deleteLesson(lessonId) {
-                console.log("deleteLesson called with lessonId: " + lessonId);
+        console.log("Delete button clicked for lessonId: " + lessonId);
+        
+        if (!lessonId || lessonId <= 0) {
+            alert("Invalid lesson ID");
+            return;
+        }
 
-                if (typeof lessonId === 'undefined' || lessonId === null || isNaN(lessonId) || lessonId <= 0) {
-                    alert("Error: Invalid lesson ID");
-                    console.error("Invalid lessonId: " + lessonId);
-                    return;
+        if (confirm("Are you sure you want to delete this lesson?")) {
+            fetch('LessonServlet?action=delete&lesson=' + lessonId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log("Server response: " + data);
+                if (data.trim() === "success") {
+                    alert("Lesson deleted successfully!");
+                    // Tìm hàng chứa lessonId và xóa nó
+                    const table = document.getElementById('lessonTable');
+                    const rows = table.getElementsByTagName('tr');
+                    let rowToDelete = null;
 
-                console.log(`Attempting to deactivate lesson with lessonId: ${lessonId}`);
-                if (confirm("Are you sure you want to deactivate this lesson?")) {
-                    fetch(`LessonServlet?action=delete&lessonId=${lessonId}`, {
-                        method: 'POST'
-                    })
-                            .then(response => {
-                                console.log("Fetch response status: " + response.status);
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok: ' + response.statusText);
-                                }
-                                return response.text();
-                            })
-                            .then(data => {
-                                console.log("Fetch response data: " + data);
-                                if (data.trim() === "success") {
-                                    alert("Lesson deactivated successfully!");
-                                    window.location.reload();
-                                } else {
-                                    alert(data);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error during fetch:', error);
-                                alert("An error occurred while deactivating the lesson: " + error.message);
-                            });
+                    // Duyệt qua các hàng trong tbody
+                    for (let i = 0; i < rows.length; i++) {
+                        const firstCell = rows[i].getElementsByTagName('td')[0];
+                        if (firstCell && firstCell.textContent.trim() === lessonId.toString()) {
+                            rowToDelete = rows[i];
+                            break;
+                        }
+                    }
+
+                    if (rowToDelete) {
+                        rowToDelete.remove();
+                        console.log("Lesson row with ID " + lessonId + " removed from table");
+                        // Kiểm tra nếu không còn lesson nào thì hiển thị thông báo
+                        const lessonList = document.getElementById('lessonList');
+                        if (lessonList.children.length === 0) {
+                            lessonList.innerHTML = '<tr><td colspan="4">No lessons available</td></tr>';
+                        }
+                    } else {
+                        console.error("Could not find row with lessonId: " + lessonId);
+                    }
+                } else {
+                    alert("Failed to delete lesson: " + data);
                 }
-            }
+            })
+            .catch(error => {
+                console.error('Error during fetch:', error);
+                alert("An error occurred while deleting the lesson: " + error.message);
+            });
+        }
+    }
             document.addEventListener('DOMContentLoaded', function () {
                 const lessonRows = document.querySelectorAll('#lessonList tr');
                 console.log('Total lessons displayed: ' + lessonRows.length);
