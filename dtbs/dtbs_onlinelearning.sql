@@ -280,13 +280,21 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 (N'JavaScript Essentials', N'JavaScript Essentials is a fundamental course designed for beginners and aspiring web developers. This course covers core JavaScript concepts, including variables, data types, functions, loops, and event handling. Learners will also explore the Document Object Model (DOM), asynchronous programming, and API interactions. Through hands-on exercises and real-world examples, students will gain practical coding experience to build interactive and dynamic web applications. Whether you are starting from scratch or looking to enhance your JavaScript skills, this course provides a strong foundation for modern web development.', 110000, 'https://img-c.udemycdn.com/course/750x422/1468694_d595_2.jpg', 2, 3, GETDATE(),4),
 (N'Frontend Development with JavaScript', N'Frontend Development with JavaScript is a comprehensive course designed to equip learners with essential skills for building dynamic and interactive web applications. This course covers key JavaScript concepts, including DOM manipulation, event handling, asynchronous programming, and API integration. Students will also explore modern frontend frameworks like React or Vue.js to create responsive user interfaces. Through hands-on projects, participants will gain practical experience in developing real-world web applications. Whether you are a beginner or looking to enhance your frontend skills, this course provides the foundation needed to become a proficient JavaScript developer.', 160000, 'https://media.geeksforgeeks.org/wp-content/uploads/20240703165023/Frontend-Development-(1).webp', 2, 3, GETDATE(),2),
 (N'Backend Development with Node.js', N'Backend Development with Node.js is a hands-on course designed to teach developers how to build scalable and efficient server-side applications. This course covers fundamental Node.js concepts, including event-driven programming, asynchronous operations, and working with modules. Students will also learn how to create RESTful APIs using Express.js, interact with databases like MongoDB and PostgreSQL, and implement authentication and authorization. With practical projects and real-world examples, this course provides the necessary skills to develop modern, high-performance backend applications using Node.js.', 200000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220517005132/Why-to-Use-NodeJS-for-Backend-Development.jpg', 2, 3, GETDATE(),2);
+--Payment 
+INSERT INTO Payment (UserID, CourseID, Amount) VALUES
+(1, 1, 500.00),
+(2, 2, 750.00),
+(3, 3, 600.00),
+(4, 1, 500.00),
+(5, 2, 750.00);
+-- Transaction History
+
 INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) VALUES
 (1, 1, '2024-03-01 10:15:30', 1, '2024-03-01 10:16:00'),
 (2, 1, '2024-03-02 14:20:45', 2, '2024-03-02 14:21:00'),
 (3, 0, '2024-03-03 09:30:15', 3, NULL),
 (4, 1, '2024-03-04 16:45:50', 4, '2024-03-04 16:46:30'),
-(5, 1, '2024-03-05 11:10:25', 5, '2024-03-05 11:11:00'),
-(6, 0, '2024-03-06 08:05:40', 6, NULL);
+(5, 1, '2024-03-05 11:10:25', 5, '2024-03-05 11:11:00');
 
 
 INSERT INTO Lessons (Title, Content, CourseID) VALUES 
@@ -316,111 +324,19 @@ VALUES
      'https://glints.com/vn/blog/wp-content/uploads/2022/09/ma%CC%82%CC%83u-to-do-list.jpeg', GETDATE(), 4),
 
     (N'Học lập trình có cần giỏi toán không?',
-	N'Nhiều người nghĩ lập trình yêu cầu toán cao cấp, nhưng sự thật không hẳn như vậy. Cùng tìm hiểu! Nhiều lĩnh vực lập trình không yêu cầu toán cao cấp, nhưng tư duy logic và giải quyết vấn đề là bắt buộc. Nếu bạn hướng đến AI, khoa học dữ liệu hay mật mã học, kiến thức toán sẽ rất quan trọng. Ngược lại, phát triển web hay ứng dụng di động chủ yếu cần kỹ năng lập trình hơn là toán. Thay vì lo lắng về toán, hãy tập trung vào tư duy thuật toán, phân tích yêu cầu và cách viết code sạch, dễ bảo trì.',
+N'Nhiều người nghĩ lập trình yêu cầu toán cao cấp, nhưng sự thật không hẳn như vậy. Cùng tìm hiểu! Nhiều lĩnh vực lập trình không yêu cầu toán cao cấp, nhưng tư duy logic và giải quyết vấn đề là bắt buộc. Nếu bạn hướng đến AI, khoa học dữ liệu hay mật mã học, kiến thức toán sẽ rất quan trọng. Ngược lại, phát triển web hay ứng dụng di động chủ yếu cần kỹ năng lập trình hơn là toán. Thay vì lo lắng về toán, hãy tập trung vào tư duy thuật toán, phân tích yêu cầu và cách viết code sạch, dễ bảo trì.',
      'https://cdn.codegym.vn/wp-content/uploads/2021/09/hoc-lap-trinh-co-can-gioi-toan-khong-8.jpg', GETDATE(), 4),
 
     (N'100 ngày code: Hành trình từ newbie đến lập trình viên', 
      N'Bạn có thể trở thành lập trình viên sau 100 ngày học tập? Hãy thử thách bản thân với kế hoạch này! Cam kết dành ít nhất 1 giờ mỗi ngày để code, học từ các nguồn uy tín như FreeCodeCamp, Codecademy. Mỗi tuần, chọn một chủ đề như HTML, CSS, JavaScript, API, hoặc database để thực hành. Theo dõi tiến trình bằng cách viết blog hoặc chia sẻ dự án trên GitHub. Nếu duy trì đủ 100 ngày, bạn sẽ không chỉ có kiến thức vững vàng mà còn hình thành thói quen lập trình, sẵn sàng cho công việc thực tế.',
-     'https://niithanoi.edu.vn/pic/News/100-ngay-hoc-code.png', GETDATE(), 5),
-	 (N'Python – Vì sao ngôn ngữ này thống trị AI và khoa học dữ liệu?', 
-	N'Python là một trong những ngôn ngữ lập trình phổ biến nhất hiện nay, đặc biệt trong lĩnh vực trí tuệ nhân tạo (AI) và khoa học dữ liệu. Nhờ cú pháp đơn giản, thư viện phong phú như TensorFlow, PyTorch, scikit-learn, Python giúp các nhà phát triển dễ dàng xây dựng mô hình AI. Ngoài ra, Python còn có ứng dụng rộng rãi trong phát triển web (Django, Flask), tự động hóa và phân tích dữ liệu. Nếu bạn muốn tham gia vào lĩnh vực AI hay Data Science, Python chắc chắn là lựa chọn hàng đầu.', 
-	'https://imic.edu.vn/images/news/tai-sao-ngon-ngu-py-thon-la-ngon-ngu-tot-nhat-cho-AI.jpg', '2025-03-22', 4),
-	(N'JavaScript – Ngôn ngữ không thể thiếu cho lập trình web hiện đại', 
-	N'JavaScript là ngôn ngữ lập trình web phổ biến nhất, giúp tạo ra các trang web tương tác. Với sự hỗ trợ của các framework như React, Angular, Vue, JavaScript giúp xây dựng các ứng dụng web động một cách dễ dàng. Hơn nữa, JavaScript còn có mặt trong backend với Node.js, giúp đồng bộ hóa cả frontend và backend trên cùng một ngôn ngữ. Nếu bạn muốn phát triển web, JavaScript là một kỹ năng không thể thiếu.', 
-	'https://cloud.z.com/vn/wp-content/uploads/2024/01/Screenshot_1-6.png', '2025-03-22', 5),
-	(N'Java – Tại sao vẫn là lựa chọn hàng đầu cho doanh nghiệp?', 
-	N'Java vẫn là một trong những ngôn ngữ phổ biến nhất trong hệ thống doanh nghiệp nhờ tính ổn định, bảo mật và khả năng mở rộng cao. Với các framework mạnh mẽ như Spring Boot, Java được sử dụng để xây dựng các hệ thống backend lớn. Ngoài ra, Java cũng là ngôn ngữ chính cho phát triển ứng dụng Android với Android Studio. Nếu bạn muốn làm việc trong các công ty công nghệ lớn, Java là một lựa chọn đáng cân nhắc.', 
-	'https://vtiacademy.edu.vn/upload/images/anh-link/chung-chi-java-la-gi-co-may-loai-chung-chi-java-1.jpg', '2025-03-22', 4),
-	(N'C# và Unity – Cặp đôi hoàn hảo cho lập trình game', 
-	N'C# là một ngôn ngữ mạnh mẽ, đặc biệt khi kết hợp với Unity để phát triển game. Unity là một trong những nền tảng phát triển game phổ biến nhất, hỗ trợ cả 2D và 3D. Nhờ cú pháp rõ ràng và tài liệu phong phú, C# giúp lập trình viên dễ dàng tạo ra những trò chơi chất lượng cao. Nếu bạn đam mê lập trình game, học C# và Unity sẽ giúp bạn có cơ hội lớn trong ngành công nghiệp này.', 
-	'https://caodang.fpt.edu.vn/wp-content/uploads/maxresdefault-2-3.jpg', '2025-03-22', 4),
-	(N'Go – Ngôn ngữ tối ưu cho backend và hệ thống phân tán', 
-	N'Go (Golang) được phát triển bởi Google để giải quyết các vấn đề về hiệu suất và khả năng mở rộng của hệ thống backend. Với cú pháp đơn giản, tốc độ cao và hỗ trợ xử lý song song mạnh mẽ, Go trở thành lựa chọn hàng đầu cho các hệ thống cloud-native, microservices và backend. Nếu bạn quan tâm đến lập trình hệ thống, Go là một ngôn ngữ đáng học.', 
-	'https://200lab.io/blog/_next/image?url=https%3A%2F%2Fstatics.cdn.200lab.io%2F2023%2F06%2Fgolang-la-gi-1.jpg&w=3840&q=75', '2025-03-22', 4),
-	(N'TypeScript – Tại sao nên dùng thay vì JavaScript thuần?', 
-	N'TypeScript là một phiên bản nâng cấp của JavaScript với khả năng kiểm tra kiểu dữ liệu tĩnh, giúp giảm lỗi trong quá trình phát triển. Các framework hiện đại như Angular, React, Vue đều hỗ trợ TypeScript, giúp cải thiện hiệu suất và bảo trì code dễ dàng hơn. Nếu bạn là lập trình viên JavaScript, việc học TypeScript sẽ giúp bạn làm việc hiệu quả hơn.', 
-	'https://blog.haposoft.com/content/images/2022/11/10b88c68-typescript-logo.png', '2025-03-22', 4),
-	(N' ReactJS: Thư viện JavaScript thống trị frontend', 
-	N'ReactJS giúp xây dựng giao diện người dùng mạnh mẽ, tái sử dụng component, cải thiện hiệu suất web. Được Facebook phát triển, ReactJS đang dẫn đầu xu hướng frontend hiện nay.', 
-	'https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/react-js-co-ban-phan-1-63738082145.3856.jpg', '2025-03-22', 4),
-	(N'Spring Boot: Tại sao Java backend lại cần nó?', 
-	N'Spring Boot giúp phát triển ứng dụng Java nhanh chóng, giảm bớt cấu hình phức tạp. Nó phù hợp với các hệ thống microservices và cloud-native.
-Ưu điểm: Giảm thiểu cấu hình, dễ dàng mở rộng.
-Nhược điểm: Học tập tốn thời gian, tiêu tốn nhiều tài nguyên hệ thống.', 
-	'https://ant.ncc.asia/wp-content/uploads/2024/08/image-214.png', '2025-03-22', 4),
-	(N'TypeScript: Nâng tầm JavaScript', 
-	N'TypeScript thêm tính năng kiểm tra kiểu dữ liệu, giúp code dễ bảo trì hơn. Được sử dụng rộng rãi trong Angular, React và Vue.
-Ưu điểm: Kiểm tra lỗi tốt hơn, hỗ trợ lập trình hướng đối tượng.
-Nhược điểm: Cần biên dịch sang JavaScript, phức tạp hơn JS thuần.', 
-	'https://images.viblo.asia/30fca26e-b706-4680-88b8-2ddaef08582b.png', '2025-03-22', 4),
-	(N'JavaScript vs Python: Cuộc chiến của hai ông lớn', 
-	N'JavaScript thống trị web, trong khi Python chiếm lĩnh AI và Data Science. Tùy vào mục tiêu nghề nghiệp, bạn có thể chọn một trong hai hoặc học cả hai.
-
-Ưu điểm JavaScript: Chạy trên trình duyệt, hiệu suất cao.
-
-Nhược điểm JavaScript: Không có kiểu tĩnh, dễ gây lỗi.
-
-Ưu điểm Python: Dễ học, mạnh về AI, Data Science.
-
-Nhược điểm Python: Chạy chậm hơn JS trên trình duyệt.', 
-	'https://funix.edu.vn/wp-content/uploads/2021/10/JavaScript-v%C3%A0-Python.png', '2025-03-22', 4),
-	(N' Web3 và Blockchain: Xu hướng công nghệ phi tập trung', 
-	N'Blockchain không chỉ phục vụ tiền điện tử mà còn mở rộng sang hợp đồng thông minh, ứng dụng phi tập trung (DApps). Ethereum, Solana là những nền tảng phổ biến.
-
-Ưu điểm: Bảo mật cao, minh bạch.
-
-Nhược điểm: Khó mở rộng, phí giao dịch cao.', 
-	'https://itviec.com/blog/wp-content/uploads/2024/03/moi-lien-he-giua-blockchain-va-web3-blog-thumbnail-vippro.png', '2025-03-22', 4),
-	(N'Rust: Tương lai của lập trình an toàn và hiệu suất', 
-	N'Rust nổi bật với cơ chế quản lý bộ nhớ an toàn, không cần garbage collector, giúp phát triển hệ thống nhúng và phần mềm hiệu suất cao.
-
-Ưu điểm: An toàn bộ nhớ, hiệu suất cao.
-
-Nhược điểm: Cú pháp phức tạp, khó học hơn các ngôn ngữ khác.', 
-	'https://200lab.io/blog/_next/image?url=https%3A%2F%2Fstatics.cdn.200lab.io%2F2024%2F09%2Frust-la-gi-1.png&w=3840&q=75', '2025-03-22', 5),
-	(N'SQL vs NoSQL: Chọn hệ quản trị dữ liệu nào?', 
-	N'SQL như MySQL, PostgreSQL phù hợp với dữ liệu có cấu trúc. NoSQL như MongoDB, Firebase thích hợp cho hệ thống linh hoạt, mở rộng nhanh.', 
-	'https://mastering-da.com/wp-content/uploads/2023/10/su-khac-nhau-giua-sql-va-nosql.jpg', '2025-03-22', 4),
-	(N'Code AI chatbot với JavaScript: Bắt đầu từ đâu?', 
-	N'Chatbot AI đang là xu hướng trong lập trình web. Để tạo một chatbot đơn giản bằng JavaScript, bạn cần:
-
-Sử dụng thư viện NLP như natural.js hoặc API chatbot có sẵn.
-
-Xây dựng logic phản hồi dựa trên dữ liệu đầu vào từ người dùng.
-
-Tích hợp vào website bằng React hoặc đơn giản hơn là HTML, CSS, JavaScript thuần.', 
-	'https://www.pullrequest.com/blog/ai-code-review-the-new-frontier-in-software-development/images/ai-code-review--the-new-frontier-in-software-development.webp', '2025-03-22', 5),
-	(N'Làm sao để duy trì động lực khi học lập trình?', 
-	N'Lập trình có thể khiến bạn nản chí, nhưng đừng bỏ cuộc! Hãy thử:
-
-Chia nhỏ mục tiêu, mỗi ngày học một chút nhưng đều đặn.
-
-Tham gia các thử thách coding như LeetCode, Codeforces.
-
-Tạo một dự án cá nhân giúp áp dụng kiến thức thực tế.', 
-	'https://howtolearnmachinelearning.com/wp-content/uploads/2022/12/how_is_ai_being_used_to_write_code-scaled.jpeg', '2025-03-22', 5),
-	(N'Học ngôn ngữ nào dễ xin việc nhất?', 
-	N'Nếu mục tiêu của bạn là tìm việc nhanh, hãy cân nhắc:
-
-Web (frontend/backend): JavaScript, TypeScript, React, Node.js.
-
-AI & Data Science: Python, SQL.
-
-Lập trình mobile: Kotlin (Android), Swift (iOS), Flutter.
-
-Lập trình game: C#, Unity, C++ (Unreal Engine).
-
-Hệ thống lớn & tài chính: Java, C++, Go, Rust.', 
-	'https://topdev.vn/blog/wp-content/uploads/2020/11/top-5-ngon-ngu-lap-trinh-nen-hoc-12.jpg', '2025-03-22', 5);
-
-
+     'https://niithanoi.edu.vn/pic/News/100-ngay-hoc-code.png', GETDATE(), 2);
 
 
 
 -- Insert answers into the Answer table (only correct answers)
 
 INSERT INTO [dbo].[Test] ([Name],  [CreatedBy],[CourseID]) 
-VALUES ('Test 1','Hoang Cong Ninh', 1);
+VALUES ('Test 1','Hoang Cong Ninh', 1),
 ('Test 2','Hoang Cong Ninh', 2);
 -- Insert questions into the Question table with TestID = 1
 INSERT INTO Question (QuestionType, QuestionContent, OptionA, OptionB, OptionC, OptionD, TestID) 

@@ -24,8 +24,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Expert Dashboard - Online Learning</title>
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             :root {
                 --primary: #4A90E2;
@@ -69,108 +67,66 @@
                 display: block;
             }
 
-            /* Điều chỉnh navbar */
-            .navbar-header {
+            .header {
                 background-color: var(--background);
                 box-shadow: 0 2px 8px var(--shadow);
-                border-bottom: 2px solid var(--primary);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 32px;
                 position: sticky;
                 top: 0;
                 z-index: 1000;
+                border-bottom: 2px solid var(--primary);
             }
 
-            .navbar-header .navbar-nav {
-                margin-left: auto;
-            }
-
-            .navbar-header .avatar-sm {
-                width: 40px;
-                height: 40px;
-            }
-
-            .navbar-header .avatar-img {
-                width: 100%;
-                height: 100%;
-                border: 2px solid var(--primary);
+            .logo h1 {
+                color: var(--primary);
+                font-size: 24px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                margin: 0;
                 transition: transform 0.3s ease;
             }
 
-            .navbar-header .avatar-img:hover {
+            .logo h1:hover {
+                transform: scale(1.05);
+            }
+
+            .user-profile img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+                border: 2px solid var(--primary);
+            }
+
+            .user-profile img:hover {
                 transform: scale(1.1);
             }
 
-            .navbar-header .profile-username {
-                color: var(--text-dark);
-                margin-left: 10px;
-                font-size: 14px;
-            }
-
-            .navbar-header .profile-username .op-7 {
-                color: var(--text-light);
-            }
-
-            .navbar-header .profile-username .fw-bold {
-                color: var(--text-dark);
-            }
-
-            .navbar-header .dropdown-menu {
+            .dropdown {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 50px;
                 background-color: var(--background);
                 box-shadow: 0 4px 8px var(--shadow);
                 border-radius: 8px;
-                border: 1px solid var(--border);
+                z-index: 1000;
             }
 
-            .navbar-header .dropdown-item {
-                color: var(--text-dark);
+            .dropdown a {
+                display: block;
                 padding: 10px 20px;
+                color: var(--text-dark);
+                text-decoration: none;
                 transition: background-color 0.3s ease;
             }
 
-            .navbar-header .dropdown-item:hover {
+            .dropdown a:hover {
                 background-color: var(--secondary);
-            }
-
-            .navbar-header .user-box {
-                display: flex;
-                align-items: center;
-                padding: 10px 20px;
-            }
-
-            .navbar-header .avatar-lg {
-                width: 50px;
-                height: 50px;
-                margin-right: 15px;
-            }
-
-            .navbar-header .u-text h4 {
-                margin: 0;
-                font-size: 16px;
-                color: var(--text-dark);
-            }
-
-            .navbar-header .u-text p {
-                margin: 5px 0 0;
-                font-size: 14px;
-                color: var(--text-light);
-            }
-
-            .navbar-header .u-text a {
-                margin-top: 5px;
-                display: inline-block;
-                padding: 5px 10px;
-                background-color: var(--primary);
-                color: #FFFFFF;
-                border-radius: 4px;
-                text-decoration: none;
-                font-size: 12px;
-            }
-
-            .navbar-header .u-text a:hover {
-                background-color: #357ABD;
-            }
-
-            .navbar-header .dropdown-divider {
-                border-top: 1px solid var(--border);
             }
 
             .container {
@@ -530,57 +486,53 @@
                     border-right: none;
                     border-bottom: 1px solid var(--border);
                 }
+                .user-profile {
+                    position: relative;
+                }
+
+                .dropdown {
+                    display: none; /* Ẩn mặc định */
+                    position: absolute;
+                    right: 0;
+                    top: 50px;
+                    background-color: var(--background);
+                    box-shadow: 0 4px 8px var(--shadow);
+                    border-radius: 8px;
+                    z-index: 1000;
+                }
+
+                .dropdown a {
+                    display: block;
+                    padding: 10px 20px;
+                    color: var(--text-dark);
+                    text-decoration: none;
+                    transition: background-color 0.3s ease;
+                }
+
+                .dropdown a:hover {
+                    background-color: var(--secondary);
+                }
             }
         </style>
     </head>
     <body>
-        <!-- Navbar Header -->
-        <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <h1 style="color: var(--primary); font-size: 24px; font-weight: 700; letter-spacing: 1px; margin: 0; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Online Learning</h1>
-                </a>
-                <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                    <li class="nav-item topbar-user dropdown hidden-caret">
-                        <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                            <div class="avatar-sm">
-                                <img src="assets/img/profile.jpg" alt="User Avatar" class="avatar-img rounded-circle"/>
-                            </div>
-                            <span class="profile-username">
-                                <span class="op-7">Hi,</span>
-                                <span class="fw-bold">
-                                    <%= fullName != null ? fullName : "Expert" %>
-                                </span>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-user animated fadeIn">
-                            <div class="dropdown-user-scroll scrollbar-outer">
-                                <li>
-                                    <div class="user-box">
-                                        <div class="avatar-lg">
-                                            <img src="assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"/>
-                                        </div>
-                                        <div class="u-text">
-                                            <h4><%= fullName != null ? fullName : "Expert" %></h4>
-                                            <p class="text-muted">${sessionScope.user != null ? sessionScope.user.email : "expert@example.com"}</p>
-                                            <a href="ViewProfileServlet?userId=${sessionScope.user != null ? sessionScope.user.userID : ''}" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="ViewProfileServlet?userId=${sessionScope.user != null ? sessionScope.user.userID : ''}">My Profile</a>
-                                    <a class="dropdown-item" href="ChangePasswordServlet">Change Password</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="LogoutServlet">Logout</a>
-                                </li>
-                            </div>
-                        </ul>
-                    </li>
-                </ul>
+        <header class="header">
+            <a href="ShowexpertServlet" class="logo">
+                <div>
+                    <h1>Online Learning</h1>
+                </div>
+            </a>
+            <div class="user-profile">
+                <div class="avatar-sm" onclick="toggleDropdown()">
+                    <img src="./img/logo/logo.JPG" alt="User Avatar" class="avatar-img rounded-circle" />
+                </div>
+                <div class="dropdown" id="dropdownMenu" style="display: none;">
+                    <a href="ViewProfile">View Profile</a>
+                    <a href="ChangePasswordServlet">Change Password</a>
+                    <a href="LogoutServlet">Logout</a>
+                </div>
             </div>
-        </nav>
-        <!-- End Navbar -->
+        </header>
 
         <div class="container">
             <aside class="sidebar">
@@ -690,14 +642,24 @@
                             <% if (tests != null && !tests.isEmpty()) { %>
                             <% for (TestEX testItem : tests) { %>
                             <% if (testItem.getStatus() != 0) { %>
+                            <% 
+                                // Lấy thông tin course tương ứng với test
+                                CourseEX course = courseDAO.getCourseByIdEx(testItem.getCourseID());
+                                boolean isCourseActive = (course != null && course.getStatus() == 4);
+                            %>
                             <tr id="testRow<%= testItem.getTestID() %>">
                                 <td><%= testItem.getTestID() %></td>
                                 <td><a href="QuestionController?action=getQuestions&testId=<%= testItem.getTestID() %>"><%= testItem.getName() %></a></td>
                                 <td class="status-done"><%= testItem.getStatus() == 1 ? "Completed" : "Done" %></td>
                                 <td><%= testItem.getCourseID() %></td>
                                 <td>
-                                    <button class="btn btn-primary" onclick="updateTest(<%= testItem.getTestID() %>)" style="padding: 8px 16px; font-size: 12px;">Update</button>
+                                    <% if (!isCourseActive) { %>
+                                    <!-- Sửa nút Update để dẫn đến TestServlet -->
+                                    <a href="TestServlet?testId=<%= testItem.getTestID() %>">
+                                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Update</button>
+                                    </a>
                                     <button class="btn btn-danger" onclick="deleteTest(<%= testItem.getTestID() %>)" style="padding: 8px 16px; font-size: 12px;">Delete</button>
+                                    <% } %>
                                 </td>
                             </tr>
                             <% } %>
@@ -792,6 +754,26 @@
             document.addEventListener('DOMContentLoaded', function () {
                 console.log("DOM fully loaded and parsed");
 
+                function toggleDropdown() {
+                    const dropdown = document.getElementById('dropdownMenu');
+                    if (dropdown.style.display === 'block') {
+                        dropdown.style.display = 'none';
+                    } else {
+                        dropdown.style.display = 'block';
+                    }
+                }
+
+                // Ẩn dropdown khi nhấp ra ngoài
+                document.addEventListener('click', function (event) {
+                    const dropdown = document.getElementById('dropdownMenu');
+                    const avatar = document.querySelector('.avatar-sm');
+
+                    // Nếu nhấp ra ngoài avatar và dropdown đang hiển thị, ẩn nó
+                    if (!avatar.contains(event.target) && !dropdown.contains(event.target) && dropdown.style.display === 'block') {
+                        dropdown.style.display = 'none';
+                    }
+                });
+
                 // Lấy các phần tử DOM
                 const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
                 const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
@@ -853,70 +835,73 @@
                     hideAll();
                     testList.style.display = 'block';
                 });
-
                 window.deleteCourse = function (courseId) {
                     console.log("Delete Course button clicked for course ID:", courseId);
                     if (confirm("Are you sure you want to delete this course?")) {
                         fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, {
                             method: 'POST'
                         })
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === "success") {
-                                    alert("Course deleted successfully!");
-                                    const courseRow = document.getElementById('courseRow' + courseId);
-                                    if (courseRow) {
-                                        courseRow.remove();
+                                .then(response => response.text())
+                                .then(data => {
+                                    if (data === "success") {
+                                        alert("Course deleted successfully!");
+                                        const courseRow = document.getElementById('courseRow' + courseId);
+                                        if (courseRow) {
+                                            courseRow.remove();
+                                        }
+
+                                    } else {
+                                        alert("Failed to delete course: " + data);
                                     }
-                                } else {
-                                    alert("Failed to delete course: " + data);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert("An error occurred while deleting the course: " + error.message);
-                            });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert("An error occurred while deleting the course: " + error.message);
+                                });
                     }
                 };
-
                 window.requestCourse = function (courseId) {
                     console.log("Request Course button clicked for course ID:", courseId);
                     if (confirm("Are you sure you want to request approval for this course?")) {
                         fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, {
                             method: 'POST'
                         })
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === "success") {
-                                    alert("Course request submitted successfully!");
-                                    const statusSpan = document.getElementById('status' + courseId);
-                                    if (statusSpan) {
-                                        statusSpan.textContent = "Waiting";
-                                        statusSpan.className = "status-waiting";
-                                    }
-                                    const row = document.getElementById('courseRow' + courseId);
-                                    if (row) {
-                                        const deleteBtn = row.querySelector('.btn-danger');
-                                        const updateBtn = row.querySelector('.btn-primary');
-                                        const addTestBtn = row.querySelector('.btn-success');
-                                        const requestBtn = row.querySelector('.btn-warning');
+                                .then(response => response.text())
+                                .then(data => {
+                                    if (data === "success") {
+                                        alert("Course request submitted successfully!");
+                                        const statusSpan = document.getElementById('status' + courseId);
+                                        if (statusSpan) {
+                                            statusSpan.textContent = "Waiting";
+                                            statusSpan.className = "status-waiting";
+                                        }
+                                        // Hide action buttons that shouldn't be visible in Waiting status
+                                        const row = document.getElementById('courseRow' + courseId);
+                                        if (row) {
+                                            const deleteBtn = row.querySelector('.btn-danger');
+                                            const updateBtn = row.querySelector('.btn-primary');
+                                            const addTestBtn = row.querySelector('.btn-success');
+                                            const requestBtn = row.querySelector('.btn-warning');
 
-                                        if (deleteBtn) deleteBtn.classList.add('hidden');
-                                        if (updateBtn) updateBtn.classList.add('hidden');
-                                        if (addTestBtn) addTestBtn.classList.add('hidden');
-                                        if (requestBtn) requestBtn.classList.add('hidden');
+                                            if (deleteBtn)
+                                                deleteBtn.classList.add('hidden');
+                                            if (updateBtn)
+                                                updateBtn.classList.add('hidden');
+                                            if (addTestBtn)
+                                                addTestBtn.classList.add('hidden');
+                                            if (requestBtn)
+                                                requestBtn.classList.add('hidden');
+                                        }
+                                    } else {
+                                        alert("Failed to request course: " + data);
                                     }
-                                } else {
-                                    alert("Failed to request course: " + data);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert("An error occurred while requesting the course: " + error.message);
-                            });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert("An error occurred while requesting the course: " + error.message);
+                                });
                     }
                 };
-
                 window.addTest = function (courseId) {
                     console.log("Add Test button clicked for course ID:", courseId);
                     if (!courseId || courseId <= 0) {
@@ -938,34 +923,32 @@
                         console.error("Create Test section not found!");
                     }
                 };
-
-                window.updateTest = function (testId) {
-                    console.log("Update Test button clicked for test ID:", testId);
-                    window.location.href = `TestServlet?testId=${testId}`;
-                };
-
+//                window.updateTest = function (testId) {
+//                    console.log("Update Test button clicked for test ID:", testId);
+//                    // Chuyển hướng đến QuestionController để hiển thị danh sách câu hỏi
+//                    window.location.href = `TestServlet?testId=${testId}`;
+//                };
                 window.deleteTest = function (testId) {
                     console.log("Delete Test button clicked for test ID:", testId);
                     if (confirm("Are you sure you want to delete this test?")) {
                         fetch('NoticeServlet?action=deleteTest&testId=' + testId, {
                             method: 'POST'
                         })
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === "success") {
-                                    alert("Test marked as deleted successfully!");
-                                    window.location.reload();
-                                } else {
-                                    alert("Failed to mark test as deleted: " + data);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert("An error occurred while marking the test as deleted: " + error.message);
-                            });
+                                .then(response => response.text())
+                                .then(data => {
+                                    if (data === "success") {
+                                        alert("Test marked as deleted successfully!");
+                                        window.location.reload();
+                                    } else {
+                                        alert("Failed to mark test as deleted: " + data);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert("An error occurred while marking the test as deleted: " + error.message);
+                                });
                     }
                 };
-
                 let questionCount = 1;
 
                 window.addOption = function (optionsId) {
@@ -1084,15 +1067,11 @@
                     form.submit();
                 });
 
-                // Kiểm tra nếu cần hiển thị danh sách câu hỏi
-                const showQuestionsFlag = <%= showQuestions != null && showQuestions ? "true" : "false" %>;
-                if (showQuestionsFlag) {
-                    hideAll();
-                    questionList.style.display = 'block';
-                }
+            <% if (showQuestions != null && showQuestions) { %>
+                hideAll();
+                questionList.style.display = 'block';
+            <% } %>
             });
         </script>
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
