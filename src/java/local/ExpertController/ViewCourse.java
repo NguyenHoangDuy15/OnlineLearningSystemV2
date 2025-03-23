@@ -4,9 +4,9 @@
  */
 package local.ExpertController;
 
-import Model.Courses;
+import Model.CourseEX;
 import Model.Test;
-import dal.CourseDao;
+import dal.CourseEXDAO;
 import dal.TestDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -74,8 +74,8 @@ public class ViewCourse extends HttpServlet {
             return;
         }
 
-        CourseDao coursedao = new CourseDao();
-        List<Courses> courses = coursedao.getCourseByUserId(userID);
+      CourseEXDAO coursedao = new CourseEXDAO();
+    List<CourseEX> courses = coursedao.getCourseByUserId(userID);
 
         request.setAttribute("courses", courses);
         request.getRequestDispatcher("jsp/ViewCourse.jsp").forward(request, response);
