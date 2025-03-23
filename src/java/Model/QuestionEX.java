@@ -2,6 +2,7 @@ package Model;
 
 public class QuestionEX {
     private int questionID;
+    private String questionType;
     private String questionContent;
     private String optionA;
     private String optionB;
@@ -12,6 +13,27 @@ public class QuestionEX {
 
     // Constructor
     public QuestionEX() {
+    }
+
+    public QuestionEX(int questionID, String questionType, String questionContent, String optionA, String optionB, String optionC, String optionD, int testID) {
+        this.questionID = questionID;
+        this.questionType = questionType;
+        this.questionContent = questionContent;
+        this.optionA = optionA;
+        this.optionB = optionB;
+        this.optionC = optionC;
+        this.optionD = optionD;
+        this.testID = testID;
+    }
+
+    public QuestionEX(int questionID, String questionContent, String optionA, String optionB, String optionC, String optionD, int testID) {
+        this.questionID = questionID;
+        this.questionContent = questionContent;
+        this.optionA = optionA;
+        this.optionB = optionB;
+        this.optionC = optionC;
+        this.optionD = optionD;
+        this.testID = testID;
     }
 
     public QuestionEX(int questionID, String questionContent, String optionA, String optionB,

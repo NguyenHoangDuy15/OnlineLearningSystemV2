@@ -8,7 +8,7 @@ package dal;
  *
  * @author CONG NINH
  */
-import Model.Question;
+import Model.QuestionEX;
 import Model.TestEX;
 import dal.DBContext;
 import java.util.*;
@@ -215,8 +215,8 @@ public class TestEXDAO extends DBContext {
         return null;
     }
 
-    public List<Question> getQuestionsByTestId(int testId) {
-        List<Question> questions = new ArrayList<>();
+    public List<QuestionEX> getQuestionsByTestId(int testId) {
+        List<QuestionEX> questions = new ArrayList<>();
         String sql = "SELECT * FROM Question WHERE TestID = ?";
 
         try {
@@ -225,7 +225,7 @@ public class TestEXDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Question question = new Question(
+                QuestionEX question = new QuestionEX(
                         rs.getInt("QuestionID"),
                         rs.getString("QuestionType"),
                         rs.getString("QuestionContent"),
