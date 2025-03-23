@@ -132,7 +132,14 @@ CREATE TABLE UserAnswers (
     IsCorrectAnswer INT CHECK (IsCorrectAnswer IN (0,1)), -- Đánh dấu đúng/sai
     HistoryID INT FOREIGN KEY REFERENCES History(HistoryID) -- Liên kết với lần làm bài
 );
-
+CREATE TABLE ChatHistory (
+    ChatID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT NOT NULL,
+    MessageContent nvarchar(max)  NOT NULL,
+    Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ChatType VARCHAR(10) NOT NULL DEFAULT 'User-AI' CHECK (ChatType = 'User-AI'),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
 CREATE TABLE Enrollments (
     EnrollmentID INT PRIMARY KEY  IDENTITY(1,1),
     UserID INT FOREIGN KEY REFERENCES Users(UserID),
@@ -476,7 +483,7 @@ VALUES
 ('B', 29), -- Correct answer for question 29
 ('C', 30); -- Correct answer for question 30
 
+select * from ChatHistory
 
-
-
+select * from Roles
 
