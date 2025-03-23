@@ -172,19 +172,9 @@
     </div>
     <div class="chatbox" id="chatbox">
         <div class="message bot-message">Chatbot: Hello! How can I assist you today?</div>
-        <% 
-            String userMessage = (String) session.getAttribute("userMessage");
-            String botResponse = (String) session.getAttribute("botResponse");
-            if (userMessage != null && botResponse != null) {
-                out.println("<div class='message user-message'>You: " + userMessage + "</div>");
-                out.println("<div class='message bot-message'>Chatbot: " + botResponse + "</div>");
-                session.removeAttribute("userMessage");
-                session.removeAttribute("botResponse");
-            }
-        %>
     </div>
     <div class="input-area">
-        <form action="ChatbotServlet" method="post" id="chatbotForm">
+        <form id="chatbotForm">
             <input type="text" name="message" id="messageInput" placeholder="Type your message..." required>
             <input type="submit" value="Send">
         </form>
@@ -192,48 +182,94 @@
 </div>
 
 <script>
+    // L?y context path t? JSP
+    const contextPath = "${pageContext.request.contextPath}";
+
     // Function to toggle the chatbot window
     function toggleChatbot() {
         const chatbotWindow = document.getElementById("chatbotWindow");
         const isOpen = chatbotWindow.style.display === "flex";
         chatbotWindow.style.display = isOpen ? "none" : "flex";
-        // L?u tr?ng thái vào sessionStorage
         sessionStorage.setItem("chatbotOpen", !isOpen);
     }
 
-    // Khôi ph?c tr?ng thái c?a s? chatbot khi trang t?i
+    // Restore chatbot state on page load
     window.onload = function() {
         const chatbotWindow = document.getElementById("chatbotWindow");
         const isOpen = sessionStorage.getItem("chatbotOpen") === "true";
         if (isOpen) {
             chatbotWindow.style.display = "flex";
         }
-
-        // Automatically scroll to the bottom of the chatbox
         const chatbox = document.getElementById("chatbox");
         chatbox.scrollTop = chatbox.scrollHeight;
     };
 
+    // Handle form submission with AJAX
+    document.getElementById("chatbotForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const messageInput = document.getElementById("messageInput");
+        const userMessage = messageInput.value.trim();
+        if (!userMessage) return;
+
+        const chatbox = document.getElementById("chatbox");
+        const userDiv = document.createElement("div");
+        userDiv.className = "message user-message";
+        userDiv.textContent = "You: " + userMessage;
+        chatbox.appendChild(userDiv);
+
+        chatbox.scrollTop = chatbox.scrollHeight;
+        messageInput.value = "";
+
+        // G?i yêu c?u AJAX ??n ChatbotServlet v?i context path
+        fetch(contextPath + "/ChatbotServlet", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "message=" + encodeURIComponent(userMessage)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const botDiv = document.createElement("div");
+            botDiv.className = "message bot-message";
+            botDiv.textContent = "Chatbot: " + data.botResponse;
+            chatbox.appendChild(botDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            const botDiv = document.createElement("div");
+            botDiv.className = "message bot-message";
+            botDiv.textContent = "Chatbot: ?ã x?y ra l?i. Details: " + error.message;
+            chatbox.appendChild(botDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        });
+    });
+
     // G?i form khi nh?n Enter
     document.getElementById("messageInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
-            event.preventDefault(); // Ng?n hành vi m?c ??nh c?a Enter (nh? xu?ng dòng)
-            document.getElementById("chatbotForm").submit(); // G?i form
+            event.preventDefault();
+            document.getElementById("chatbotForm").dispatchEvent(new Event("submit"));
         }
     });
 
-    // Close the chatbot when clicking outside
+    // Close chatbot when clicking outside
     document.addEventListener("click", function(event) {
         const chatbotWindow = document.getElementById("chatbotWindow");
         const chatbotIcon = document.querySelector(".chatbot-icon");
         const chatbotForm = document.getElementById("chatbotForm");
         
-        // Không ?óng n?u click vào form ho?c các ph?n t? con c?a form
         if (chatbotForm.contains(event.target)) {
             return;
         }
 
-        // ?óng n?u click ra ngoài
         if (!chatbotWindow.contains(event.target) && !chatbotIcon.contains(event.target)) {
             chatbotWindow.style.display = "none";
             sessionStorage.setItem("chatbotOpen", "false");
