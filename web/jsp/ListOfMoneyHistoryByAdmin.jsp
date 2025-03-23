@@ -68,7 +68,6 @@
                                                     <th>Create At</th>
                                                     <th>CourseID</th>
                                                     <th>Course Name</th>
-                                                    <th>Payment Method</th>
                                                     <th>Payment Date</th>
                                                     <th>Price</th>
                                                 </tr>
@@ -88,7 +87,6 @@
                                                         <td>${s.getCreateAt()}</td>
                                                         <td>${s.getCourseID()}</td>
                                                         <td>${s.getCourseName()}</td>
-                                                        <td>${s.getPaymentMethod()}</td>
                                                         <td>${s.getPaymentDate()}</td>
                                                         <td>${s.getPrice()}</td>
                                                         

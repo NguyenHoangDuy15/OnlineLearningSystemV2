@@ -251,6 +251,138 @@ public class BlogDAO extends DBContext {
         }
         return list;
     }
+//10. 
+
+    public int getTotalBlogs() {
+        String sql = "SELECT COUNT(*) FROM Blogs";
+        try (PreparedStatement st = connection.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // 11
+    public List<Blog> getBlogsByPage(int page, int blogsPerPage) {
+        List<Blog> blogs = new ArrayList<>();
+        String sql = "SELECT * FROM Blogs WHERE BlogDate IS NOT NULL ORDER BY BlogDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, (page - 1) * blogsPerPage);
+            st.setInt(2, blogsPerPage);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                Blog blog = new Blog(
+                        rs.getInt("BlogID"),
+                        rs.getString("BlogTitle"),
+                        rs.getString("BlogDetail"),
+                        rs.getString("BlogImage"),
+                        rs.getDate("BlogDate"),
+                        rs.getInt("UserID")
+                );
+                blogs.add(blog);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return blogs;
+    }
+//12
+
+    public List<Blog> getBlogsByUserIDWithPagination(int userID, int start, int total) {
+        List<Blog> list = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Blog WHERE userID = ? ORDER BY blogID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ps.setInt(2, start);
+            ps.setInt(3, total);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Blog b = new Blog(
+                        rs.getInt("BlogID"),
+                        rs.getString("BlogTitle"),
+                        rs.getString("BlogDetail"),
+                        rs.getString("BlogImage"),
+                        rs.getDate("BlogDate"),
+                        rs.getInt("UserID")
+                );
+                list.add(b);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+//13
+
+    public int getTotalBlogsByUserID(int userID) {
+        int total = 0;
+        try {
+            String sql = "SELECT COUNT(*) FROM Blog WHERE userID = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+// 13
+
+    public List<Blog> searchBlogsByUserIDWithPagination(int userID, String search, int start, int total) {
+        List<Blog> list = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Blog WHERE userID = ? AND title LIKE ? ORDER BY blogID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ps.setString(2, "%" + search + "%"); // Tìm kiếm theo tiêu đề
+            ps.setInt(3, start);
+            ps.setInt(4, total);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Blog b = new Blog(
+                        rs.getInt("BlogID"),
+                        rs.getString("BlogTitle"),
+                        rs.getString("BlogDetail"),
+                        rs.getString("BlogImage"),
+                        rs.getDate("BlogDate"),
+                        rs.getInt("UserID")
+                );
+                list.add(b);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+//14
+
+    public int getTotalBlogsByUserIDWithSearch(int userID, String search) {
+        int total = 0;
+        try {
+            String sql = "SELECT COUNT(*) FROM Blog WHERE userID = ? AND title LIKE ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ps.setString(2, "%" + search + "%"); // Tìm kiếm theo tiêu đề
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
 
     public static void main(String[] args) {
         BlogDAO dao = new BlogDAO();

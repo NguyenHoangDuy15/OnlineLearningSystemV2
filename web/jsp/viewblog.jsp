@@ -87,41 +87,65 @@
             }
             .search-btn:hover {
                 background: #0056b3;
-            </style>
-        </head>
+            }
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px;
+            }
+        </style>
     </head>
-    <body>
-        <%@ include file="header.jsp" %>
-        <div style="text-align: center;
-            padding: 10px 20px;">
-            <h2 style="margin-bottom: 10px;">Our Blog</h2>
-            <form action="SearchBlog" method="get" style="display: flex;
-                justify-content: center;">
-                <input type="text" name="keyword" placeholder="Search blogs..." required 
-                       value="${param.keyword}"
-                       style="padding: 8px;
-                width: 300px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                margin-right: 5px;">
-                <button type="submit" class="search-btn">Search</button>
-            </form>
-        </div>
-        <div class="blog-container">
+</head>
+<body>
+    <%@ include file="header.jsp" %>
+    <div style="text-align: center;
+         padding: 10px 20px;">
+        <h2 style="margin-bottom: 10px;">Our Blog</h2>
+        <form action="SearchBlog" method="get" style="display: flex;
+              justify-content: center;">
+            <input type="text" name="keyword" placeholder="Search blogs..." required 
+                   value="${param.keyword}"
+                   style="padding: 8px;
+                   width: 300px;
+                   border: 1px solid #ccc;
+                   border-radius: 5px;
+                   margin-right: 5px;">
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+    </div>
+    <div class="blog-container">
+        <c:forEach var="blog" items="${blogList}">
+            <div class="blog-item">
+                <img src="${blog.blogImage}" alt="Blog Image">
+                <div class="blog-title">${blog.blogTitle}</div>
+                <div class="blog-detail">${blog.blogDetail}</div>
+            </div>
+        </c:forEach>
 
-            <c:forEach var="blog" items="${blogList}">
-                <div class="blog-item">
-                    <img src="${blog.blogImage}" alt="Blog Image">
-                    <div class="blog-title">${blog.blogTitle}</div>
-                    <div class="blog-detail">${blog.blogDetail}</div>
-                </div>
-            </c:forEach>
-            <c:if test="${empty blogList}">
-                <p>No results found for your search.</p>
+        <c:if test="${empty blogList}">
+            <p>No results found for your search.</p>
+        </c:if>
+    </div>
+
+    <div class="pagination" style="margin-top: 20px;
+         text-align: center;">
+        <c:if test="${totalPages > 1}">
+            <c:if test="${currentPage > 1}">
+                <a href="ViewBlog?page=${currentPage - 1}" class="btn btn-primary">Previous</a>
             </c:if>
 
-        </div>
+            <c:forEach var="i" begin="1" end="${totalPages}">
+                <a href="ViewBlog?page=${i}" class="btn ${i == currentPage ? 'btn-secondary' : 'btn-outline-primary'}">${i}</a>
+            </c:forEach>
 
-        <%@ include file="footer.jsp" %>
-    </body>
+            <c:if test="${currentPage < totalPages}">
+                <a href="ViewBlog?page=${currentPage + 1}" class="btn btn-primary">Next</a>
+            </c:if>
+        </c:if>
+    </div>
+
+
+    <%@ include file="footer.jsp" %>
+</body>
 </html>

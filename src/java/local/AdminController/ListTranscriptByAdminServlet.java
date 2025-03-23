@@ -51,7 +51,7 @@ public class ListTranscriptByAdminServlet extends HttpServlet {
                 index = Integer.parseInt(request.getParameter("index"));
             }
             if (NoPage == 0) {
-                request.setAttribute("noti", "No user found");
+                request.setAttribute("noti", "No Transcript found");
             }
             List<MoneyHistoryByAdmin> listmoney = adao.get5History(index);
             session.setAttribute("Nopage", NoPage);
