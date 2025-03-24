@@ -5,6 +5,7 @@
 package local.UserController;
 
 import Model.Expert;
+import Model.ExpertNew;
 import dal.ExpertDao;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -61,7 +62,7 @@ public class Instructor extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ExpertDao expertDAL = new ExpertDao();
-        List<Expert> experts = expertDAL.getExpertsWithCourses();
+        List<ExpertNew> experts = expertDAL.getExpertswCourses();
         request.setAttribute("experts", experts);
         request.getRequestDispatcher("jsp/Instructor.jsp").forward(request, response);
     }

@@ -286,7 +286,7 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0">
-                                <a href="Instructor" class="dropdown-item">Instructors</a>
+                                <a href="Instructor" class="dropdown-item">Experts</a>
                             </div>
                         </div>
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>

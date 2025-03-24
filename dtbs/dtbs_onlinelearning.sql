@@ -185,11 +185,11 @@ INSERT INTO [dbo].[Users]
            ,[RoleID]
            ,[Status])
      VALUES
-           ('Hoang Cong Ninh'
+           ('Hoàng Công Ninh'
            ,'Congninh123@'
            ,'ninhhche187071@fpt.edu.vn'
            ,'Q29uZ25pbmgxMjNAZndlcWZ3ZTtoZml1ZHNmYXNkZmFzZGZhcw==' --Congninh123@
-           ,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjA8mLF9lMmoWREqCbb6rT8RLp7In1x_5hlA&s'
+           ,'https://cdn.eva.vn/upload/2-2024/images/2024-05-28/1-1716871247-805-width800height600.jpg'
            ,2
            ,1)
 INSERT INTO [dbo].[Users]
@@ -201,13 +201,14 @@ INSERT INTO [dbo].[Users]
            ,[RoleID]
            ,[Status])
      VALUES
-           ('NinhNH123@'
+           (N'Nguyễn Thị Mai'
            ,'NinhNH123@'
-           ,'congninh@gmail.com'
+           ,'abc@gmail.com'
            ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
-           ,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjA8mLF9lMmoWREqCbb6rT8RLp7In1x_5hlA&s'
+           ,'https://vcdn1-vnexpress.vnecdn.net/2020/04/24/dien-vien-8352-1587729717.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=Qq7nxYZpze-Ft9ezOCz7OA'
            ,2
            ,1)
+		   
 INSERT INTO [dbo].[Users]
            ([FullName]
            ,[UserName]
@@ -256,6 +257,55 @@ INSERT INTO [dbo].[Users]
            ,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjA8mLF9lMmoWREqCbb6rT8RLp7In1x_5hlA&s'
            ,4
            ,1)
+		   --add thêm expert
+		   INSERT INTO [dbo].[Users]
+           ([FullName]
+           ,[UserName]
+           ,[Email]
+           ,[Password]
+           ,[Avartar]
+           ,[RoleID]
+           ,[Status])
+     VALUES
+           (N'Nguyễn Thu Uyên'
+           ,'UyenNT123@'
+           ,'uyennthe186381@fpt.edu.vn'
+           ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
+           ,'https://media-cdn-v2.laodong.vn/storage/newsportal/2024/11/11/1420091/IU-2I.jpeg'
+           ,2
+           ,1)
+		   INSERT INTO [dbo].[Users]
+           ([FullName]
+           ,[UserName]
+           ,[Email]
+           ,[Password]
+           ,[Avartar]
+           ,[RoleID]
+           ,[Status])
+     VALUES
+           (N'Phạm Trung Hiếu'
+           ,'Hieuu123@'
+           ,'congninh@gmail.com'
+           ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
+           ,'https://kenhnguoinoitieng.com/wp-content/uploads/2025/03/a2cv0l4zx91-uriwwxbjti2-84qh9ubcya3.png'
+           ,2
+           ,1)
+		   INSERT INTO [dbo].[Users]
+           ([FullName]
+           ,[UserName]
+           ,[Email]
+           ,[Password]
+           ,[Avartar]
+           ,[RoleID]
+           ,[Status])
+     VALUES
+           (N'Nguyễn Hoàng Duy'
+           ,'Duy123@'
+           ,'hoangduy@gmail.com'
+           ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
+           ,'https://media.vneconomy.vn/w800/images/upload/2025/02/11/musk.png'
+           ,2
+           ,1)
 INSERT INTO Category (CategoryName, Description) VALUES 
 (N'Java Programming', N'Learn Java from basics to advanced concepts.'),
 (N'Python Programming', N'Master Python for development, data science, and AI.'),
@@ -264,7 +314,7 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 -- Java Courses
 
 
-(N'Java for Beginners', N'Java for Beginners is an ideal course for those new to Java programming. It covers fundamental concepts, including setting up the environment, variables, data types, loops, conditions, and object-oriented programming (OOP). You will learn how to create and use classes, objects, inheritance, polymorphism, and exception handling. The course also introduces Java Collections, database connectivity (JDBC), and web application development using JSP and Servlets. This is a valuable resource for building a strong foundation in Java and preparing for professional software development.', 150000,'https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/lap-trinh-java-for-beginner-63739300179.8416.jpg', 2, 1, GETDATE(),4),
+(N'Java for Beginners', N'Java for Beginners is an ideal course for those new to Java programming. It covers fundamental concepts, including setting up the environment, variables, data types, loops, conditions, and object-oriented programming (OOP). You will learn how to create and use classes, objects, inheritance, polymorphism, and exception handling. The course also introduces Java Collections, database connectivity (JDBC), and web application development using JSP and Servlets. This is a valuable resource for building a strong foundation in Java and preparing for professional software development.', 150000,'https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/lap-trinh-java-for-beginner-63739300179.8416.jpg', 3, 1, GETDATE(),4),
 (N'Advanced Java Development', N'Advanced Java Development is designed for experienced Java programmers looking to deepen their skills. This course covers advanced topics such as multi-threading, concurrency, design patterns, and JVM internals. You will explore Java EE, including Servlets, JSP, Spring Framework, and RESTful APIs. Additionally, it introduces enterprise-level solutions like microservices, message queues, and security best practices. With hands-on projects and real-world scenarios, this course helps developers master Java for large-scale applications and professional software development.', 180000,'https://skilltechacademy.in/wp-content/uploads/2024/07/advanced-java-online-training-1024x585.jpeg' , 2, 1, GETDATE(),4),
 (N'Java Spring Boot Web Development', N'Java Spring Boot Web Development is a comprehensive guide for building modern web applications using the Spring Boot framework. This course covers core Spring concepts such as dependency injection, MVC architecture, RESTful APIs, and database integration with JPA and Hibernate. You will also explore security mechanisms, authentication, and deployment strategies. With hands-on projects, you will learn how to create scalable, high-performance web applications while following industry best practices.', 200000,'https://www.adm.ee/wordpress/wp-content/uploads/2023/12/Spring-768x512.png', 2, 1, GETDATE(),4),
 
@@ -272,14 +322,14 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 
 -- Python Courses
 (N'Python Basics', N'Python Basics is an introductory guide to the fundamental concepts of Python programming. It covers essential topics such as variables, data types, loops, functions, and object-oriented programming. This course provides a hands-on approach to learning Python with practical examples and exercises. Whether you are a beginner or transitioning from another language, Python Basics will equip you with the foundational skills needed to start coding and developing applications efficiently.', 120000, 'https://miro.medium.com/v2/resize:fit:2000/1*Zipt5ex6sSVSkciwlJoG4Q.png', 2, 2, GETDATE(),4),
-(N'Data Science with Python', N'Data Science with Python explores the power of Python for data analysis, visualization, and machine learning. This course covers essential libraries such as NumPy, Pandas, Matplotlib, and Scikit-learn, enabling learners to process, analyze, and interpret complex datasets. It includes practical examples and real-world applications to help build strong analytical skills. Whether you are a beginner or an experienced programmer, this course provides a solid foundation in data science using Python.', 190000, 'https://cdn.shopaccino.com/igmguru/products/data-science--with-python-igmguru_176161162_l.jpg?v=509', 2, 2, GETDATE(),4),
-(N'Python for Web Development', N'Build Web Applications using Django and Flask Frameworks is a comprehensive course designed to help learners create dynamic and scalable web applications using Python. The course covers the fundamentals of both Django and Flask, including routing, database integration, authentication, and REST API development. With hands-on projects and real-world examples, participants will gain practical experience in building modern web applications efficiently. Whether you are a beginner or an experienced developer, this course provides essential skills for mastering Python web development.', 170000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220826185259/Why-to-Use-Python-for-Web-Development.jpg', 2, 2, GETDATE(),4),
+(N'Data Science with Python', N'Data Science with Python explores the power of Python for data analysis, visualization, and machine learning. This course covers essential libraries such as NumPy, Pandas, Matplotlib, and Scikit-learn, enabling learners to process, analyze, and interpret complex datasets. It includes practical examples and real-world applications to help build strong analytical skills. Whether you are a beginner or an experienced programmer, this course provides a solid foundation in data science using Python.', 190000, 'https://cdn.shopaccino.com/igmguru/products/data-science--with-python-igmguru_176161162_l.jpg?v=509', 7, 2, GETDATE(),4),
+(N'Python for Web Development', N'Build Web Applications using Django and Flask Frameworks is a comprehensive course designed to help learners create dynamic and scalable web applications using Python. The course covers the fundamentals of both Django and Flask, including routing, database integration, authentication, and REST API development. With hands-on projects and real-world examples, participants will gain practical experience in building modern web applications efficiently. Whether you are a beginner or an experienced developer, this course provides essential skills for mastering Python web development.', 170000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220826185259/Why-to-Use-Python-for-Web-Development.jpg', 9, 2, GETDATE(),4),
 
 -- JavaScript Courses
 
-(N'JavaScript Essentials', N'JavaScript Essentials is a fundamental course designed for beginners and aspiring web developers. This course covers core JavaScript concepts, including variables, data types, functions, loops, and event handling. Learners will also explore the Document Object Model (DOM), asynchronous programming, and API interactions. Through hands-on exercises and real-world examples, students will gain practical coding experience to build interactive and dynamic web applications. Whether you are starting from scratch or looking to enhance your JavaScript skills, this course provides a strong foundation for modern web development.', 110000, 'https://img-c.udemycdn.com/course/750x422/1468694_d595_2.jpg', 2, 3, GETDATE(),4),
-(N'Frontend Development with JavaScript', N'Frontend Development with JavaScript is a comprehensive course designed to equip learners with essential skills for building dynamic and interactive web applications. This course covers key JavaScript concepts, including DOM manipulation, event handling, asynchronous programming, and API integration. Students will also explore modern frontend frameworks like React or Vue.js to create responsive user interfaces. Through hands-on projects, participants will gain practical experience in developing real-world web applications. Whether you are a beginner or looking to enhance your frontend skills, this course provides the foundation needed to become a proficient JavaScript developer.', 160000, 'https://media.geeksforgeeks.org/wp-content/uploads/20240703165023/Frontend-Development-(1).webp', 2, 3, GETDATE(),2),
-(N'Backend Development with Node.js', N'Backend Development with Node.js is a hands-on course designed to teach developers how to build scalable and efficient server-side applications. This course covers fundamental Node.js concepts, including event-driven programming, asynchronous operations, and working with modules. Students will also learn how to create RESTful APIs using Express.js, interact with databases like MongoDB and PostgreSQL, and implement authentication and authorization. With practical projects and real-world examples, this course provides the necessary skills to develop modern, high-performance backend applications using Node.js.', 200000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220517005132/Why-to-Use-NodeJS-for-Backend-Development.jpg', 2, 3, GETDATE(),2);
+(N'JavaScript Essentials', N'JavaScript Essentials is a fundamental course designed for beginners and aspiring web developers. This course covers core JavaScript concepts, including variables, data types, functions, loops, and event handling. Learners will also explore the Document Object Model (DOM), asynchronous programming, and API interactions. Through hands-on exercises and real-world examples, students will gain practical coding experience to build interactive and dynamic web applications. Whether you are starting from scratch or looking to enhance your JavaScript skills, this course provides a strong foundation for modern web development.', 110000, 'https://img-c.udemycdn.com/course/750x422/1468694_d595_2.jpg', 7, 3, GETDATE(),4),
+(N'Frontend Development with JavaScript', N'Frontend Development with JavaScript is a comprehensive course designed to equip learners with essential skills for building dynamic and interactive web applications. This course covers key JavaScript concepts, including DOM manipulation, event handling, asynchronous programming, and API integration. Students will also explore modern frontend frameworks like React or Vue.js to create responsive user interfaces. Through hands-on projects, participants will gain practical experience in developing real-world web applications. Whether you are a beginner or looking to enhance your frontend skills, this course provides the foundation needed to become a proficient JavaScript developer.', 160000, 'https://media.geeksforgeeks.org/wp-content/uploads/20240703165023/Frontend-Development-(1).webp', 8, 3, GETDATE(),2),
+(N'Backend Development with Node.js', N'Backend Development with Node.js is a hands-on course designed to teach developers how to build scalable and efficient server-side applications. This course covers fundamental Node.js concepts, including event-driven programming, asynchronous operations, and working with modules. Students will also learn how to create RESTful APIs using Express.js, interact with databases like MongoDB and PostgreSQL, and implement authentication and authorization. With practical projects and real-world examples, this course provides the necessary skills to develop modern, high-performance backend applications using Node.js.', 200000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220517005132/Why-to-Use-NodeJS-for-Backend-Development.jpg', 8, 3, GETDATE(),2);
 --Payment 
 INSERT INTO Payment (UserID, CourseID, Amount) VALUES
 (5, 1, 150000),
@@ -329,7 +379,97 @@ N'Nhiều người nghĩ lập trình yêu cầu toán cao cấp, nhưng sự th
 
     (N'100 ngày code: Hành trình từ newbie đến lập trình viên', 
      N'Bạn có thể trở thành lập trình viên sau 100 ngày học tập? Hãy thử thách bản thân với kế hoạch này! Cam kết dành ít nhất 1 giờ mỗi ngày để code, học từ các nguồn uy tín như FreeCodeCamp, Codecademy. Mỗi tuần, chọn một chủ đề như HTML, CSS, JavaScript, API, hoặc database để thực hành. Theo dõi tiến trình bằng cách viết blog hoặc chia sẻ dự án trên GitHub. Nếu duy trì đủ 100 ngày, bạn sẽ không chỉ có kiến thức vững vàng mà còn hình thành thói quen lập trình, sẵn sàng cho công việc thực tế.',
-     'https://niithanoi.edu.vn/pic/News/100-ngay-hoc-code.png', GETDATE(), 2);
+     'https://niithanoi.edu.vn/pic/News/100-ngay-hoc-code.png', GETDATE(), 5),
+	 (N'Python – Vì sao ngôn ngữ này thống trị AI và khoa học dữ liệu?', 
+	N'Python là một trong những ngôn ngữ lập trình phổ biến nhất hiện nay, đặc biệt trong lĩnh vực trí tuệ nhân tạo (AI) và khoa học dữ liệu. Nhờ cú pháp đơn giản, thư viện phong phú như TensorFlow, PyTorch, scikit-learn, Python giúp các nhà phát triển dễ dàng xây dựng mô hình AI. Ngoài ra, Python còn có ứng dụng rộng rãi trong phát triển web (Django, Flask), tự động hóa và phân tích dữ liệu. Nếu bạn muốn tham gia vào lĩnh vực AI hay Data Science, Python chắc chắn là lựa chọn hàng đầu.', 
+	'https://imic.edu.vn/images/news/tai-sao-ngon-ngu-py-thon-la-ngon-ngu-tot-nhat-cho-AI.jpg', '2025-03-22', 4),
+	(N'JavaScript – Ngôn ngữ không thể thiếu cho lập trình web hiện đại', 
+	N'JavaScript là ngôn ngữ lập trình web phổ biến nhất, giúp tạo ra các trang web tương tác. Với sự hỗ trợ của các framework như React, Angular, Vue, JavaScript giúp xây dựng các ứng dụng web động một cách dễ dàng. Hơn nữa, JavaScript còn có mặt trong backend với Node.js, giúp đồng bộ hóa cả frontend và backend trên cùng một ngôn ngữ. Nếu bạn muốn phát triển web, JavaScript là một kỹ năng không thể thiếu.', 
+	'https://cloud.z.com/vn/wp-content/uploads/2024/01/Screenshot_1-6.png', '2025-03-22', 5),
+	(N'Java – Tại sao vẫn là lựa chọn hàng đầu cho doanh nghiệp?', 
+	N'Java vẫn là một trong những ngôn ngữ phổ biến nhất trong hệ thống doanh nghiệp nhờ tính ổn định, bảo mật và khả năng mở rộng cao. Với các framework mạnh mẽ như Spring Boot, Java được sử dụng để xây dựng các hệ thống backend lớn. Ngoài ra, Java cũng là ngôn ngữ chính cho phát triển ứng dụng Android với Android Studio. Nếu bạn muốn làm việc trong các công ty công nghệ lớn, Java là một lựa chọn đáng cân nhắc.', 
+	'https://vtiacademy.edu.vn/upload/images/anh-link/chung-chi-java-la-gi-co-may-loai-chung-chi-java-1.jpg', '2025-03-22', 4),
+	(N'C# và Unity – Cặp đôi hoàn hảo cho lập trình game', 
+	N'C# là một ngôn ngữ mạnh mẽ, đặc biệt khi kết hợp với Unity để phát triển game. Unity là một trong những nền tảng phát triển game phổ biến nhất, hỗ trợ cả 2D và 3D. Nhờ cú pháp rõ ràng và tài liệu phong phú, C# giúp lập trình viên dễ dàng tạo ra những trò chơi chất lượng cao. Nếu bạn đam mê lập trình game, học C# và Unity sẽ giúp bạn có cơ hội lớn trong ngành công nghiệp này.', 
+	'https://caodang.fpt.edu.vn/wp-content/uploads/maxresdefault-2-3.jpg', '2025-03-22', 4),
+	(N'Go – Ngôn ngữ tối ưu cho backend và hệ thống phân tán', 
+	N'Go (Golang) được phát triển bởi Google để giải quyết các vấn đề về hiệu suất và khả năng mở rộng của hệ thống backend. Với cú pháp đơn giản, tốc độ cao và hỗ trợ xử lý song song mạnh mẽ, Go trở thành lựa chọn hàng đầu cho các hệ thống cloud-native, microservices và backend. Nếu bạn quan tâm đến lập trình hệ thống, Go là một ngôn ngữ đáng học.', 
+	'https://200lab.io/blog/_next/image?url=https%3A%2F%2Fstatics.cdn.200lab.io%2F2023%2F06%2Fgolang-la-gi-1.jpg&w=3840&q=75', '2025-03-22', 4),
+	(N'TypeScript – Tại sao nên dùng thay vì JavaScript thuần?', 
+	N'TypeScript là một phiên bản nâng cấp của JavaScript với khả năng kiểm tra kiểu dữ liệu tĩnh, giúp giảm lỗi trong quá trình phát triển. Các framework hiện đại như Angular, React, Vue đều hỗ trợ TypeScript, giúp cải thiện hiệu suất và bảo trì code dễ dàng hơn. Nếu bạn là lập trình viên JavaScript, việc học TypeScript sẽ giúp bạn làm việc hiệu quả hơn.', 
+	'https://blog.haposoft.com/content/images/2022/11/10b88c68-typescript-logo.png', '2025-03-22', 4),
+	(N' ReactJS: Thư viện JavaScript thống trị frontend', 
+	N'ReactJS giúp xây dựng giao diện người dùng mạnh mẽ, tái sử dụng component, cải thiện hiệu suất web. Được Facebook phát triển, ReactJS đang dẫn đầu xu hướng frontend hiện nay.', 
+	'https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/react-js-co-ban-phan-1-63738082145.3856.jpg', '2025-03-22', 4),
+	(N'Spring Boot: Tại sao Java backend lại cần nó?', 
+	N'Spring Boot giúp phát triển ứng dụng Java nhanh chóng, giảm bớt cấu hình phức tạp. Nó phù hợp với các hệ thống microservices và cloud-native.
+Ưu điểm: Giảm thiểu cấu hình, dễ dàng mở rộng.
+Nhược điểm: Học tập tốn thời gian, tiêu tốn nhiều tài nguyên hệ thống.', 
+	'https://ant.ncc.asia/wp-content/uploads/2024/08/image-214.png', '2025-03-22', 4),
+	(N'TypeScript: Nâng tầm JavaScript', 
+	N'TypeScript thêm tính năng kiểm tra kiểu dữ liệu, giúp code dễ bảo trì hơn. Được sử dụng rộng rãi trong Angular, React và Vue.
+Ưu điểm: Kiểm tra lỗi tốt hơn, hỗ trợ lập trình hướng đối tượng.
+Nhược điểm: Cần biên dịch sang JavaScript, phức tạp hơn JS thuần.', 
+	'https://images.viblo.asia/30fca26e-b706-4680-88b8-2ddaef08582b.png', '2025-03-22', 4),
+	(N'JavaScript vs Python: Cuộc chiến của hai ông lớn', 
+	N'JavaScript thống trị web, trong khi Python chiếm lĩnh AI và Data Science. Tùy vào mục tiêu nghề nghiệp, bạn có thể chọn một trong hai hoặc học cả hai.
+
+Ưu điểm JavaScript: Chạy trên trình duyệt, hiệu suất cao.
+
+Nhược điểm JavaScript: Không có kiểu tĩnh, dễ gây lỗi.
+
+Ưu điểm Python: Dễ học, mạnh về AI, Data Science.
+
+Nhược điểm Python: Chạy chậm hơn JS trên trình duyệt.', 
+	'https://funix.edu.vn/wp-content/uploads/2021/10/JavaScript-v%C3%A0-Python.png', '2025-03-22', 4),
+	(N' Web3 và Blockchain: Xu hướng công nghệ phi tập trung', 
+	N'Blockchain không chỉ phục vụ tiền điện tử mà còn mở rộng sang hợp đồng thông minh, ứng dụng phi tập trung (DApps). Ethereum, Solana là những nền tảng phổ biến.
+
+Ưu điểm: Bảo mật cao, minh bạch.
+
+Nhược điểm: Khó mở rộng, phí giao dịch cao.', 
+	'https://itviec.com/blog/wp-content/uploads/2024/03/moi-lien-he-giua-blockchain-va-web3-blog-thumbnail-vippro.png', '2025-03-22', 4),
+	(N'Rust: Tương lai của lập trình an toàn và hiệu suất', 
+	N'Rust nổi bật với cơ chế quản lý bộ nhớ an toàn, không cần garbage collector, giúp phát triển hệ thống nhúng và phần mềm hiệu suất cao.
+
+Ưu điểm: An toàn bộ nhớ, hiệu suất cao.
+
+Nhược điểm: Cú pháp phức tạp, khó học hơn các ngôn ngữ khác.', 
+	'https://200lab.io/blog/_next/image?url=https%3A%2F%2Fstatics.cdn.200lab.io%2F2024%2F09%2Frust-la-gi-1.png&w=3840&q=75', '2025-03-22', 5),
+	(N'SQL vs NoSQL: Chọn hệ quản trị dữ liệu nào?', 
+	N'SQL như MySQL, PostgreSQL phù hợp với dữ liệu có cấu trúc. NoSQL như MongoDB, Firebase thích hợp cho hệ thống linh hoạt, mở rộng nhanh.', 
+	'https://mastering-da.com/wp-content/uploads/2023/10/su-khac-nhau-giua-sql-va-nosql.jpg', '2025-03-22', 4),
+	(N'Code AI chatbot với JavaScript: Bắt đầu từ đâu?', 
+	N'Chatbot AI đang là xu hướng trong lập trình web. Để tạo một chatbot đơn giản bằng JavaScript, bạn cần:
+
+Sử dụng thư viện NLP như natural.js hoặc API chatbot có sẵn.
+
+Xây dựng logic phản hồi dựa trên dữ liệu đầu vào từ người dùng.
+
+Tích hợp vào website bằng React hoặc đơn giản hơn là HTML, CSS, JavaScript thuần.', 
+	'https://www.pullrequest.com/blog/ai-code-review-the-new-frontier-in-software-development/images/ai-code-review--the-new-frontier-in-software-development.webp', '2025-03-22', 5),
+	(N'Làm sao để duy trì động lực khi học lập trình?', 
+	N'Lập trình có thể khiến bạn nản chí, nhưng đừng bỏ cuộc! Hãy thử:
+
+Chia nhỏ mục tiêu, mỗi ngày học một chút nhưng đều đặn.
+
+Tham gia các thử thách coding như LeetCode, Codeforces.
+
+Tạo một dự án cá nhân giúp áp dụng kiến thức thực tế.', 
+	'https://howtolearnmachinelearning.com/wp-content/uploads/2022/12/how_is_ai_being_used_to_write_code-scaled.jpeg', '2025-03-22', 5),
+	(N'Học ngôn ngữ nào dễ xin việc nhất?', 
+	N'Nếu mục tiêu của bạn là tìm việc nhanh, hãy cân nhắc:
+
+Web (frontend/backend): JavaScript, TypeScript, React, Node.js.
+
+AI & Data Science: Python, SQL.
+
+Lập trình mobile: Kotlin (Android), Swift (iOS), Flutter.
+
+Lập trình game: C#, Unity, C++ (Unreal Engine).
+
+Hệ thống lớn & tài chính: Java, C++, Go, Rust.', 
+	'https://topdev.vn/blog/wp-content/uploads/2020/11/top-5-ngon-ngu-lap-trinh-nen-hoc-12.jpg', '2025-03-22', 5);
 
 
 
