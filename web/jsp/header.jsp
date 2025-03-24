@@ -357,7 +357,7 @@
                             </li>
                             <li>
                                 <a name="btnlg" class="dropdown-item" href="LogoutServlet">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
                                 </a>
                             </li>
                         </ul>
