@@ -336,8 +336,8 @@ N'Nhiều người nghĩ lập trình yêu cầu toán cao cấp, nhưng sự th
 -- Insert answers into the Answer table (only correct answers)
 
 INSERT INTO [dbo].[Test] ([Name],  [CreatedBy],[CourseID]) 
-VALUES ('Test 1','Hoang Cong Ninh', 1),
-('Test 2','Hoang Cong Ninh', 2);
+VALUES ('Final test','Hoang Cong Ninh', 1),
+('Final Test','Hoang Cong Ninh', 2);
 -- Insert questions into the Question table with TestID = 1
 INSERT INTO Question (QuestionType, QuestionContent, OptionA, OptionB, OptionC, OptionD, TestID) 
 VALUES 

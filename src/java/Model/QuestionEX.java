@@ -1,15 +1,17 @@
 package Model;
 
 public class QuestionEX {
-    private int questionID;
-    private String questionType;
-    private String questionContent;
-    private String optionA;
-    private String optionB;
-    private String optionC;
-    private String optionD;
-    private int testID;
-    private int status;
+
+    int questionID;
+    String questionType;
+    String questionContent;
+    String optionA;
+    String optionB;
+    String optionC;
+    String optionD;
+    int testID;
+    int status;
+    String correctAnswer;
 
     // Constructor
     public QuestionEX() {
@@ -37,7 +39,7 @@ public class QuestionEX {
     }
 
     public QuestionEX(int questionID, String questionContent, String optionA, String optionB,
-                     String optionC, String optionD, int testID, int status) {
+            String optionC, String optionD, int testID, int status) {
         this.questionID = questionID;
         this.questionContent = questionContent;
         this.optionA = optionA;
@@ -46,6 +48,22 @@ public class QuestionEX {
         this.optionD = optionD;
         this.testID = testID;
         this.status = status;
+    }
+
+    public String getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
     }
 
     // Getters and Setters

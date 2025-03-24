@@ -28,7 +28,7 @@ public class QuestionController extends HttpServlet {
             HttpSession session = request.getSession();
             String fullName = (String) session.getAttribute("Fullname");
             if (fullName == null) {
-                response.sendRedirect("login.jsp?error=Please login first");
+                response.sendRedirect("LoginServlet?error=Please login first");
                 return;
             }
 
