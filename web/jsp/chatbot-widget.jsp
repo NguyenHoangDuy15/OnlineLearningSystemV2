@@ -7,14 +7,12 @@
     <meta name="description" content="Chatbot hỗ trợ học lập trình trên nền tảng học trực tuyến">
     <title>Chatbot Hỗ Trợ Học Lập Trình</title>
     <style>
-        /* Reset default styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Styling for the chatbot icon */
         .chatbot-icon {
             position: fixed;
             bottom: 20px;
@@ -38,7 +36,6 @@
             background-color: #0056b3;
         }
 
-        /* Styling for the chatbot window */
         .chatbot-window {
             position: fixed;
             bottom: 90px;
@@ -55,7 +52,6 @@
             border: 1px solid #e0e0e0;
         }
 
-        /* Responsive design for smaller screens */
         @media (max-width: 480px) {
             .chatbot-window {
                 width: 90%;
@@ -65,7 +61,6 @@
             }
         }
 
-        /* Styling for the window header */
         .chatbot-header {
             background-color: #007bff;
             color: white;
@@ -90,7 +85,6 @@
             color: #e0e0e0;
         }
 
-        /* Styling for the chatbox */
         .chatbox {
             flex: 1;
             overflow-y: auto;
@@ -111,7 +105,6 @@
             border-radius: 10px;
         }
 
-        /* Styling for messages */
         .message {
             margin: 12px 0;
             padding: 12px 18px;
@@ -140,7 +133,6 @@
             border-bottom-left-radius: 5px;
         }
 
-        /* Styling for the input area */
         .input-area {
             padding: 15px;
             border-top: 1px solid #e0e0e0;
@@ -187,42 +179,40 @@
     </style>
 </head>
 <body>
-    <!-- Chatbot Icon -->
-    <div class="chatbot-icon" onclick="toggleChatbot()">?</div>
+    <div class="chatbot-icon" onclick="toggleChatbot()" aria-label="Mở chatbot hỗ trợ">?</div>
 
-    <!-- Chatbot Window -->
-    <div class="chatbot-window" id="chatbotWindow">
-        <div class="chatbot-header">
-           Chatbot Supports
-            <span class="close-btn" onclick="toggleChatbot()">×</span>
+    <div class="chatbot-window" id="chatbotWindow" role="dialog" aria-labelledby="chatbotHeader">
+        <div class="chatbot-header" id="chatbotHeader">
+           Chatbot Support
+            <span class="close-btn" onclick="toggleChatbot()" aria-label="Đóng chatbot">×</span>
         </div>
-        <div class="chatbox" id="chatbox">
-            <div class="message bot-message">Chatbot: Hello! I can help you learn the installer. What do you need help with today?</div>
+        <div class="chatbox" id="chatbox" role="log" aria-live="polite">
+            <div class="message bot-message">Chatbot: Hello! I can help you learn programming. What help do you need today?</div>
         </div>
         <div class="input-area">
             <form id="chatbotForm">
-                <input type="text" name="message" id="messageInput" placeholder="Nhập câu hỏi của bạn..." required>
+                <input type="text" name="message" id="messageInput" placeholder="Hỏi về khóa học, giá cả, bài kiểm tra..." required>
                 <input type="submit" value="Gửi">
             </form>
         </div>
     </div>
 
     <script>
-        // Get context path from JSP
         const contextPath = "${pageContext.request.contextPath}";
 
-        // Function to toggle the chatbot window
         function toggleChatbot() {
             const chatbotWindow = document.getElementById("chatbotWindow");
             const isOpen = chatbotWindow.style.display === "flex";
             chatbotWindow.style.display = isOpen ? "none" : "flex";
-            sessionStorage.setItem("chatbotOpen", !isOpen);
+            localStorage.setItem("chatbotOpen", !isOpen);
+            if (!isOpen) {
+                document.getElementById("messageInput").focus();
+            }
         }
 
-        // Restore chatbot state on page load
         window.onload = function() {
             const chatbotWindow = document.getElementById("chatbotWindow");
-            const isOpen = sessionStorage.getItem("chatbotOpen") === "true";
+            const isOpen = localStorage.getItem("chatbotOpen") === "true";
             if (isOpen) {
                 chatbotWindow.style.display = "flex";
             }
@@ -230,7 +220,20 @@
             chatbox.scrollTop = chatbox.scrollHeight;
         };
 
-        // Handle form submission with AJAX
+        document.querySelector(".chatbot-icon").addEventListener("keydown", function(event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleChatbot();
+            }
+        });
+
+        document.querySelector(".close-btn").addEventListener("keydown", function(event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleChatbot();
+            }
+        });
+
         document.getElementById("chatbotForm").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -244,10 +247,14 @@
             userDiv.textContent = "Bạn: " + userMessage;
             chatbox.appendChild(userDiv);
 
+            const loadingDiv = document.createElement("div");
+            loadingDiv.className = "message bot-message";
+            loadingDiv.textContent = "Chatbot: Processing...";
+            chatbox.appendChild(loadingDiv);
+
             chatbox.scrollTop = chatbox.scrollHeight;
             messageInput.value = "";
 
-            // Send AJAX request to ChatbotServlet with context path
             fetch(contextPath + "/ChatbotServlet", {
                 method: "POST",
                 headers: {
@@ -262,6 +269,7 @@
                 return response.json();
             })
             .then(data => {
+                chatbox.removeChild(loadingDiv);
                 const botDiv = document.createElement("div");
                 botDiv.className = "message bot-message";
                 botDiv.textContent = "Chatbot: " + data.botResponse;
@@ -270,6 +278,7 @@
             })
             .catch(error => {
                 console.error("Error:", error);
+                chatbox.removeChild(loadingDiv);
                 const botDiv = document.createElement("div");
                 botDiv.className = "message bot-message";
                 botDiv.textContent = "Chatbot: Đã xảy ra lỗi. Vui lòng thử lại sau.";
@@ -278,7 +287,6 @@
             });
         });
 
-        // Submit form on Enter key press
         document.getElementById("messageInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -286,7 +294,6 @@
             }
         });
 
-        // Close chatbot when clicking outside
         document.addEventListener("click", function(event) {
             const chatbotWindow = document.getElementById("chatbotWindow");
             const chatbotIcon = document.querySelector(".chatbot-icon");
@@ -298,7 +305,7 @@
 
             if (!chatbotWindow.contains(event.target) && !chatbotIcon.contains(event.target)) {
                 chatbotWindow.style.display = "none";
-                sessionStorage.setItem("chatbotOpen", "false");
+                localStorage.setItem("chatbotOpen", "false");
             }
         });
     </script>
