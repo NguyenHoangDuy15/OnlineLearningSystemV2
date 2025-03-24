@@ -28,6 +28,7 @@
                 padding: 20px;
                 box-shadow: 5px 0 15px rgba(0,0,0,0.1);
                 transition: width 0.3s ease;
+                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung dài */
             }
 
             .sidebar:hover {
@@ -125,6 +126,22 @@
             .fa-times-circle {
                 color: #dc3545;
             }
+
+            /* CSS cho Course Information link */
+            .course-info-link {
+                margin-top: 10px;
+            }
+
+            .course-info-link a {
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .course-info-link a i {
+                color: #ffd700; /* Màu vàng cho biểu tượng */
+            }
         </style>
     </head>
 
@@ -162,6 +179,13 @@
                     </li>
                 </c:if>
             </ul>
+
+            <!-- Thẻ a cho Course Information -->
+            <h5 class="course-info-link">
+                <a href="detail?courseId=${courseId}">
+                    <i class="fas fa-info-circle"></i> Course Information
+                </a>
+            </h5>
         </div>
 
         <div class="content">
@@ -200,15 +224,15 @@
             }
 
             window.onload = function () {
-                <c:forEach var="lesson" items="${lessonsAndTests}" begin="0" end="0">
-                    changeContent('${lesson.type}', '${lesson.content}', ${lesson.id});
-                </c:forEach>
+            <c:forEach var="lesson" items="${lessonsAndTests}" begin="0" end="0">
+                changeContent('${lesson.type}', '${lesson.content}', ${lesson.id});
+            </c:forEach>
                 let firstLesson = document.querySelector("#courseList a");
                 if (firstLesson) {
                     firstLesson.click();
                 }
             };
         </script>
-          <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 </html>
