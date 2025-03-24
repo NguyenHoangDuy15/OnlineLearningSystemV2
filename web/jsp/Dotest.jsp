@@ -146,10 +146,9 @@
             flex: 1;
         }
 
-        /* Định vị phần nội dung câu hỏi */
         .card-body {
-            position: relative; /* Để định vị nút Cancel Test */
-            min-height: 400px; /* Đảm bảo có đủ không gian */
+            position: relative;
+            min-height: 400px;
         }
 
         .mark-uncertain {
@@ -160,7 +159,7 @@
         .cancel-test-container {
             position: absolute;
             bottom: 20px;
-            right: 20px; /* Căn phải, thẳng hàng với ngôi sao */
+            right: 20px;
         }
     </style>
 </head>
@@ -179,7 +178,7 @@
                                         <c:set var="qItem" value="${questions[i]}" />
                                         <c:set var="isAnswered" value="${sessionScope.userAnswers[qItem.questionID] != null}" />
                                         <c:set var="isUncertain" value="${sessionScope.uncertainQuestions[qItem.questionID] != null}" />
-                                        <div class="question-item ${isAnswered ? 'answered' : isUncertain ? 'uncertain' : 'default'}" 
+                                        <div class="question-item ${isUncertain ? 'uncertain' : isAnswered ? 'answered' : 'default'}" 
                                              data-question-id="${qItem.questionID}"
                                              onclick="navigateToQuestion(${qItem.questionID})">
                                             ${i + 1}
@@ -216,7 +215,7 @@
                         <div class="question-container">
                             <form action="TestAnswer" method="post" id="testForm">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <h5 class="card-title">Question ${q.questionID}:</h5>
+                                    <h5 class="card-title">Question ${currentIndex + 1}:</h5>
                                     <span class="mark-uncertain ${sessionScope.uncertainQuestions[q.questionID] != null ? 'marked' : ''}" 
                                           data-question-id="${q.questionID}" 
                                           title="Mark as uncertain"
@@ -268,10 +267,8 @@
 
     <script>
         $(document).ready(function () {
-            // Hiệu ứng fade-in khi tải trang
             $(".question-container").addClass("show");
 
-            // Âm thanh khi chọn đáp án
             $(".answer-option").on("change", function () {
                 let audio = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
                 audio.play();
@@ -280,21 +277,33 @@
             });
         });
 
-        // Hàm điều hướng đến câu hỏi được chọn
         function navigateToQuestion(questionID) {
             $('#navigateQuestionId').val(questionID);
             $('#markUncertainId').val('');
             $('#testForm').submit();
         }
 
-        // Hàm đánh dấu câu hỏi chưa chắc chắn
         function markAsUncertain(questionID) {
             $('#markUncertainId').val(questionID);
             $('#navigateQuestionId').val('');
             $('#testForm').submit();
+
+            let $star = $(`.mark-uncertain[data-question-id="${questionID}"]`);
+            let $questionItem = $(`.question-item[data-question-id="${questionID}"]`);
+            
+            if ($star.hasClass('marked')) {
+                $star.removeClass('marked');
+                if ($questionItem.hasClass('answered')) {
+                    $questionItem.removeClass('uncertain').addClass('answered');
+                } else {
+                    $questionItem.removeClass('uncertain').addClass('default');
+                }
+            } else {
+                $star.addClass('marked');
+                $questionItem.removeClass('answered default').addClass('uncertain');
+            }
         }
 
-        // Xử lý hủy bài test
         $('#cancelTest').on('click', function (e) {
             e.preventDefault();
             if (confirm('Are you sure you want to cancel this test? Your progress will be lost.')) {
