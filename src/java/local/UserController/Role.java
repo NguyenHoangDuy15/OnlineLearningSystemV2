@@ -83,6 +83,7 @@ public class Role extends HttpServlet {
             requestedRole = Integer.parseInt(request.getParameter("role"));
         } catch (NumberFormatException e) {
             request.setAttribute("message", "Invalid role selected.");
+            request.setAttribute("selectedRole", null); // Đặt giá trị mặc định nếu lỗi
             request.getRequestDispatcher("jsp/Role.jsp").forward(request, response);
             return;
         }
@@ -94,21 +95,11 @@ public class Role extends HttpServlet {
             Integer latestStatus = requestDAO.getLatestRequestStatus(userId, requestedRole);
 
             if (latestStatus == null) {
-                // Status = NULL: Đang chờ phê duyệt
                 request.setAttribute("message", "You have a pending request. Please wait for Admin approval.");
             } else if (latestStatus == 1) {
-                // Status = 1: Đã được phê duyệt
                 request.setAttribute("message", "Your request has already been approved. You cannot submit another request for this role.");
-            } else if (latestStatus == 0) {
-                // Status = 0: Bị từ chối, cho phép gửi lại
-                boolean success = requestDAO.insertRequest(userId, requestedRole);
-                if (success) {
-                    request.setAttribute("message", "Request submitted successfully! Please wait for Admin approval.");
-                } else {
-                    request.setAttribute("message", "Request submission failed!");
-                }
-            } else if (latestStatus == -1) {
-                // Không có yêu cầu trước đó, cho phép gửi yêu cầu mới
+            } else if (latestStatus == 0 || latestStatus == -1) {
+                // Status = 0: Bị từ chối, hoặc -1: Không có yêu cầu trước đó
                 boolean success = requestDAO.insertRequest(userId, requestedRole);
                 if (success) {
                     request.setAttribute("message", "Request submitted successfully! Please wait for Admin approval.");
@@ -121,6 +112,8 @@ public class Role extends HttpServlet {
             request.setAttribute("message", "Error processing your request.");
         }
 
+        // Gửi lại giá trị selectedRole để giữ trạng thái option
+        request.setAttribute("selectedRole", requestedRole);
         // Chuyển hướng đến trang Role.jsp để hiển thị thông báo
         request.getRequestDispatcher("jsp/Role.jsp").forward(request, response);
     }
