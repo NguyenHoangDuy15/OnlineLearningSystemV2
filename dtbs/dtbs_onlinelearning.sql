@@ -282,19 +282,19 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 (N'Backend Development with Node.js', N'Backend Development with Node.js is a hands-on course designed to teach developers how to build scalable and efficient server-side applications. This course covers fundamental Node.js concepts, including event-driven programming, asynchronous operations, and working with modules. Students will also learn how to create RESTful APIs using Express.js, interact with databases like MongoDB and PostgreSQL, and implement authentication and authorization. With practical projects and real-world examples, this course provides the necessary skills to develop modern, high-performance backend applications using Node.js.', 200000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220517005132/Why-to-Use-NodeJS-for-Backend-Development.jpg', 2, 3, GETDATE(),2);
 --Payment 
 INSERT INTO Payment (UserID, CourseID, Amount) VALUES
-(1, 1, 500.00),
-(2, 2, 750.00),
-(3, 3, 600.00),
-(4, 1, 500.00),
-(5, 2, 750.00);
+(5, 1, 150000),
+(5, 2, 180000),
+(3, 3, 200000),
+(4, 1, 150000),
+(5, 2, 180000);
 -- Transaction History
 
 INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) VALUES
 (1, 1, '2024-03-01 10:15:30', 1, '2024-03-01 10:16:00'),
 (2, 1, '2024-03-02 14:20:45', 2, '2024-03-02 14:21:00'),
 (3, 0, '2024-03-03 09:30:15', 3, NULL),
-(4, 1, '2024-03-04 16:45:50', 4, '2024-03-04 16:46:30'),
-(5, 1, '2024-03-05 11:10:25', 5, '2024-03-05 11:11:00');
+(4, 1, '2024-03-04 16:45:50', 1, '2024-03-04 16:46:30'),
+(5, 1, '2024-03-05 11:10:25', 2, '2024-03-05 11:11:00');
 
 
 INSERT INTO Lessons (Title, Content, CourseID) VALUES 
