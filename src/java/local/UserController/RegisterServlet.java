@@ -136,7 +136,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
         if (!pass.equals(repass)) {
-            request.setAttribute("err", "password or re-password invalid");
+            request.setAttribute("err", "Password or re-password invalid");
             request.setAttribute("username", user);
             request.setAttribute("password", pass);
             request.setAttribute("repassword", repass);
