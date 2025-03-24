@@ -284,10 +284,8 @@
                         %>
                         <a href="course" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu m-0">
-                                <a href="Instructor" class="dropdown-item">Experts</a>
-                            </div>
+                            <a href="Instructor" class="nav-item nav-link">Experts</a>
+                            
                         </div>
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
                         <%
@@ -315,7 +313,7 @@
                                     <h6>Hi, <%= userNew.getUserName() %></h6>
                                     <p><%= userNew.getEmail() %></p>
                                 </div>
-                                <a href="ViewProfile" class="btn-view-profile">View profile</a>
+                                <a href="ViewProfile" class="btn-view-profile" name = "btn-view-profile">View profile</a>
                             </li>
                             <!-- Stats -->
                             <li class="dropdown-stats">
