@@ -1,6 +1,7 @@
 package local.ExpertController;
 
-import Model.Test;
+import Model.TestEX;
+import Model.QuestionEX;
 import dal.TestEXDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "QuestionController", urlPatterns = {"/QuestionController"})
 public class QuestionController extends HttpServlet {
@@ -113,6 +115,36 @@ public class QuestionController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("NoticeServlet");
+        String action = request.getParameter("action");
+        if ("getQuestions".equals(action)) {
+            try {
+                int testId = Integer.parseInt(request.getParameter("testId"));
+                // Lấy danh sách câu hỏi từ TestEXDAO
+                List<QuestionEX> questions = testDAO.getQuestionsByTestId(testId);
+                // Lấy thông tin bài kiểm tra để hiển thị tên
+                TestEX test = testDAO.getTestById(testId);
+
+                // Đặt dữ liệu vào request attribute
+                request.setAttribute("questions", questions);
+                request.setAttribute("test", test);
+                request.setAttribute("showQuestions", true); // Cờ để hiển thị section questionList
+
+                // Lấy lại danh sách bài kiểm tra để hiển thị (vì JSP cần dữ liệu này)
+                HttpSession session = request.getSession();
+                String fullName = (String) session.getAttribute("Fullname");
+                List<TestEX> tests = testDAO.getTestsByCreatorFullName(fullName);
+                request.setAttribute("tests", tests);
+
+                // Chuyển tiếp đến JSP
+                request.getRequestDispatcher("jsp/expertDashboard.jsp").forward(request, response);
+            } catch (NumberFormatException e) {
+                response.sendRedirect("NoticeServlet?error=Invalid test ID");
+            } catch (Exception e) {
+                response.sendRedirect("NoticeServlet?error=An error occurred: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            response.sendRedirect("NoticeServlet");
+        }
     }
 }

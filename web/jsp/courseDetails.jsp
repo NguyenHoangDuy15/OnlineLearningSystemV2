@@ -383,11 +383,24 @@
                         <% if (test != null && test.getTestID() != 0) { %>
                         <tr>
                             <td><%= test.getTestID() %></td>
-                            <td><%= test.getName() != null ? test.getName() : "N/A" %></td>
                             <td>
-                                <a href="TestServlet?testId=<%= test.getTestID() %>">
-                                    <button class="btn btn-primary <%= course.getStatus() == 4 ? "hidden" : "" %>" style="padding: 8px 16px; font-size: 12px;">Edit</button>
+                                <% if (course != null && course.getStatus() == 4) { %>
+                                
+                                <a href="QuestionController?action=getQuestions&testId=<%= test.getTestID() %>">
+                                    <%= test.getName() != null ? test.getName() : "N/A" %>
                                 </a>
+                                <% } else { %>
+                                <a href="TestServlet?testId=<%= test.getTestID() %>">
+                                    <%= test.getName() != null ? test.getName() : "N/A" %>
+                                </a>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (course != null && course.getStatus() != 4) { %>
+                                <a href="TestServlet?testId=<%= test.getTestID() %>">
+                                    <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Edit</button>
+                                </a>
+                                <% } %>
                             </td>
                         </tr>
                         <% } %>
@@ -422,38 +435,62 @@
                 }
             };
             function deleteLesson(lessonId) {
-                console.log("deleteLesson called with lessonId: " + lessonId);
+                console.log("Delete button clicked for lessonId: " + lessonId);
 
-                if (typeof lessonId === 'undefined' || lessonId === null || isNaN(lessonId) || lessonId <= 0) {
-                    alert("Error: Invalid lesson ID");
-                    console.error("Invalid lessonId: " + lessonId);
+                if (!lessonId || lessonId <= 0) {
+                    alert("Invalid lesson ID");
                     return;
                 }
 
-                console.log(`Attempting to deactivate lesson with lessonId: ${lessonId}`);
-                if (confirm("Are you sure you want to deactivate this lesson?")) {
-                    fetch(`LessonServlet?action=delete&lessonId=${lessonId}`, {
-                        method: 'POST'
+                if (confirm("Are you sure you want to delete this lesson?")) {
+                    fetch('LessonServlet?action=delete&lesson=' + lessonId, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
                     })
                             .then(response => {
-                                console.log("Fetch response status: " + response.status);
                                 if (!response.ok) {
-                                    throw new Error('Network response was not ok: ' + response.statusText);
+                                    throw new Error('Network response was not ok ' + response.statusText);
                                 }
                                 return response.text();
                             })
                             .then(data => {
-                                console.log("Fetch response data: " + data);
+                                console.log("Server response: " + data);
                                 if (data.trim() === "success") {
-                                    alert("Lesson deactivated successfully!");
-                                    window.location.reload();
+                                    alert("Lesson deleted successfully!");
+                                    // Tìm hàng chứa lessonId và xóa nó
+                                    const table = document.getElementById('lessonTable');
+                                    const rows = table.getElementsByTagName('tr');
+                                    let rowToDelete = null;
+
+                                    // Duyệt qua các hàng trong tbody
+                                    for (let i = 0; i < rows.length; i++) {
+                                        const firstCell = rows[i].getElementsByTagName('td')[0];
+                                        if (firstCell && firstCell.textContent.trim() === lessonId.toString()) {
+                                            rowToDelete = rows[i];
+                                            break;
+                                        }
+                                    }
+
+                                    if (rowToDelete) {
+                                        rowToDelete.remove();
+                                        console.log("Lesson row with ID " + lessonId + " removed from table");
+                                        // Kiểm tra nếu không còn lesson nào thì hiển thị thông báo
+                                        const lessonList = document.getElementById('lessonList');
+                                        if (lessonList.children.length === 0) {
+                                            lessonList.innerHTML = '<tr><td colspan="4">No lessons available</td></tr>';
+                                        }
+                                    } else {
+                                        console.error("Could not find row with lessonId: " + lessonId);
+                                    }
                                 } else {
-                                    alert(data);
+                                    alert("Failed to delete lesson: " + data);
                                 }
                             })
                             .catch(error => {
                                 console.error('Error during fetch:', error);
-                                alert("An error occurred while deactivating the lesson: " + error.message);
+                                alert("An error occurred while deleting the lesson: " + error.message);
                             });
                 }
             }

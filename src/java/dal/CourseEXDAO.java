@@ -190,16 +190,6 @@ public class CourseEXDAO extends DBContext {
         }
     }
 
-    public void deleteCourse(String courseId) {
-        String sql = "DELETE FROM Courses WHERE CourseID = ?";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, courseId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateCourseStatus(int courseId, int status) throws SQLException {
         String sql = "UPDATE Courses SET status = ? WHERE courseId = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {

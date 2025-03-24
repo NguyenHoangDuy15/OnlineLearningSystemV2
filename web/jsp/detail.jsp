@@ -658,5 +658,6 @@
                 });
             });
         </script>
+         <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 </html>
