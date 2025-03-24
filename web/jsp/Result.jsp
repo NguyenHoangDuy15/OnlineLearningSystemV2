@@ -16,6 +16,7 @@
     </head>
 
     <body>
+        <%@ include file="header.jsp" %>
         <div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
             <div class="container text-center my-5 py-5">
                 <h1 class="text-white display-1 mb-5">Test Results</h1>
@@ -38,7 +39,7 @@
                         <div class="d-flex justify-content-center gap-3">
                             <a href="ReviewTest?historyId=${historyId}" class="btn btn-primary">History of Test</a>
                             <a href="Lessonservlet?userid=${userid}&courseId=${courseId}&historyId=${historyId}&testId=${testId}" class="btn btn-primary">Back to Course</a>
-
+                            <a class="btn btn-primary text-white" href="Certificatecontroller?userid=${userid}&courseId=${courseId}" style="background-color: #007bff; border-color: #007bff;">View certificate</a>
 
                         </div>
                     </div>
@@ -50,7 +51,7 @@
         <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top">
             <i class="fa fa-angle-double-up"></i>
         </a>
-
+        <%@ include file="footer.jsp" %>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
         <script src="lib/easing/easing.min.js"></script>
@@ -58,7 +59,7 @@
         <script src="lib/counterup/counterup.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
         <script src="js/main.js"></script>
-             <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 
 </html>
