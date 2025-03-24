@@ -102,8 +102,11 @@
                                                 </c:forEach>
                                                 <c:if test="${requestScope.noti != null}">
                                                     <tr >
-                                                        <td style="text-align: center; font-weight: bold" colspan="9"><p class="text-danger">${requestScope.noti}</p></td><!-- comment --></tr>
-                                                        </c:if>
+                                                        <td style="text-align: center; font-weight: bold" colspan="9">
+                                                            <p class="text-danger">${requestScope.noti}</p>
+                                                        </td><!-- comment -->
+                                                    </tr>
+                                                </c:if>
                                             </tbody>
                                         </table>
                                     </div>

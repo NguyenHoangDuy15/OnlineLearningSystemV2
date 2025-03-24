@@ -231,7 +231,7 @@
             <div class="row mx-0 justify-content-center pt-5">
                 <div class="col-lg-6">
                     <div class="section-title text-center position-relative mb-4">
-                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Our Courses</h6>
+                        <h6 name="coursesprint" class="d-inline-block position-relative text-secondary text-uppercase pb-2">Our Courses</h6>
                         <h1 class="display-4">Checkout New Releases Of Our Courses</h1>
                     </div>
                 </div>

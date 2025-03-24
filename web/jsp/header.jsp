@@ -264,7 +264,7 @@
         <div class="container-fluid p-0">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
                 <a href="index" class="navbar-brand ml-lg-3">
-                    <h3 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
+                    <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -356,8 +356,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="LogoutServlet">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                <a name="btnlg" class="dropdown-item" href="LogoutServlet">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
                                 </a>
                             </li>
                         </ul>
