@@ -22,7 +22,7 @@
                 <input type="password" name="password" value="${password}" placeholder="Password" required>
                 <input type="password" name="repassword" value="${repassword}" placeholder="Re-Password" required>
                 <div name="noti" class="noti">${err}</div>
-                <button type="submit">Register</button>
+                <button name="btn" type="submit">Register</button>
             </form>
         </div>
     </body>

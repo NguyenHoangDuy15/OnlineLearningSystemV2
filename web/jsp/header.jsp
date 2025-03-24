@@ -306,7 +306,7 @@
                     %>
                     <!-- Avatar Dropdown -->
                     <div class="dropdown">
-                        <img src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img name="btnAvar" src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
                             <!-- Header with User Info -->
                             <li class="dropdown-header">
@@ -336,7 +336,7 @@
 
                             
                             <li>
-                                <a class="dropdown-item" href="ChangePasswordServlet">
+                                <a name="btncp" class="dropdown-item" href="ChangePasswordServlet">
                                     <i class="fas fa-lock mr-2"></i> Change Password
                                 </a>
                             </li>
@@ -366,7 +366,7 @@
                         } else {
                     %>
                     <!-- Login Button -->
-                    <a href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
+                    <a name="btnlogin" href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
                     <%
                         }
                     %>

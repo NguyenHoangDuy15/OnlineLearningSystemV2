@@ -86,7 +86,7 @@ public class ChangePasswordServlet extends HttpServlet {
                 request.getRequestDispatcher("jsp/changePassword.jsp").forward(request, response);
             }
         if (pass.contains(" ") || !oldpass.equals(a.getPassword())) {
-            request.setAttribute("err", "password is not Empty or have space");
+            request.setAttribute("err", "Old Password is fail or have space");
             request.setAttribute("oldpassword", oldpass);
             request.setAttribute("repassword", repass);
             request.setAttribute("newpassword", pass);
@@ -98,7 +98,7 @@ public class ChangePasswordServlet extends HttpServlet {
                 session.invalidate();
                 request.getRequestDispatcher("jsp/index.jsp").forward(request, response);
             } else {
-                request.setAttribute("err", "password or re-password invalid");
+                request.setAttribute("err", "Password or re-password invalid");
                 request.setAttribute("oldpassword", oldpass);
                 request.setAttribute("repassword", repass);
                 request.setAttribute("newpassword", pass);
