@@ -3,6 +3,7 @@
 <%@ page import="Model.QuestionEX" %>
 <%@ page import="dal.QuestionEXDAO" %>
 <%@ page import="java.util.List" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%
     TestEX test = (TestEX) request.getAttribute("test");
