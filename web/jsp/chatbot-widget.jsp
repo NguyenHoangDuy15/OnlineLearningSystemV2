@@ -191,7 +191,7 @@
         </div>
         <div class="input-area">
             <form id="chatbotForm">
-                <input type="text" name="message" id="messageInput" placeholder="Hỏi về khóa học, giá cả, bài kiểm tra..." required>
+                <input type="text" name="message" id="messageInput" placeholder="Send message....." required>
                 <input type="submit" value="Gửi">
             </form>
         </div>

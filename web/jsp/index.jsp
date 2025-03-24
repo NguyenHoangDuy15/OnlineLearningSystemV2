@@ -28,7 +28,7 @@
             /* Course Image Container */
             .course-img-container {
                 width: 100%;
-                height: 300px;
+                height: 250px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
