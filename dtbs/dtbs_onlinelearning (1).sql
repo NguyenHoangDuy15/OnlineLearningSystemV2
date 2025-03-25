@@ -312,7 +312,7 @@ INSERT INTO [dbo].[Users]
 ,'minhanh@gmail.com'
 ,'TWluaGFuaDEyM0Bmd2VxZndlO2hmaXVkc2Zhc2RmYXNkZmFz' -- Minhanh123@
 ,'https://aptechcantho.cusc.vn/DesktopModules/DANHSACH/HINH/QC2018813712788.jpg'
-,3
+,4
 ,1)
 INSERT INTO [dbo].[Users]
            ([FullName]
@@ -360,7 +360,7 @@ INSERT INTO [dbo].[Users]
 ,'minhtuan@gmail.com'
 ,'VHVhbjEyM0Bmd2VxZndlO2hmaXVkc2Zhc2RmYXNkZmFz' -- Tuan123@
 ,'https://scontent.fhan5-6.fna.fbcdn.net/v/t39.30808-6/480611892_1190277999636090_6535903059927968272_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=WPIQa_vmqHQQ7kNvgHuDOEA&_nc_oc=Adlw2KKhIhGcwiftP-NqM8S937BQ9tPrah5M3P0_5gk3vs4r874P0EUKET4Iq-UjiUo&_nc_zt=23&_nc_ht=scontent.fhan5-6.fna&_nc_gid=1aKPSIXgMNgzIowCTuIKXA&oh=00_AYFWrrXt5QKWkIrQUAbnO97M73ssPymLVk4qWXC8mqNesw&oe=67E8837A'
-,2
+,3
 ,1)
 INSERT INTO Category (CategoryName, Description) VALUES 
 (N'Java Programming', N'Learn Java from basics to advanced concepts.'),
@@ -534,7 +534,7 @@ VALUES ('Final test','Hoàng Công Ninh', 1),
 ('Final test',N'Hoàng Công Ninh', 4),
 ('Final test',N'Hoàng Công Ninh', 5),
 ('Final test',N'Nguyễn Thị Mai', 6),
-('Final test',N'Hoàng Minh Tuấn', 7),
+('Final test',N'Nguyễn Đức Việt', 7),
 ('Final test',N'Lê Thị Hồng Ngọc', 8),
 ('Final test',N'Hà Anh Tài', 9);
 -- Insert questions into the Question table with TestID = 1

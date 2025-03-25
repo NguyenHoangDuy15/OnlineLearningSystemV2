@@ -5,8 +5,7 @@
     User user = (User) session.getAttribute("account"); // Lấy User từ session
     Usernew userNew = null;
     Integer userId = (Integer) session.getAttribute("userid");
-
-    // Lấy số lượng khóa học từ session
+    Integer roleId= (Integer) session.getAttribute("rollID");
     Integer registeredCourses = (Integer) session.getAttribute("registeredCourses");
     Integer completedCourses = (Integer) session.getAttribute("completedCourses");
 
@@ -191,14 +190,13 @@
             }
 
             .stat-item.enrollments i {
-                color: #007bff; /* Màu xanh cho My Enrollments */
+                color: #007bff;
             }
 
             .stat-item.completed i {
-                color: #28a745; /* Màu xanh lá cho My Courses (hoàn thành) */
+                color: #28a745; 
             }
 
-            /* Dropdown Items */
             .dropdown-item {
                 color: #1a1a1a;
                 font-weight: 500;
@@ -217,7 +215,6 @@
                 color: #fff !important;
             }
 
-            /* Login Button */
             .btn-login {
                 background: #007bff;
                 color: #fff;
@@ -230,8 +227,6 @@
                 background: #0056b3;
                 color: #fff;
             }
-
-            /* Tooltip */
             .stat-item {
                 position: relative;
             }
@@ -271,7 +266,7 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto py-0">
-                        <%
+                       <%
                             if (userId != null) {
                         %>
                         <a href="index" class="nav-item nav-link active">Home</a>
@@ -285,9 +280,16 @@
                         <a href="course" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">
                             <a href="Instructor" class="nav-item nav-link">Experts</a>
-                            
                         </div>
+                       
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
+                         <%
+                        if (roleId != null && roleId == 2) {
+                        %>
+                        <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
+                        <%
+                            }
+                        %>
                         <%
                             Boolean isSale = (Boolean) session.getAttribute("isSale");
                             if (isSale != null && isSale) {
@@ -363,7 +365,6 @@
                     <%
                         } else {
                     %>
-                    <!-- Login Button -->
                     <a name="btnlogin" href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
                     <%
                         }
@@ -375,7 +376,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Thêm hiệu ứng click cho dropdown items
+  
             document.querySelectorAll('.dropdown-item').forEach(item => {
                 item.addEventListener('click', function () {
                     // Xóa class active khỏi tất cả các item

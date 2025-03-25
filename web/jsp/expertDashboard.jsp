@@ -2,9 +2,11 @@
 <%@ page import="java.util.List" %>
 <%@ page import="Model.TestEX" %>
 <%@ page import="Model.CourseEX" %>
-<%@ page import="Model.QuestionEX" %>
 <%@ page import="dal.TestEXDAO" %>
 <%@ page import="dal.CourseEXDAO" %>
+<%@ page import="Model.User" %>
+<%@ page import="Model.Usernew" %>
+<%@ page import="dal.UserDAO" %>
 
 <%
     List<TestEX> tests = (List<TestEX>) request.getAttribute("tests");
@@ -12,1066 +14,734 @@
     String fullName = (String) session.getAttribute("Fullname");
     String success = (String) request.getAttribute("success");
     String error = (String) request.getAttribute("error");
-    Boolean showQuestions = (Boolean) request.getAttribute("showQuestions");
-    List<QuestionEX> questions = (List<QuestionEX>) request.getAttribute("questions");
-    TestEX test = (TestEX) request.getAttribute("test");
     TestEXDAO testDAO = new TestEXDAO();
     CourseEXDAO courseDAO = new CourseEXDAO();
+    User user = (User) session.getAttribute("account");
+    Usernew userNew = null;
+    Integer userId = (Integer) session.getAttribute("userid");
+    Integer registeredCourses = (Integer) session.getAttribute("registeredCourses");
+    Integer completedCourses = (Integer) session.getAttribute("completedCourses");
+    int enrollmentCount = (registeredCourses != null) ? registeredCourses : 0;
+    int completedCoursesCount = (completedCourses != null) ? completedCourses : 0;
+
+    if (user != null) {
+        userNew = new Usernew(user);
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Expert Dashboard - Online Learning</title>
-        <style>
-            :root {
-                --primary: #4A90E2;
-                --secondary: #F5F5F5;
-                --accent-green: #2ECC71;
-                --accent-red: #E74C3C;
-                --text-dark: #333333;
-                --text-light: #777777;
-                --background: #FFFFFF;
-                --border: #E0E0E0;
-                --shadow: rgba(0, 0, 0, 0.1);
-                --gradient-primary: linear-gradient(90deg, #4A90E2, #357ABD);
-                --gradient-success: linear-gradient(90deg, #2ECC71, #27AE60);
-                --gradient-danger: linear-gradient(90deg, #E74C3C, #C0392B);
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Dashboard - Online Learning</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #F5F5F5;
+            --accent-green: #2ECC71;
+            --accent-red: #E74C3C;
+            --text-dark: #333333;
+            --background: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(90deg, #4A90E2, #357ABD);
+            --gradient-success: linear-gradient(90deg, #2ECC71, #27AE60);
+            --gradient-danger: linear-gradient(90deg, #E74C3C, #C0392B);
+        }
 
-            body {
-                font-family: 'Roboto', sans-serif;
-                background-color: var(--secondary);
-                margin: 0;
-                padding: 0;
-            }
+        * {
+            box-sizing: border-box;
+        }
 
-            .notification {
-                padding: 15px;
-                border-radius: 8px;
-                margin-bottom: 20px;
-                text-align: center;
-                display: none;
-            }
-            .notification.success {
-                color: var(--accent-green);
-                background-color: #e6ffe6;
-                border: 1px solid var(--accent-green);
-                display: block;
-            }
-            .notification.error {
-                color: var(--accent-red);
-                background-color: #ffe6e6;
-                border: 1px solid var(--accent-red);
-                display: block;
-            }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--secondary);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-            .header {
-                background-color: var(--background);
-                box-shadow: 0 2px 8px var(--shadow);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 16px 32px;
-                position: sticky;
-                top: 0;
-                z-index: 1000;
-                border-bottom: 2px solid var(--primary);
-            }
+        .container-fluid {
+            padding: 0;
+        }
 
-            .logo h1 {
-                color: var(--primary);
-                font-size: 24px;
-                font-weight: 700;
-                letter-spacing: 1px;
-                margin: 0;
-                transition: transform 0.3s ease;
-            }
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            position: relative;
+        }
 
-            .logo h1:hover {
-                transform: scale(1.05);
-            }
+        .navbar-brand h3 {
+            font-weight: 700;
+            color: #007bff;
+            transition: color 0.3s ease;
+        }
 
-            .user-profile img {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: transform 0.3s ease;
-                border: 2px solid var(--primary);
-            }
+        .navbar-brand h3:hover {
+            color: #0056b3;
+        }
 
-            .user-profile img:hover {
-                transform: scale(1.1);
-            }
+        .nav-link {
+            font-size: 1.1rem;
+            color: #333 !important;
+            transition: color 0.3s ease;
+        }
 
-            .dropdown {
-                display: none;
-                position: absolute;
-                right: 0;
-                top: 50px;
-                background-color: var(--background);
-                box-shadow: 0 4px 8px var(--shadow);
-                border-radius: 8px;
-                z-index: 1000;
-            }
+        .nav-link:hover, .nav-link.active {
+            color: #007bff !important;
+        }
 
-            .dropdown a {
-                display: block;
-                padding: 10px 20px;
-                color: var(--text-dark);
-                text-decoration: none;
-                transition: background-color 0.3s ease;
-            }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #007bff;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-            .dropdown a:hover {
-                background-color: var(--secondary);
-            }
+        .avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
 
-            .container {
-                display: flex;
-                min-height: calc(100vh - 72px);
-            }
+        .hamburger {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            padding: 10px;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1001;
+        }
 
+        .hamburger:hover {
+            color: var(--primary);
+        }
+
+        .dropdown-menu {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: none;
+            padding: 16px;
+            min-width: 300px;
+            background-color: var(--background);
+        }
+
+        .dropdown-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
+        .dropdown-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .dropdown-header .user-info {
+            flex: 1;
+        }
+
+        .dropdown-header .user-info h6 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .dropdown-header .user-info p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin: 4px 0 8px 0;
+        }
+
+        .dropdown-header .btn-view-profile {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--gradient-primary);
+            color: #FFFFFF;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-header .btn-view-profile:hover {
+            background: linear-gradient(90deg, #357ABD, #4A90E2);
+            transform: translateY(-1px);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--secondary);
+        }
+
+        .dropdown-item i {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .dropdown-item i.fa-sign-out-alt {
+            color: var(--accent-red);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: var(--secondary);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            border-right: 1px solid var(--border);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .main-content {
+            width: 100%;
+            background-color: var(--background);
+            padding: 32px;
+            overflow-y: auto;
+            min-height: calc(100vh - 72px);
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.shifted {
+            margin-left: 250px;
+        }
+
+        .welcome {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .welcome h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .welcome-image {
+            width: 100%;
+            height: calc(100vh - 72px - 32px - 20px - 40px);
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--shadow);
+            display: block;
+        }
+
+        .notification {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .notification.success {
+            color: var(--accent-green);
+            background-color: #e6ffe6;
+            border: 1px solid var(--accent-green);
+            display: block;
+        }
+
+        .notification.error {
+            color: var(--accent-red);
+            background-color: #ffe6e6;
+            border: 1px solid var(--accent-red);
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 16px;
+            background-color: var(--background);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: var(--secondary);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        tr:hover {
+            background-color: #E6F0FA;
+        }
+
+        .description {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .description:hover {
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .price {
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        .status-approved { color: #2ECC71; }
+        .status-rejected { color: #E74C3C; }
+        .status-waiting { color: brown; }
+        .status-delete { color: #000000; }
+        .hidden { display: none; }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px var(--shadow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #357ABD, #4A90E2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-success {
+            background: var(--gradient-success);
+            color: #FFFFFF;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(90deg, #27AE60, #2ECC71);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--gradient-danger);
+            color: #FFFFFF;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(90deg, #C0392B, #E74C3C);
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(90deg, #F1C40F, #F39C12);
+            color: #FFFFFF;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(90deg, #F39C12, #F1C40F);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
             .sidebar {
-                width: 20%;
-                background-color: var(--secondary);
-                padding: 24px;
-                display: flex;
-                flex-direction: column;
-                gap: 32px;
-                border-right: 1px solid var(--border);
+                width: 200px;
+                left: -200px;
             }
 
-            .sidebar h2 {
-                font-size: 18px;
-                font-weight: 500;
-                color: var(--text-dark);
-                margin-bottom: 16px;
-                border-bottom: 2px solid var(--primary);
-                padding-bottom: 8px;
+            .sidebar.active {
+                left: 0;
             }
 
-            .button-group {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
+            .main-content.shifted {
+                margin-left: 200px;
             }
-
-            .btn {
-                padding: 10px 24px;
-                border: none;
-                border-radius: 12px;
-                font-size: 14px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 6px var(--shadow);
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .btn-primary {
-                background: var(--gradient-primary);
-                color: #FFFFFF;
-            }
-
-            .btn-primary:hover {
-                background: linear-gradient(90deg, #357ABD, #4A90E2);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
-            }
-
-            .btn-success {
-                background: var(--gradient-success);
-                color: #FFFFFF;
-            }
-
-            .btn-success:hover {
-                background: linear-gradient(90deg, #27AE60, #2ECC71);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
-            }
-
-            .btn-danger {
-                background: var(--gradient-danger);
-                color: #FFFFFF;
-            }
-
-            .btn-danger:hover {
-                background: linear-gradient(90deg, #C0392B, #E74C3C);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
-            }
-
-            .btn-warning {
-                background: linear-gradient(90deg, #F1C40F, #F39C12);
-                color: #FFFFFF;
-            }
-
-            .btn-warning:hover {
-                background: linear-gradient(90deg, #F39C12, #F1C40F);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(241, 196, 15, 0.3);
-            }
-
-            .btn-small {
-                padding: 6px;
-                border: none;
-                border-radius: 50%;
-                font-size: 16px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                width: 28px;
-                height: 28px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2px 4px var(--shadow);
-            }
-
-            .btn-small.add {
-                background: var(--gradient-success);
-                color: #FFFFFF;
-            }
-
-            .btn-small.add:hover {
-                background: linear-gradient(90deg, #27AE60, #2ECC71);
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
-            }
-
-            .btn-small.remove {
-                background: var(--gradient-danger);
-                color: #FFFFFF;
-            }
-
-            .btn-small.remove:hover {
-                background: linear-gradient(90deg, #C0392B, #E74C3C);
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
-            }
-
-            table {
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
-                margin-top: 16px;
-                background-color: var(--background);
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 2px 8px var(--shadow);
-            }
-
-            th, td {
-                padding: 12px 16px;
-                text-align: left;
-                border-bottom: 1px solid var(--border);
-            }
-
-            th {
-                font-weight: 600;
-                color: var(--text-dark);
-                background-color: var(--secondary);
-                font-size: 14px;
-                text-transform: uppercase;
-            }
-
-            td {
-                font-size: 14px;
-                color: var(--text-dark);
-            }
-
-            tr:hover {
-                background-color: #E6F0FA;
-                transition: background-color 0.3s ease;
-            }
-
-            .main-content {
-                width: 80%;
-                background-color: var(--background);
-                padding: 32px;
-                overflow-y: auto;
-            }
-
-            .main-content > div {
-                display: none;
-            }
-
-            .main-content > div.active {
-                display: block;
-            }
-
-            .description {
-                max-width: 400px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .description:hover {
-                white-space: normal;
-                overflow: visible;
-                text-overflow: unset;
-            }
-
-            .price {
-                color: var(--accent-green);
-                font-weight: 500;
-            }
-
-            .create-test {
-                background-color: var(--background);
-                padding: 24px;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px var(--shadow);
-            }
-
-            .form-group {
-                margin-bottom: 16px;
-            }
-
-            .form-group label {
-                display: block;
-                margin-bottom: 8px;
-                font-weight: 500;
-                color: var(--text-dark);
-            }
-
-            .form-group input, .form-group textarea {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid var(--border);
-                border-radius: 4px;
-                font-size: 14px;
-            }
-
-            .options {
-                margin-top: 16px;
-            }
-
-            .option {
-                display: flex;
-                align-items: center;
-                margin-bottom: 8px;
-                gap: 12px;
-            }
-
-            .option input[type="radio"] {
-                margin-right: 8px;
-            }
-
-            .option input[type="text"] {
-                flex: 1;
-                padding: 8px;
-                border: 1px solid var(--border);
-                border-radius: 4px;
-            }
-
-            .question-block {
-                margin-bottom: 24px;
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                padding: 16px;
-                background-color: var(--background);
-                transition: box-shadow 0.3s ease;
-            }
-
-            .question-block:hover {
-                box-shadow: 0 4px 12px var(--shadow);
-            }
-
-            .form-actions {
-                display: flex;
-                gap: 12px;
-                margin-top: 16px;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .form-buttons {
-                display: flex;
-                gap: 12px;
-                justify-content: flex-start;
-                margin-top: 24px;
-            }
-
-            .form-group textarea {
-                width: 100%;
-                padding: 12px 16px;
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                font-size: 14px;
-                font-family: 'Roboto', sans-serif;
-                color: var(--text-dark);
-                background-color: #F9FAFB;
-                resize: vertical;
-                min-height: 80px;
-                transition: all 0.3s ease;
-                box-shadow: inset 0 1px 3px var(--shadow);
-            }
-
-            .form-group textarea:focus {
-                border-color: var(--primary);
-                outline: none;
-                box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
-                background-color: #FFFFFF;
-            }
-
-            .form-group textarea:hover:not(:focus) {
-                border-color: #B0B0B0;
-            }
-
-            .form-group textarea::placeholder {
-                color: var(--text-light);
-                font-style: italic;
-            }
-
-            .status-activate {
-                color: #2ECC71;
-            }
-            .status-deny {
-                color: #E74C3C;
-            }
-            .status-waiting {
-                color: brown;
-            }
-            .status-delete {
-                color: #000000;
-            }
-
-            .hidden {
-                display: none;
-            }
-
-            .question-list {
-                background-color: var(--background);
-                padding: 24px;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px var(--shadow);
-            }
-
-            .question-item {
-                margin-bottom: 16px;
-                padding: 16px;
-                border: 1px solid var(--border);
-                border-radius: 8px;
-            }
-
-            .question-item h4 {
-                margin: 0 0 8px 0;
-                color: var(--text-dark);
-            }
-
-            .question-item p {
-                margin: 4px 0;
-                color: var(--text-light);
-            }
-
-            .question-item .correct {
-                color: var(--accent-green);
-                font-weight: 500;
-            }
-
-            @media (max-width: 768px) {
-                .container {
-                    flex-direction: column;
-                }
-                .sidebar, .main-content {
-                    width: 100%;
-                }
-                .sidebar {
-                    border-right: none;
-                    border-bottom: 1px solid var(--border);
-                }
-                .user-profile {
-                    position: relative;
-                }
-
-                .dropdown {
-                    display: none; /* Ẩn mặc định */
-                    position: absolute;
-                    right: 0;
-                    top: 50px;
-                    background-color: var(--background);
-                    box-shadow: 0 4px 8px var(--shadow);
-                    border-radius: 8px;
-                    z-index: 1000;
-                }
-
-                .dropdown a {
-                    display: block;
-                    padding: 10px 20px;
-                    color: var(--text-dark);
-                    text-decoration: none;
-                    transition: background-color 0.3s ease;
-                }
-
-                .dropdown a:hover {
-                    background-color: var(--secondary);
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <header class="header">
-            <a href="ShowexpertServlet" class="logo">
-                <div>
-                    <h1>Online Learning</h1>
-                </div>
-            </a>
-            <div class="user-profile">
-                <div class="avatar-sm" onclick="toggleDropdown()">
-                    <img src="./img/logo/logo.JPG" alt="User Avatar" class="avatar-img rounded-circle" />
-                </div>
-                <div class="dropdown" id="dropdownMenu" style="display: none;">
-                    <a href="ViewProfile">View Profile</a>
-                    <a href="ChangePasswordServlet">Change Password</a>
-                    <a href="LogoutServlet">Logout</a>
-                </div>
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <div class="hamburger" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
             </div>
-        </header>
-
-        <div class="container">
-            <aside class="sidebar">
-                <div class="dashboard-actions">
-                    <h2>Dashboard</h2>
-                    <div class="button-group">
-                        <button id="viewOwnerTestBtn" class="btn btn-primary">View Owner Test</button>
-                        <button id="viewOwnerCourseBtn" class="btn btn-primary">View Owner Course</button>
+            <a href="index" class="navbar-brand ml-lg-3">
+                <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    <% if (userId != null) { %>
+                    <a href="index" class="nav-item nav-link active">Home</a>
+                    <% } else { %>
+                    <a href="Landingpage" class="nav-item nav-link active">Home</a>
+                    <% } %>
+                    <a href="course" class="nav-item nav-link">Courses</a>
+                    <div class="nav-item dropdown">
+                        <a href="Instructor" class="nav-item nav-link">Experts</a>
                     </div>
+                   
+                    <a href="ViewBlog" class="nav-item nav-link">Blog</a>
+                     <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
+                    <% Boolean isSale = (Boolean) session.getAttribute("isSale");
+                        if (isSale != null && isSale) { %>
+                    <a href="viewownerbloglist" class="nav-item nav-link">Manage Blogs</a>
+                    <% } %>
                 </div>
-                <div class="button-group">
-                    <button class="btn btn-danger logout" onclick="window.location.href = 'LogoutServlet'">Logout</button>
-                </div>
-            </aside>
-
-            <main class="main-content">
-                <% if (success != null && !success.isEmpty()) { %>
-                <div class="notification success"><%= success %></div>
-                <% } %>
-                <% if (error != null && !error.isEmpty()) { %>
-                <div class="notification error"><%= error %></div>
-                <% } %>
-
-                <div id="welcome" class="welcome active">
-                    <h2>Welcome to Expert Dashboard, <%= fullName != null ? fullName : "Expert" %></h2>
-                </div>
-                <div id="courseList" class="course-list">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h2>List of Owner Courses</h2>
-                        <button id="createCourseBtn" class="btn btn-success">Create Course</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>CourseID</th>
-                                <th>Name of Course</th>
-                                <th>Description</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (courses != null && !courses.isEmpty()) { %>
-                            <% for (CourseEX course : courses) { %>
-                            <% if (course.getStatus() != 0) { %>
-                            <tr id="courseRow<%= course.getCourseID() %>">
-                                <td><%= course.getCourseID() %></td>
-                                <td><a href="CourseServlet?courseId=<%= course.getCourseID() %>"><%= course.getName() %></a></td>
-                                <td class="description"><%= course.getDescription() %></td>
-                                <td class="price"><%= course.getPrice() %></td>
-                                <td class="status">
-                                    <% 
-                                        int status = course.getStatus();
-                                        String statusText;
-                                        String statusClass;
-                                        switch (status) {
-                                            case 4: statusText = "Activate"; statusClass = "status-activate"; break;
-                                            case 3: statusText = "Deny"; statusClass = "status-deny"; break;
-                                            case 2: statusText = "Waiting"; statusClass = "status-waiting"; break;
-                                            case 0: statusText = "Delete"; statusClass = "status-delete"; break;
-                                            default: statusText = "Draft"; statusClass = ""; break;
-                                        }
-                                    %>
-                                    <span class="<%= statusClass %>" id="status<%= course.getCourseID() %>"><%= statusText %></span>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger <%= status == 4 ? "hidden" : "" %>" 
-                                            onclick="deleteCourse(<%= course.getCourseID() %>)" 
-                                            style="padding: 8px 16px; font-size: 12px;">Delete</button>
-                                    <a href="CourseServlet?courseId=<%= course.getCourseID() %>">
-                                        <button class="btn btn-primary <%= status == 4 ? "hidden" : "" %>" 
-                                                style="padding: 8px 16px; font-size: 12px;">Update</button>
-                                    </a>
-                                    <button class="btn btn-success <%= status == 4 ? "hidden" : "" %>" 
-                                            onclick="addTest(<%= course.getCourseID() %>)" 
-                                            style="padding: 8px 16px; font-size: 12px;">Add Test</button>
-                                    <button class="btn btn-warning <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
-                                            onclick="requestCourse(<%= course.getCourseID() %>)" 
-                                            style="padding: 8px 16px; font-size: 12px;">Request</button>
-                                </td>
-                            </tr>
-                            <% } %>
-                            <% } %>
-                            <% } else { %>
-                            <tr>
-                                <td colspan="6">No courses available</td>
-                            </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                    <button id="returnFromCourses" class="btn btn-primary return">Return to Dashboard</button>
-                </div>
-                <div id="testList" class="test-list">
-                    <h2>List of Owner Tests</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>TestID</th>
-                                <th>Name of Test</th>
-                                <th>Status</th>
-                                <th>Course ID</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (tests != null && !tests.isEmpty()) { %>
-                            <% for (TestEX testItem : tests) { %>
-                            <% if (testItem.getStatus() != 0) { %>
-                            <% 
-                                // Lấy thông tin course tương ứng với test
-                                CourseEX course = courseDAO.getCourseByIdEx(testItem.getCourseID());
-                                boolean isCourseActive = (course != null && course.getStatus() == 4);
-                            %>
-                            <tr id="testRow<%= testItem.getTestID() %>">
-                                <td><%= testItem.getTestID() %></td>
-                                <td><a href="QuestionController?action=getQuestions&testId=<%= testItem.getTestID() %>"><%= testItem.getName() %></a></td>
-                                <td class="status-done"><%= testItem.getStatus() == 1 ? "Completed" : "Done" %></td>
-                                <td><%= testItem.getCourseID() %></td>
-                                <td>
-                                    <% if (!isCourseActive) { %>
-                                    <!-- Sửa nút Update để dẫn đến TestServlet -->
-                                    <a href="TestServlet?testId=<%= testItem.getTestID() %>">
-                                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Update</button>
-                                    </a>
-                                    <button class="btn btn-danger" onclick="deleteTest(<%= testItem.getTestID() %>)" style="padding: 8px 16px; font-size: 12px;">Delete</button>
-                                    <% } %>
-                                </td>
-                            </tr>
-                            <% } %>
-                            <% } %>
-                            <% } else { %>
-                            <tr>
-                                <td colspan="5">No tests available</td>
-                            </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                    <button id="returnFromTests" class="btn btn-primary return">Return to Dashboard</button>
-                </div>
-                <div id="questionList" class="question-list" style="display: <%= (showQuestions != null && showQuestions) ? "block" : "none" %>;">
-                    <h2>Questions for Test <%= test != null ? test.getName() : "" %></h2>
-                    <div id="questionsContainer">
-                        <% if (questions != null && !questions.isEmpty()) { %>
-                        <% int index = 1; %>
-                        <% for (QuestionEX question : questions) { %>
-                        <div class="question-item">
-                            <h4>Question <%= index %>: <%= question.getQuestionContent() %></h4>
-                            <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "A") ? "class=\"correct\"" : "" %>>A. <%= question.getOptionA() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "A") ? "(Correct)" : "" %></p>
-                            <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "B") ? "class=\"correct\"" : "" %>>B. <%= question.getOptionB() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "B") ? "(Correct)" : "" %></p>
-                            <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "C") ? "class=\"correct\"" : "" %>>C. <%= question.getOptionC() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "C") ? "(Correct)" : "" %></p>
-                            <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "D") ? "class=\"correct\"" : "" %>>D. <%= question.getOptionD() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "D") ? "(Correct)" : "" %></p>
-                        </div>
-                        <% index++; %>
-                        <% } %>
-                        <% } else { %>
-                        <p>No questions available for this test.</p>
-                        <% } %>
-                    </div>
-                    <button id="returnFromQuestions" class="btn btn-primary return">Return to Test List</button>
-                </div>
-                <div id="createTest" class="create-test">
-                    <h2>Create a New Test</h2>
-                    <div id="testNotification" class="notification" style="display: none;"></div>
-                    <form id="testForm" action="QuestionController" method="post">
-                        <input type="hidden" name="courseId" id="courseId" value="">
-                        <input type="hidden" name="testId" value="-1">
-                        <div class="form-group">
-                            <label for="testName">Test Name:</label>
-                            <input type="text" id="testName" name="testName" placeholder="Enter test name" required>
-                        </div>
-                        <p>Add questions and options to create your test</p>
-                        <div id="questionsContainer">
-                            <div class="question-block" id="question1">
-                                <label for="question1">Question:</label>
-                                <textarea id="question1" name="question1" rows="3" placeholder="Enter your question" required></textarea>
-                                <div class="options" id="options1">
-                                    <div class="option">
-                                        <input type="radio" name="correct-answer-1" value="optionA1" required>
-                                        <input type="text" name="optionA1" placeholder="Option A" required>
-                                        <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                                    </div>
-                                    <div class="option">
-                                        <input type="radio" name="correct-answer-1" value="optionB1">
-                                        <input type="text" name="optionB1" placeholder="Option B" required>
-                                        <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                                    </div>
-                                    <div class="option">
-                                        <input type="radio" name="correct-answer-1" value="optionC1">
-                                        <input type="text" name="optionC1" placeholder="Option C" required>
-                                        <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                                    </div>
-                                    <div class="option">
-                                        <input type="radio" name="correct-answer-1" value="optionD1">
-                                        <input type="text" name="optionD1" placeholder="Option D" required>
-                                        <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                                    </div>
-                                </div>
-                                <div class="form-actions">
-                                    <div>
-                                        <button type="button" class="btn-small add" onclick="addOption('options1')">+</button>
-                                        <span style="font-size: 14px; color: var(--text-light); margin-left: 8px;">Add Option</span>
-                                    </div>
-                                    <button type="button" class="btn btn-danger" onclick="removeQuestion(this)">Delete Question</button>
-                                </div>
+                <% Boolean isLoggedIn = (Boolean) session.getAttribute("isLoggedIn");
+                    if (isLoggedIn != null && isLoggedIn) { %>
+                <div class="dropdown">
+                    <img name="btnAvar" src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
+                        <li class="dropdown-header">
+                            <img src="<%= userNew.getAvatar() %>" alt="Avatar">
+                            <div class="user-info">
+                                <h6>Hi, <%= userNew.getUserName() %></h6>
+                                <p><%= userNew.getEmail() %></p>
                             </div>
-                        </div>
-                        <div class="form-buttons">
-                            <button type="button" class="btn btn-primary add-question" onclick="addQuestion()">Add Question</button>
-                            <button type="submit" class="btn btn-success">Submit Test</button>
-                        </div>
-                    </form>
-                    <button id="returnFromCreateTest" class="btn btn-primary return">Return to Dashboard</button>
+                            <a href="ViewProfile" class="btn-view-profile" name="btn-view-profile">View profile</a>
+                        </li>
+                        <li><a class="dropdown-item" href="myenrollment"><i class="fas fa-book mr-2"></i> My Enrollments</a></li>
+                        <li><a class="dropdown-item" href="Mycourses"><i class="fas fa-check-circle mr-2"></i> My Courses</a></li>
+                        <li><a class="dropdown-item" href="ChangePasswordServlet"><i class="fas fa-lock mr-2"></i> Change Password</a></li>
+                        <li><a class="dropdown-item" href="Historytransaction"><i class="fas fa-history mr-2"></i> History of Transaction</a></li>
+                        <li><a class="dropdown-item" href="Role"><i class="fas fa-user-tie mr-2"></i> Become Expert or Sale</a></li>
+                        <li><a class="dropdown-item" href="Request"><i class="fas fa-hourglass-half mr-2"></i> Wait for Approval</a></li>
+                        <li><a class="dropdown-item" href="LogoutServlet"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a></li>
+                    </ul>
                 </div>
-            </main>
+                <% } else { %>
+                <a name="btnlogin" href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
+                <% } %>
+            </div>
+        </nav>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="dashboard-actions">
+            <h2>Dashboard</h2>
+            <div class="button-group">
+                <button id="viewOwnerTestBtn" class="btn btn-primary">View Owner Test</button>
+                <button id="viewOwnerCourseBtn" class="btn btn-primary">View Owner Course</button>
+            </div>
+        </div>
+        <div class="button-group">
+            <button class="btn btn-danger logout" onclick="window.location.href='LogoutServlet'">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+        <% if (success != null && !success.isEmpty()) { %>
+        <div class="notification success"><%= success %></div>
+        <% } %>
+        <% if (error != null && !error.isEmpty()) { %>
+        <div class="notification error"><%= error %></div>
+        <% } %>
+
+        <div id="welcome" class="welcome active">
+            <h2>Welcome to Expert Dashboard, <%= fullName != null ? fullName : "Expert" %></h2>
+            <img src="https://png.pngtree.com/png-clipart/20200701/original/pngtree-online-education-at-home-png-image_5418278.jpg" 
+                 alt="Welcome Image" class="welcome-image">
         </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                console.log("DOM fully loaded and parsed");
+        <div id="courseList" class="course-list" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2>List of Owner Courses</h2>
+                <button id="createCourseBtn" class="btn btn-success">Create Course</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CourseID</th>
+                        <th>Name of Course</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (courses != null && !courses.isEmpty()) { %>
+                    <% for (CourseEX course : courses) { %>
+                    <% if (course.getStatus() != 0) { %>
+                    <tr id="courseRow<%= course.getCourseID() %>">
+                        <td><%= course.getCourseID() %></td>
+                        <td><a href="CourseServlet?courseId=<%= course.getCourseID() %>"><%= course.getName() %></a></td>
+                        <td class="description"><%= course.getDescription() %></td>
+                        <td class="price"><%= course.getPrice() %></td>
+                        <td class="status">
+                            <% 
+                                int status = course.getStatus();
+                                String statusText = status == 4 ? "Approved" : status == 3 ? "Rejected" : status == 2 ? "Waiting" : "Draft";
+                                String statusClass = status == 4 ? "status-approved" : status == 3 ? "status-rejected" : status == 2 ? "status-waiting" : "";
+                            %>
+                            <span class="<%= statusClass %>" id="status<%= course.getCourseID() %>"><%= statusText %></span>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                    onclick="deleteCourse(<%= course.getCourseID() %>)" 
+                                    style="padding: 8px 16px; font-size: 12px;">Delete</button>
+                            <a href="CourseServlet?courseId=<%= course.getCourseID() %>">
+                                <button class="btn btn-primary <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                        style="padding: 8px 16px; font-size: 12px;">Update</button>
+                            </a>
+                            <a href="QuestionController?courseId=<%= course.getCourseID() %>">
+                                <button class="btn btn-success <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                        style="padding: 8px 16px; font-size: 12px;">Add Test</button>
+                            </a>
+                            <button class="btn btn-warning <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                    onclick="requestCourse(<%= course.getCourseID() %>)" 
+                                    style="padding: 8px 16px; font-size: 12px;">Request</button>
+                        </td>
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% } else { %>
+                    <tr><td colspan="6">No courses available</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+            <button id="returnFromCourses" class="btn btn-primary return">Return to Dashboard</button>
+        </div>
 
-                function toggleDropdown() {
-                    const dropdown = document.getElementById('dropdownMenu');
-                    if (dropdown.style.display === 'block') {
-                        dropdown.style.display = 'none';
-                    } else {
-                        dropdown.style.display = 'block';
-                    }
-                }
+        <div id="testList" class="test-list" style="display: none;">
+            <h2>List of Owner Tests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TestID</th>
+                        <th>Name of Test</th>
+                        <th>Status</th>
+                        <th>Course ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="testListBody">
+                    <% if (tests != null && !tests.isEmpty()) { %>
+                    <% for (TestEX testItem : tests) { %>
+                    <% if (testItem.getStatus() != 0) { %>
+                    <% 
+                        CourseEX course = courseDAO.getCourseByIdEx(testItem.getCourseID());
+                        boolean isEditable = (course != null && (course.getStatus() == 1 || course.getStatus() == 3));
+                    %>
+                    <tr id="testRow<%= testItem.getTestID() %>">
+                        <td><%= testItem.getTestID() %></td>
+                        <td>
+                            <a href="<%= isEditable ? "TestServlet?testId=" + testItem.getTestID() : "ViewQuestionsServlet?testId=" + testItem.getTestID() + "&mode=view" %>">
+                                <%= testItem.getName() %>
+                            </a>
+                        </td>
+                        <td><%= testItem.getStatus() == 1 ? "Completed" : "Done" %></td>
+                        <td><%= testItem.getCourseID() %></td>
+                        <td>
+                            <% if (isEditable) { %>
+                            <a href="TestServlet?testId=<%= testItem.getTestID() %>">
+                                <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Edit</button>
+                            </a>
+                            <button class="btn btn-danger" onclick="deleteTest(<%= testItem.getTestID() %>)" style="padding: 8px 16px; font-size: 12px;">Delete</button>
+                            <% } else { %>
+                            <a href="ViewQuestionsServlet?testId=<%= testItem.getTestID() %>&mode=view">
+                                <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">View</button>
+                            </a>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% } else { %>
+                    <tr><td colspan="5">No tests available</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+            <button id="returnFromTests" class="btn btn-primary return">Return to Dashboard</button>
+        </div>
+    </main>
 
-                // Ẩn dropdown khi nhấp ra ngoài
-                document.addEventListener('click', function (event) {
-                    const dropdown = document.getElementById('dropdownMenu');
-                    const avatar = document.querySelector('.avatar-sm');
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shifted');
+        }
 
-                    // Nếu nhấp ra ngoài avatar và dropdown đang hiển thị, ẩn nó
-                    if (!avatar.contains(event.target) && !dropdown.contains(event.target) && dropdown.style.display === 'block') {
-                        dropdown.style.display = 'none';
-                    }
-                });
+        document.addEventListener('DOMContentLoaded', function () {
+            const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
+            const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
+            const createCourseBtn = document.getElementById('createCourseBtn');
+            const returnFromCourses = document.getElementById('returnFromCourses');
+            const returnFromTests = document.getElementById('returnFromTests');
+            const welcome = document.getElementById('welcome');
+            const courseList = document.getElementById('courseList');
+            const testList = document.getElementById('testList');
+            const testListBody = document.getElementById('testListBody');
 
-                // Lấy các phần tử DOM
-                const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
-                const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
-                const createCourseBtn = document.getElementById('createCourseBtn');
-                const returnFromCourses = document.getElementById('returnFromCourses');
-                const returnFromTests = document.getElementById('returnFromTests');
-                const returnFromCreateTest = document.getElementById('returnFromCreateTest');
-                const returnFromQuestions = document.getElementById('returnFromQuestions');
-                const welcome = document.getElementById('welcome');
-                const courseList = document.getElementById('courseList');
-                const testList = document.getElementById('testList');
-                const createTest = document.getElementById('createTest');
-                const questionList = document.getElementById('questionList');
+            function hideAll() {
+                welcome.classList.remove('active');
+                welcome.style.display = 'none';
+                courseList.style.display = 'none';
+                testList.style.display = 'none';
+            }
 
-                // Hàm ẩn tất cả các section
-                function hideAll() {
-                    welcome.classList.remove('active');
-                    courseList.style.display = 'none';
-                    testList.style.display = 'none';
-                    createTest.style.display = 'none';
-                    questionList.style.display = 'none';
-                }
-
-                // Ban đầu ẩn tất cả và hiển thị welcome
+            function showWelcome() {
                 hideAll();
                 welcome.classList.add('active');
+                welcome.style.display = 'block';
+            }
 
-                // Gán sự kiện cho các nút điều hướng
-                viewOwnerTestBtn.addEventListener('click', () => {
-                    hideAll();
-                    testList.style.display = 'block';
-                });
-
-                viewOwnerCourseBtn.addEventListener('click', () => {
-                    hideAll();
-                    courseList.style.display = 'block';
-                });
-
-                createCourseBtn.addEventListener('click', () => {
-                    window.location.href = 'createCourse.jsp'; // Chuyển hướng đến trang tạo course nếu có
-                });
-
-                returnFromCourses.addEventListener('click', () => {
-                    hideAll();
-                    welcome.classList.add('active');
-                });
-
-                returnFromTests.addEventListener('click', () => {
-                    hideAll();
-                    welcome.classList.add('active');
-                });
-
-                returnFromCreateTest.addEventListener('click', () => {
-                    hideAll();
-                    welcome.classList.add('active');
-                });
-
-                returnFromQuestions.addEventListener('click', () => {
-                    hideAll();
-                    testList.style.display = 'block';
-                });
-                window.deleteCourse = function (courseId) {
-                    console.log("Delete Course button clicked for course ID:", courseId);
-                    if (confirm("Are you sure you want to delete this course?")) {
-                        fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, {
-                            method: 'POST'
-                        })
-                                .then(response => response.text())
-                                .then(data => {
-                                    if (data === "success") {
-                                        alert("Course deleted successfully!");
-                                        const courseRow = document.getElementById('courseRow' + courseId);
-                                        if (courseRow) {
-                                            courseRow.remove();
-                                        }
-
-                                    } else {
-                                        alert("Failed to delete course: " + data);
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    alert("An error occurred while deleting the course: " + error.message);
-                                });
-                    }
-                };
-                window.requestCourse = function (courseId) {
-                    console.log("Request Course button clicked for course ID:", courseId);
-                    if (confirm("Are you sure you want to request approval for this course?")) {
-                        fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, {
-                            method: 'POST'
-                        })
-                                .then(response => response.text())
-                                .then(data => {
-                                    if (data === "success") {
-                                        alert("Course request submitted successfully!");
-                                        const statusSpan = document.getElementById('status' + courseId);
-                                        if (statusSpan) {
-                                            statusSpan.textContent = "Waiting";
-                                            statusSpan.className = "status-waiting";
-                                        }
-                                        // Hide action buttons that shouldn't be visible in Waiting status
-                                        const row = document.getElementById('courseRow' + courseId);
-                                        if (row) {
-                                            const deleteBtn = row.querySelector('.btn-danger');
-                                            const updateBtn = row.querySelector('.btn-primary');
-                                            const addTestBtn = row.querySelector('.btn-success');
-                                            const requestBtn = row.querySelector('.btn-warning');
-
-                                            if (deleteBtn)
-                                                deleteBtn.classList.add('hidden');
-                                            if (updateBtn)
-                                                updateBtn.classList.add('hidden');
-                                            if (addTestBtn)
-                                                addTestBtn.classList.add('hidden');
-                                            if (requestBtn)
-                                                requestBtn.classList.add('hidden');
-                                        }
-                                    } else {
-                                        alert("Failed to request course: " + data);
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    alert("An error occurred while requesting the course: " + error.message);
-                                });
-                    }
-                };
-                window.addTest = function (courseId) {
-                    console.log("Add Test button clicked for course ID:", courseId);
-                    if (!courseId || courseId <= 0) {
-                        alert("Invalid Course ID. Please select a valid course.");
-                        return;
-                    }
-                    const courseIdInput = document.getElementById('courseId');
-                    if (!courseIdInput) {
-                        console.error("Course ID input not found!");
-                        return;
-                    }
-                    courseIdInput.value = courseId;
-                    console.log("Course ID set in input:", courseIdInput.value);
-                    hideAll();
-                    const createTestSection = document.getElementById('createTest');
-                    if (createTestSection) {
-                        createTestSection.style.display = 'block';
-                    } else {
-                        console.error("Create Test section not found!");
-                    }
-                };
-//                window.updateTest = function (testId) {
-//                    console.log("Update Test button clicked for test ID:", testId);
-//                    // Chuyển hướng đến QuestionController để hiển thị danh sách câu hỏi
-//                    window.location.href = `TestServlet?testId=${testId}`;
-//                };
-                window.deleteTest = function (testId) {
-                    console.log("Delete Test button clicked for test ID:", testId);
-                    if (confirm("Are you sure you want to delete this test?")) {
-                        fetch('NoticeServlet?action=deleteTest&testId=' + testId, {
-                            method: 'POST'
-                        })
-                                .then(response => response.text())
-                                .then(data => {
-                                    if (data === "success") {
-                                        alert("Test marked as deleted successfully!");
-                                        window.location.reload();
-                                    } else {
-                                        alert("Failed to mark test as deleted: " + data);
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    alert("An error occurred while marking the test as deleted: " + error.message);
-                                });
-                    }
-                };
-                let questionCount = 1;
-
-                window.addOption = function (optionsId) {
-                    const optionsContainer = document.getElementById(optionsId);
-                    const optionCount = optionsContainer.children.length;
-                    const newOption = document.createElement('div');
-                    newOption.classList.add('option');
-                    const optionLetter = String.fromCharCode(65 + optionCount);
-                    newOption.innerHTML = `
-                        <input type="radio" name="correct-answer-${questionCount}" value="option${optionLetter}${questionCount}">
-                        <input type="text" name="option${optionLetter}${questionCount}" placeholder="Option" required>
-                        <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                    `;
-                    optionsContainer.appendChild(newOption);
-                };
-
-                window.removeOption = function (button) {
-                    const optionDiv = button.parentElement;
-                    if (optionDiv.parentElement.children.length > 2) {
-                        optionDiv.remove();
-                    } else {
-                        alert("A question must have at least two options.");
-                    }
-                };
-
-                window.addQuestion = function () {
-                    questionCount++;
-                    const questionsContainer = document.getElementById('questionsContainer');
-                    const newQuestionBlock = document.createElement('div');
-                    newQuestionBlock.classList.add('question-block');
-                    newQuestionBlock.id = `question${questionCount}`;
-                    newQuestionBlock.innerHTML = `
-                        <label for="question${questionCount}">Question:</label>
-                        <textarea id="question${questionCount}" name="question${questionCount}" rows="3" placeholder="Enter your question" required></textarea>
-                        <div class="options" id="options${questionCount}">
-                            <div class="option">
-                                <input type="radio" name="correct-answer-${questionCount}" value="optionA${questionCount}" required>
-                                <input type="text" name="optionA${questionCount}" placeholder="Option A" required>
-                                <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="correct-answer-${questionCount}" value="optionB${questionCount}">
-                                <input type="text" name="optionB${questionCount}" placeholder="Option B" required>
-                                <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="correct-answer-${questionCount}" value="optionC${questionCount}">
-                                <input type="text" name="optionC${questionCount}" placeholder="Option C" required>
-                                <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="correct-answer-${questionCount}" value="optionD${questionCount}">
-                                <input type="text" name="optionD${questionCount}" placeholder="Option D" required>
-                                <button type="button" class="btn-small remove" onclick="removeOption(this)">x</button>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <div>
-                                <button type="button" class="btn-small add" onclick="addOption('options${questionCount}')">+</button>
-                                <span style="font-size: 14px; color: var(--text-light); margin-left: 8px;">Add Option</span>
-                            </div>
-                            <button type="button" class="btn btn-danger" onclick="removeQuestion(this)">Delete Question</button>
-                        </div>
-                    `;
-                    questionsContainer.appendChild(newQuestionBlock);
-                };
-
-                window.removeQuestion = function (button) {
-                    const questionBlock = button.parentElement.parentElement;
-                    const questionsContainer = document.getElementById('questionsContainer');
-                    if (questionsContainer.children.length > 1) {
-                        if (confirm("Are you sure you want to delete this question?")) {
-                            questionBlock.remove();
-                            questionCount--;
-                        }
-                    } else {
-                        alert("You must keep at least one question in the test.");
-                    }
-                };
-
-                // Xử lý submit form
-                document.getElementById('testForm').addEventListener('submit', function (event) {
-                    event.preventDefault();
-                    const courseIdInput = document.getElementById('courseId');
-                    const courseId = courseIdInput.value;
-                    const notification = document.getElementById('testNotification');
-                    if (!courseId || courseId.trim() === '') {
-                        notification.textContent = "Course ID is required! Please select a course first.";
-                        notification.className = "notification error";
-                        notification.style.display = "block";
-                        setTimeout(() => notification.style.display = "none", 3000);
-                        return;
-                    }
-
-                    let questionCounter = 1;
-                    while (document.getElementsByName('question' + questionCounter)[0]) {
-                        let radios = document.getElementsByName('correct-answer-' + questionCounter);
-                        let isChecked = false;
-                        for (let radio of radios) {
-                            if (radio.checked) {
-                                isChecked = true;
-                                break;
-                            }
-                        }
-                        if (!isChecked) {
-                            notification.textContent = 'Please select a correct answer for question ' + questionCounter;
-                            notification.className = "notification error";
-                            notification.style.display = "block";
-                            setTimeout(() => notification.style.display = "none", 3000);
-                            return;
-                        }
-                        questionCounter++;
-                    }
-
-                    const form = this;
-                    form.submit();
-                });
-
-            <% if (showQuestions != null && showQuestions) { %>
+            viewOwnerTestBtn.addEventListener('click', () => {
                 hideAll();
-                questionList.style.display = 'block';
-            <% } %>
+                testList.style.display = 'block';
+                toggleSidebar();
             });
-        </script>
-    </body>
+
+            viewOwnerCourseBtn.addEventListener('click', () => {
+                hideAll();
+                courseList.style.display = 'block';
+                toggleSidebar();
+            });
+
+            createCourseBtn.addEventListener('click', () => {
+                window.location.href = 'createCourse';
+            });
+
+            returnFromCourses.addEventListener('click', () => {
+                showWelcome();
+            });
+
+            returnFromTests.addEventListener('click', () => {
+                showWelcome();
+            });
+
+            window.deleteCourse = function (courseId) {
+                if (confirm("Are you sure you want to delete this course?")) {
+                    fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, { method: 'POST' })
+                        .then(response => response.text())
+                        .then(data => {
+                            if (data === "success") {
+                                alert("Course deleted successfully!");
+                                document.getElementById('courseRow' + courseId)?.remove();
+                            } else {
+                                alert("Failed to delete course: " + data);
+                            }
+                        })
+                        .catch(error => alert("An error occurred: " + error.message));
+                }
+            };
+
+            window.requestCourse = function (courseId) {
+                if (confirm("Are you sure you want to request approval for this course?")) {
+                    fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, { method: 'POST' })
+                        .then(response => response.text())
+                        .then(data => {
+                            if (data === "success") {
+                                alert("Course request submitted successfully!");
+                                const statusSpan = document.getElementById('status' + courseId);
+                                if (statusSpan) {
+                                    statusSpan.textContent = "Waiting";
+                                    statusSpan.className = "status-waiting";
+                                }
+                                const row = document.getElementById('courseRow' + courseId);
+                                if (row) row.querySelector('.btn-warning')?.classList.add('hidden');
+                            } else {
+                                alert("Failed to request course: " + data);
+                            }
+                        })
+                        .catch(error => alert("An error occurred: " + error.message));
+                }
+            };
+
+            window.deleteTest = function (testId) {
+                if (confirm("Are you sure you want to delete this test?")) {
+                    fetch('NoticeServlet?action=deleteTest&testId=' + testId, { method: 'POST' })
+                        .then(response => response.text())
+                        .then(data => {
+                            if (data === "success") {
+                                alert("Test marked as deleted successfully!");
+                                const testRow = document.getElementById('testRow' + testId);
+                                if (testRow) {
+                                    testRow.remove();
+                                    if (testListBody.getElementsByTagName('tr').length === 0) {
+                                        testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
+                                    }
+                                }
+                            } else {
+                                alert("Failed to mark test as deleted: " + data);
+                            }
+                        })
+                        .catch(error => alert("An error occurred: " + error.message));
+                }
+            };
+        });
+    </script>
+</body>
 </html>

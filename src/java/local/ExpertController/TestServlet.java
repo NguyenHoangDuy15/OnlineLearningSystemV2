@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class TestServlet extends HttpServlet {
             throws ServletException, IOException {
         String testIdStr = request.getParameter("testId");
         int testId;
+        HttpSession session = request.getSession();
+
         try {
             testId = Integer.parseInt(testIdStr);
         } catch (NumberFormatException e) {
@@ -35,29 +38,29 @@ public class TestServlet extends HttpServlet {
             return;
         }
 
-        // Lấy thông tin bài kiểm tra
         TestEX test = testDAO.getTestById(testId);
         if (test == null) {
             request.setAttribute("error", "Test not found");
             request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
             return;
         }
-
-        // Lấy danh sách câu hỏi
         List<QuestionEX> questions = questionDAO.getQuestionsByTestId(testId);
         if (questions == null) {
-            System.out.println("No questions found for testId: " + testId);
-            questions = new ArrayList<>(); // Đảm bảo danh sách không null
+            questions = new ArrayList<>();
+        }
+        List<QuestionEX> sessionQuestions = (List<QuestionEX>) session.getAttribute("tempQuestions_" + testId);
+        if (sessionQuestions != null) {
+            questions = sessionQuestions;
         } else {
-            System.out.println("Found " + questions.size() + " questions for testId: " + testId);
-            for (QuestionEX q : questions) {
-                System.out.println("Question ID: " + q.getQuestionID() + ", Content: " + q.getQuestionContent());
-            }
+            session.setAttribute("tempQuestions_" + testId, questions);
         }
 
-        // Truyền dữ liệu vào JSP
         request.setAttribute("test", test);
         request.setAttribute("questions", questions);
+        String success = request.getParameter("success");
+        if (success != null) {
+            request.setAttribute("success", success);
+        }
         request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
     }
 
@@ -65,155 +68,153 @@ public class TestServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        HttpSession session = request.getSession();
+        int testId = Integer.parseInt(request.getParameter("testId"));
+        TestEX test = testDAO.getTestById(testId);
 
-        if ("updateTest".equals(action)) {
-            try {
-                System.out.println("Starting updateTest action");
-                int testId = Integer.parseInt(request.getParameter("testId"));
+        if (test == null) {
+            request.setAttribute("error", "Test not found");
+            request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            int questionCount = Integer.parseInt(request.getParameter("questionCount"));
+            String[] questionContents = request.getParameterValues("question[]");
+            String[] optionAs = request.getParameterValues("optionA[]");
+            String[] optionBs = request.getParameterValues("optionB[]");
+            String[] optionCs = request.getParameterValues("optionC[]");
+            String[] optionDs = request.getParameterValues("optionD[]");
+            String[] questionIds = request.getParameterValues("questionId[]");
+            String[] selectedCorrectAnswers = new String[questionCount];
+            for (int i = 0; i < questionCount; i++) {
+                selectedCorrectAnswers[i] = request.getParameter("correctAnswer_" + i);
+            }
+
+            List<QuestionEX> questions = (List<QuestionEX>) session.getAttribute("tempQuestions_" + testId);
+            if (questions == null) {
+                questions = questionDAO.getQuestionsByTestId(testId);
+                if (questions == null) {
+                    questions = new ArrayList<>();
+                }
+            }
+            questions.clear();
+            for (int i = 0; i < questionCount; i++) {
+                QuestionEX question = new QuestionEX();
+                question.setQuestionID(questionIds[i].isEmpty() ? -1 : Integer.parseInt(questionIds[i]));
+                question.setTestID(testId);
+                question.setQuestionContent(questionContents[i]);
+                question.setOptionA(optionAs[i]);
+                question.setOptionB(optionBs[i]);
+                question.setOptionC(optionCs[i]);
+                question.setOptionD(optionDs[i]);
+                questions.add(question);
+            }
+            session.setAttribute("tempQuestions_" + testId, questions);
+
+            if ("updateTest".equals(action)) {
                 String testName = request.getParameter("testName");
-                System.out.println("testId: " + testId + ", testName: " + testName);
 
-                // Cập nhật thông tin bài kiểm tra
-                TestEX test = testDAO.getTestById(testId);
-                if (test == null) {
-                    throw new Exception("Test not found");
+                if (testName == null || testName.trim().isEmpty()) {
+                    throw new Exception("Test name cannot be empty");
+                }
+
+                if (questionContents == null || questionContents.length == 0) {
+                    throw new Exception("At least one question must be provided");
+                }
+
+                for (int i = 0; i < questionCount; i++) {
+                    String correctAnswer = request.getParameter("correctAnswer_" + i);
+                    if (questionContents[i] == null || questionContents[i].trim().isEmpty()) {
+                        throw new Exception("Question content must be filled for question " + (i + 1));
+                    }
+                    if (optionAs[i] == null || optionAs[i].trim().isEmpty()) {
+                        throw new Exception("Option A must be filled for question " + (i + 1));
+                    }
+                    if (optionBs[i] == null || optionBs[i].trim().isEmpty()) {
+                        throw new Exception("Option B must be filled for question " + (i + 1));
+                    }
+                    if (optionCs[i] == null || optionCs[i].trim().isEmpty()) {
+                        throw new Exception("Option C must be filled for question " + (i + 1));
+                    }
+                    if (optionDs[i] == null || optionDs[i].trim().isEmpty()) {
+                        throw new Exception("Option D must be filled for question " + (i + 1));
+                    }
+                    if (correctAnswer == null || correctAnswer.trim().isEmpty() || !correctAnswer.matches("^[A-D]$")) {
+                        throw new Exception("Correct answer must be selected (A, B, C, or D) for question " + (i + 1));
+                    }
                 }
                 test.setName(testName);
-                System.out.println("Calling testDAO.updateTest");
                 testDAO.updateTest(test);
 
-                // Xử lý câu hỏi từ form
-                String[] questionIds = request.getParameterValues("questionId[]");
-                String[] questionContents = request.getParameterValues("question[]");
-                String[] correctAnswers = request.getParameterValues("correctAnswer[]");
-                String[] optionAs = request.getParameterValues("optionA[]");
-                String[] optionBs = request.getParameterValues("optionB[]");
-                String[] optionCs = request.getParameterValues("optionC[]");
-                String[] optionDs = request.getParameterValues("optionD[]");
-
                 List<Integer> submittedQuestionIds = new ArrayList<>();
-                int newQuestionsAdded = 0;
-
-                // Xử lý các câu hỏi được gửi lên (nếu có)
-                if (questionContents != null && questionContents.length > 0) {
-                    int length = questionContents.length;
-
-                    // Kiểm tra độ dài của các mảng
-                    StringBuilder errorDetails = new StringBuilder();
-                    if (questionIds == null || questionIds.length != length) {
-                        errorDetails.append("questionId[] length: ").append(questionIds == null ? "null" : questionIds.length).append("; ");
-                    }
-                    if (correctAnswers == null || correctAnswers.length != length) {
-                        errorDetails.append("correctAnswer[] length: ").append(correctAnswers == null ? "null" : correctAnswers.length).append("; ");
-                    }
-                    if (optionAs == null || optionAs.length != length) {
-                        errorDetails.append("optionA[] length: ").append(optionAs == null ? "null" : optionAs.length).append("; ");
-                    }
-                    if (optionBs == null || optionBs.length != length) {
-                        errorDetails.append("optionB[] length: ").append(optionBs == null ? "null" : optionBs.length).append("; ");
-                    }
-                    if (optionCs == null || optionCs.length != length) {
-                        errorDetails.append("optionC[] length: ").append(optionCs == null ? "null" : optionCs.length).append("; ");
-                    }
-                    if (optionDs == null || optionDs.length != length) {
-                        errorDetails.append("optionD[] length: ").append(optionDs == null ? "null" : optionDs.length).append("; ");
-                    }
-
-                    if (errorDetails.length() > 0) {
-                        System.out.println("Mismatch in form data: " + errorDetails.toString());
-                        length = Math.min(length, 
-                            Math.min(correctAnswers != null ? correctAnswers.length : 0,
-                            Math.min(optionAs != null ? optionAs.length : 0,
-                            Math.min(optionBs != null ? optionBs.length : 0,
-                            Math.min(optionCs != null ? optionCs.length : 0,
-                            optionDs != null ? optionDs.length : 0)))));
-                    }
-
-                    System.out.println("Number of questions submitted: " + length);
-                    for (int i = 0; i < length; i++) {
-                        // Kiểm tra dữ liệu hợp lệ
-                        if (questionContents[i] == null || questionContents[i].trim().isEmpty() ||
-                            optionAs[i] == null || optionAs[i].trim().isEmpty() ||
-                            optionBs[i] == null || optionBs[i].trim().isEmpty() ||
-                            optionCs[i] == null || optionCs[i].trim().isEmpty() ||
-                            optionDs[i] == null || optionDs[i].trim().isEmpty() ||
-                            correctAnswers[i] == null || correctAnswers[i].trim().isEmpty()) {
-                            System.out.println("Skipping invalid question " + (i + 1) + ": some fields are empty");
-                            throw new Exception("Invalid data for question " + (i + 1) + ": some fields are empty");
+                for (int i = 0; i < questionContents.length; i++) {
+                    String questionIdStr = (questionIds != null && i < questionIds.length) ? questionIds[i] : "";
+                    String correctAnswer = request.getParameter("correctAnswer_" + i);
+                    if (!questionIdStr.isEmpty()) {
+                        int questionId = Integer.parseInt(questionIdStr);
+                        submittedQuestionIds.add(questionId);
+                        questionDAO.updateQuestion(questionId, questionContents[i], optionAs[i], optionBs[i], optionCs[i], optionDs[i]);
+                        questionDAO.updateCorrectAnswer(questionId, correctAnswer);
+                    } else {
+                        int newQuestionId = questionDAO.addQuestion(questionContents[i], optionAs[i], optionBs[i], optionCs[i], optionDs[i], testId);
+                        if (newQuestionId == -1) {
+                            throw new Exception("Failed to add new question " + (i + 1));
                         }
+                        submittedQuestionIds.add(newQuestionId);
+                        questionDAO.addCorrectAnswer(newQuestionId, correctAnswer);
+                    }
+                }
+                session.removeAttribute("tempQuestions_" + testId);
+                response.sendRedirect("TestServlet?testId=" + testId + "&success=Test updated successfully");
+            } else if ("addQuestion".equals(action)) {
+                QuestionEX newQuestion = new QuestionEX();
+                newQuestion.setTestID(testId);
+                newQuestion.setQuestionID(-1);
+                questions.add(newQuestion);
+                session.setAttribute("tempQuestions_" + testId, questions);
+                request.setAttribute("test", test);
+                request.setAttribute("questions", questions);
+                request.setAttribute("selectedCorrectAnswers", selectedCorrectAnswers); // Gửi lại các đáp án đã chọn
+                request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
+            } else if ("deleteQuestion".equals(action)) {
+                int deleteIndex = Integer.parseInt(request.getParameter("deleteIndex"));
 
-                        // Kiểm tra giá trị của correctAnswer
-                        if (!correctAnswers[i].matches("^[A-D]$")) {
-                            System.out.println("Skipping invalid question " + (i + 1) + ": correct answer must be A, B, C, or D");
-                            throw new Exception("Invalid correct answer for question " + (i + 1) + ": must be A, B, C, or D");
-                        }
-
-                        String questionIdStr = questionIds[i];
-                        if (questionIdStr != null && !questionIdStr.isEmpty()) {
-                            // Câu hỏi hiện có: Cập nhật
-                            int questionId = Integer.parseInt(questionIdStr);
-                            submittedQuestionIds.add(questionId);
-                            System.out.println("Updating existing question " + questionId + ": " + questionContents[i]);
-                            questionDAO.updateQuestion(
-                                questionId,
-                                questionContents[i],
-                                optionAs[i],
-                                optionBs[i],
-                                optionCs[i],
-                                optionDs[i]
-                            );
-                            // Cập nhật đáp án đúng
-                            System.out.println("Updating correct answer for question " + questionId + ": " + correctAnswers[i]);
-                            questionDAO.updateCorrectAnswer(questionId, correctAnswers[i]);
-                        } else {
-                            // Câu hỏi mới: Thêm
-                            System.out.println("Adding new question: " + questionContents[i]);
-                            int newQuestionId = questionDAO.addQuestion(
-                                questionContents[i],
-                                optionAs[i],
-                                optionBs[i],
-                                optionCs[i],
-                                optionDs[i],
-                                testId
-                            );
-                            if (newQuestionId == -1) {
-                                System.out.println("Failed to add new question " + (i + 1));
-                                throw new Exception("Failed to add new question " + (i + 1));
-                            }
-                            submittedQuestionIds.add(newQuestionId);
-                            newQuestionsAdded++;
-                            System.out.println("Adding correct answer for new questionId: " + newQuestionId + ", answer: " + correctAnswers[i]);
-                            questionDAO.addCorrectAnswer(newQuestionId, correctAnswers[i]);
+                if (deleteIndex >= 0 && deleteIndex < questions.size()) {
+                    QuestionEX questionToDelete = questions.get(deleteIndex);
+                    if (questionToDelete.getQuestionID() != -1) {
+                        if (!questionDAO.deactivateQuestion(questionToDelete.getQuestionID())) {
+                            throw new Exception("Failed to remove question");
                         }
                     }
+                    questions.remove(deleteIndex);
+                    // Cập nhật lại selectedCorrectAnswers sau khi xóa
+                    List<String> updatedCorrectAnswers = new ArrayList<>();
+                    for (int i = 0; i < selectedCorrectAnswers.length; i++) {
+                        if (i != deleteIndex) {
+                            updatedCorrectAnswers.add(selectedCorrectAnswers[i]);
+                        }
+                    }
+                    selectedCorrectAnswers = updatedCorrectAnswers.toArray(new String[0]);
+                    session.setAttribute("tempQuestions_" + testId, questions);
+                    request.setAttribute("success", "Question removed successfully");
                 } else {
-                    System.out.println("No questions submitted in the form.");
+                    request.setAttribute("error", "Invalid question index to delete");
                 }
-
-                // Chuyển hướng về chính TestServlet với thông báo
-                String message = "Test updated successfully.";
-                if (newQuestionsAdded > 0) {
-                    message += " Added " + newQuestionsAdded + " new question(s).";
-                }
-                System.out.println("Redirecting to TestServlet with testId: " + testId);
-                response.sendRedirect("TestServlet?testId=" + testId + "&message=" + java.net.URLEncoder.encode(message, "UTF-8"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("error", "An error occurred while saving changes: " + e.getMessage());
-                request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
+                request.setAttribute("test", test);
+                request.setAttribute("questions", questions);
+                request.setAttribute("selectedCorrectAnswers", selectedCorrectAnswers);
+                request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
             }
-        } else if ("deactivateQuestion".equals(action)) {
-            try {
-                int questionId = Integer.parseInt(request.getParameter("questionId"));
-                System.out.println("Deactivating question with questionId: " + questionId);
-                questionDAO.deactivateQuestion(questionId);
-                int testId = Integer.parseInt(request.getParameter("testId"));
-                response.sendRedirect("TestServlet?testId=" + testId + "&message=" + java.net.URLEncoder.encode("Question deactivated successfully.", "UTF-8"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("error", "An error occurred while deactivating the question: " + e.getMessage());
-                request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("error", "Error: " + e.getMessage());
+            request.setAttribute("test", test);
+            List<QuestionEX> questions = (List<QuestionEX>) session.getAttribute("tempQuestions_" + testId);
+            if (questions == null) {
+                questions = questionDAO.getQuestionsByTestId(testId);
             }
+            request.setAttribute("questions", questions);
+            request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
         }
     }
 }

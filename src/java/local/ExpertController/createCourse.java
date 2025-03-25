@@ -35,14 +35,12 @@ public class createCourse extends HttpServlet {
 
         if ("createCourse".equals(action)) {
             try {
-                // Lấy dữ liệu từ form
                 String courseName = request.getParameter("courseName");
                 String description = request.getParameter("description");
                 float price = Float.parseFloat(request.getParameter("price"));
                 String imageCourses = "default.jpg";
                 Part filePart = request.getPart("imageFile");
 
-                // Xử lý upload ảnh nếu có
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = extractFileName(filePart);
                     String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
@@ -55,13 +53,11 @@ public class createCourse extends HttpServlet {
 
                 int categoryId = Integer.parseInt(request.getParameter("categoryId"));
 
-                // Tạo khóa học mới
                 int courseId = courseDao.createCourse(courseName, description, price, imageCourses, userID, categoryId);
                 if (courseId <= 0) {
                     throw new Exception("Failed to create course in the database.");
                 }
 
-                // Lấy danh sách lesson từ form
                 String[] lessonNames = request.getParameterValues("lessonName[]");
                 String[] lessonContents = request.getParameterValues("lessonContent[]");
                 int lessonCount = 0;
@@ -71,7 +67,6 @@ public class createCourse extends HttpServlet {
                         String lessonName = lessonNames[i].trim();
                         String lessonContent = lessonContents[i].trim();
 
-                        // Chỉ thêm bài học nếu cả tên và nội dung không rỗng
                         if (!lessonName.isEmpty() && !lessonContent.isEmpty()) {
                             lessonDao.addLesson(courseId, lessonName, lessonContent);
                             lessonCount++;
@@ -79,7 +74,6 @@ public class createCourse extends HttpServlet {
                     }
                 }
 
-                // Forward về trang createCourse.jsp với thông báo thành công
                 request.setAttribute("success", "Course '" + courseName + "' created successfully with " + lessonCount + " lessons!");
                 request.getRequestDispatcher("jsp/createCourse.jsp").forward(request, response);
 

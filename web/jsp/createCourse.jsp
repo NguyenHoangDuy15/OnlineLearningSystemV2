@@ -203,7 +203,7 @@
             <script>
                 setTimeout(() => {
                     window.location.href = 'ShowexpertServlet';
-                }, 3000);
+                }, 5000);
             </script>
         <% } else if (errorMessage != null && !errorMessage.isEmpty()) { %>
             <div class="notification error">

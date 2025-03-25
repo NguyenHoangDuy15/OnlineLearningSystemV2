@@ -1,12 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="Model.LessonEX" %>
+<%@ page import="java.util.List" %>
+<%@ page import="Model.QuestionEX" %>
+<%@ page import="Model.TestEX" %>
+<%@ page import="dal.TestEXDAO" %>
 <%@ page import="Model.User" %>
 <%@ page import="Model.Usernew" %>
 
 <%
-    LessonEX lesson = (LessonEX) request.getAttribute("lesson");
-    Integer courseId = (Integer) request.getAttribute("courseId");
-    boolean isEdit = lesson != null;
+    List<QuestionEX> questions = (List<QuestionEX>) request.getAttribute("questions");
+    TestEX test = (TestEX) request.getAttribute("test");
+    TestEXDAO testDAO = new TestEXDAO();
+    String error = (String) request.getAttribute("error");
 
     User user = (User) session.getAttribute("account");
     Usernew userNew = null;
@@ -24,7 +28,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><%= isEdit ? "Edit Lesson" : "Add Lesson" %> - Online Learning</title>
+        <title>View Questions - Online Learning</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
         <style>
@@ -39,7 +43,6 @@
                 --border: #E0E0E0;
                 --shadow: rgba(0, 0, 0, 0.1);
                 --gradient-primary: linear-gradient(90deg, #4A90E2, #357ABD);
-                --gradient-success: linear-gradient(90deg, #2ECC71, #27AE60);
                 --gradient-danger: linear-gradient(90deg, #E74C3C, #C0392B);
             }
 
@@ -57,7 +60,7 @@
 
             .navbar {
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                padding: 20px 0; /* Tăng padding để header rộng hơn */
+                padding: 15px 0;
                 position: relative;
             }
 
@@ -147,11 +150,26 @@
                 gap: 16px;
             }
 
+            .notification {
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            .notification.error {
+                color: var(--accent-red);
+                background-color: #ffe6e6;
+                border: 1px solid var(--accent-red);
+                display: block;
+            }
+
             .main-content {
                 width: 100%;
                 background-color: var(--background);
                 padding: 32px;
-                min-height: calc(100vh - 82px); /* Điều chỉnh dựa trên navbar rộng hơn */
+                min-height: calc(100vh - 72px);
                 transition: margin-left 0.3s ease;
             }
 
@@ -159,48 +177,35 @@
                 margin-left: 250px;
             }
 
-            .form-container {
-                max-width: 80%;
-                margin: 0 auto;
+            .question-list {
                 background-color: var(--background);
                 padding: 24px;
                 border-radius: 8px;
                 box-shadow: 0 2px 8px var(--shadow);
-                margin-top: 24px;
+                max-width: 80%;
+                margin: 0 auto;
             }
 
-            h2 {
-                font-size: 24px;
-                color: var(--text-dark);
-                margin-bottom: 24px;
-            }
-
-            .form-group {
+            .question-item {
                 margin-bottom: 16px;
-            }
-
-            label {
-                display: block;
-                font-size: 14px;
-                font-weight: 600;
-                color: var(--text-dark);
-                margin-bottom: 8px;
-            }
-
-            input[type="text"],
-            textarea {
-                width: 100%;
-                padding: 10px;
+                padding: 16px;
                 border: 1px solid var(--border);
-                border-radius: 4px;
-                font-size: 14px;
-                color: var(--text-dark);
-                box-sizing: border-box;
+                border-radius: 8px;
             }
 
-            textarea {
-                height: 150px;
-                resize: vertical;
+            .question-item h4 {
+                margin: 0 0 8px 0;
+                color: var(--text-dark);
+            }
+
+            .question-item p {
+                margin: 4px 0;
+                color: var(--text-light);
+            }
+
+            .question-item .correct {
+                color: var(--accent-green);
+                font-weight: 500;
             }
 
             .btn {
@@ -235,32 +240,18 @@
             .btn-danger:hover {
                 background: linear-gradient(90deg, #C0392B, #E74C3C);
                 transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
             }
-
-            .button-group {
-                display: flex;
-                gap: 16px;
-                margin-top: 24px;
-            }
-
-            .error-message {
-                color: var(--accent-red);
-                font-size: 12px;
-                margin-top: 4px;
-                display: none;
-            }
-
+            /* CSS cho dropdown */
             .dropdown-menu {
                 border-radius: 12px;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 border: none;
                 padding: 16px;
-                min-width: 300px;
+                min-width: 300px; /* Đảm bảo dropdown đủ rộng */
                 background-color: var(--background);
             }
 
-
+            /* Header của dropdown (avatar, tên, email, nút View profile) */
             .dropdown-header {
                 display: flex;
                 align-items: center;
@@ -311,8 +302,6 @@
                 background: linear-gradient(90deg, #357ABD, #4A90E2);
                 transform: translateY(-1px);
             }
-
-
             .dropdown-item {
                 display: flex;
                 align-items: center;
@@ -361,11 +350,11 @@
                         <div class="nav-item dropdown">
                             <a href="Instructor" class="nav-item nav-link">Experts</a>
                         </div>
-                       
+                    
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
-                         <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
+                            <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
                         <% if (isSale != null && isSale) { %>
-                        DRAM                    <a href="viewownerbloglist" class="nav-item nav-link">Manage Blogs</a>
+                        <a href="viewownerbloglist" class="nav-item nav-link">Manage Blogs</a>
                         <% } %>
                     </div>
                     <% if (isLoggedIn != null && isLoggedIn) { %>
@@ -410,64 +399,41 @@
         </aside>
 
         <main class="main-content" id="mainContent">
-            <div class="form-container">
-                <h2><%= isEdit ? "Edit Lesson" : "Add Lesson" %></h2>
-                <form action="LessonServlet" method="post" onsubmit="return validateForm()">
-                    <input type="hidden" name="action" value="<%= isEdit ? "updateLesson" : "addLesson" %>">
-                    <input type="hidden" name="courseId" value="<%= courseId %>">
-                    <% if (isEdit) { %>
-                    <input type="hidden" name="lessonId" value="<%= lesson.getLessonID() %>">
+            <% if (error != null && !error.isEmpty()) { %>
+            <div class="notification error"><%= error %></div>
+            <% } %>
+
+            <div class="question-list">
+                <h2>Questions for Test <%= test != null ? test.getName() : "" %></h2>
+                <div id="questionsContainer">
+                    <% if (questions != null && !questions.isEmpty()) { %>
+                    <% int index = 1; %>
+                    <% for (QuestionEX question : questions) { %>
+                    <div class="question-item">
+                        <h4>Question <%= index %>: <%= question.getQuestionContent() %></h4>
+                        <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "A") ? "class=\"correct\"" : "" %>>A. <%= question.getOptionA() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "A") ? "(Correct)" : "" %></p>
+                        <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "B") ? "class=\"correct\"" : "" %>>B. <%= question.getOptionB() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "B") ? "(Correct)" : "" %></p>
+                        <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "C") ? "class=\"correct\"" : "" %>>C. <%= question.getOptionC() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "C") ? "(Correct)" : "" %></p>
+                        <p <%= testDAO.isCorrectAnswer(question.getQuestionID(), "D") ? "class=\"correct\"" : "" %>>D. <%= question.getOptionD() %> <%= testDAO.isCorrectAnswer(question.getQuestionID(), "D") ? "(Correct)" : "" %></p>
+                    </div>
+                    <% index++; %>
                     <% } %>
-
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" name="title" value="<%= isEdit ? lesson.getTitle() : "" %>" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="content">Content (YouTube URL)</label>
-                        <textarea id="content" name="content" required oninput="validateYouTubeUrl()"><%= isEdit ? lesson.getContent() : "" %></textarea>
-                        <div id="content-error" class="error-message">Content must be a valid YouTube URL starting with 'https://www.youtube.com/watch?v='</div>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-danger" onclick="window.location.href = 'CourseServlet?courseId=<%= courseId %>'">Cancel</button>
-                    </div>
-                </form>
+                    <% } else { %>
+                    <p>No questions available for this test.</p>
+                    <% } %>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet'">Return to Dashboard</button>
             </div>
         </main>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                            function toggleSidebar() {
-                                const sidebar = document.getElementById('sidebar');
-                                const mainContent = document.getElementById('mainContent');
-                                sidebar.classList.toggle('active');
-                                mainContent.classList.toggle('shifted');
-                            }
-
-                            function validateYouTubeUrl() {
-                                const contentInput = document.getElementById('content');
-                                const contentError = document.getElementById('content-error');
-                                const youtubeUrlPattern = /^https:\/\/www\.youtube\.com\/watch\?v=[A-Za-z0-9_-]+/;
-
-                                if (!contentInput.value.match(youtubeUrlPattern)) {
-                                    contentError.style.display = 'block';
-                                    return false;
-                                } else {
-                                    contentError.style.display = 'none';
-                                    return true;
-                                }
-                            }
-
-                            function validateForm() {
-                                const isYouTubeUrlValid = validateYouTubeUrl();
-                                if (!isYouTubeUrlValid) {
-                                    return false; // Ngăn gửi form nếu URL không hợp lệ
-                                }
-                                return true; // Cho phép gửi form nếu tất cả hợp lệ
-                            }
+                    function toggleSidebar() {
+                        const sidebar = document.getElementById('sidebar');
+                        const mainContent = document.getElementById('mainContent');
+                        sidebar.classList.toggle('active');
+                        mainContent.classList.toggle('shifted');
+                    }
         </script>
     </body>
 </html>
