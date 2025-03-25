@@ -1,14 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="dal.QuestionEXDAO" %>
 <%@ page import="Model.TestEX" %>
 <%@ page import="Model.QuestionEX" %>
-<%@ page import="dal.QuestionEXDAO" %>
 <%@ page import="java.util.List" %>
-
-<%
-    TestEX test = (TestEX) request.getAttribute("test");
-    List<QuestionEX> questions = (List<QuestionEX>) request.getAttribute("questions");
-    QuestionEXDAO questionDAO = new QuestionEXDAO();
-%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,6 +60,10 @@
             transform: scale(1.05);
         }
 
+        .user-profile {
+            position: relative; /* Để dropdown định vị tương đối với user-profile */
+        }
+
         .user-profile img {
             width: 40px;
             height: 40px;
@@ -79,14 +78,15 @@
         }
 
         .dropdown {
-            display: none;
+            display: none; /* Ẩn mặc định */
             position: absolute;
             right: 0;
-            top: 50px;
+            top: 50px; /* Khoảng cách từ ảnh đại diện */
             background-color: var(--background);
             box-shadow: 0 4px 8px var(--shadow);
             border-radius: 8px;
             z-index: 1000;
+            min-width: 150px; /* Đảm bảo dropdown có chiều rộng tối thiểu */
         }
 
         .dropdown a {
@@ -216,16 +216,6 @@
             box-shadow: 0 4px 12px var(--shadow);
         }
 
-        .question-block.error {
-            border-color: var(--accent-red);
-            background-color: rgba(231, 76, 60, 0.1);
-        }
-
-        .question-block.new {
-            border-color: var(--accent-green);
-            background-color: rgba(46, 204, 113, 0.1);
-        }
-
         .options {
             margin-top: 16px;
         }
@@ -252,8 +242,7 @@
             display: flex;
             gap: 12px;
             margin-top: 16px;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-end;
         }
 
         .form-buttons {
@@ -261,6 +250,25 @@
             gap: 12px;
             justify-content: flex-start;
             margin-top: 24px;
+        }
+
+        .notification {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .notification.success {
+            color: var(--accent-green);
+            background-color: #e6ffe6;
+            border: 1px solid var(--accent-green);
+        }
+
+        .notification.error {
+            color: var(--accent-red);
+            background-color: #ffe6e6;
+            border: 1px solid var(--accent-red);
         }
 
         @media (max-width: 768px) {
@@ -279,13 +287,14 @@
 </head>
 <body>
     <header class="header">
-        <div class="logo">
+        <a href="ShowexpertServlet" class="logo">
             <h1>Online Learning</h1>
-        </div>
+        </a>
         <div class="user-profile">
-            <img src="avatar.png" alt="User Avatar" onclick="toggleDropdown()">
+            <img src="./img/logo/logo.JPG" alt="User Avatar" onclick="toggleDropdown()">
             <div class="dropdown" id="dropdownMenu">
-                <a href="#">View Profile</a>
+                <a href="ViewProfile">View Profile</a>
+                <a href="ChangePasswordServlet">Change Password</a>
                 <a href="LogoutServlet">Logout</a>
             </div>
         </div>
@@ -307,271 +316,93 @@
 
         <main class="main-content">
             <h2>Edit Test</h2>
-            <% 
-                String message = request.getParameter("message");
-                if (message != null && !message.isEmpty()) { 
-            %>
-                <p style="color: var(--accent-green); font-weight: bold;"><%= message %></p>
-            <% } %>
-            <% if (test != null) { %>
-                <form id="editTestForm" action="TestServlet" method="post">
-                    <input type="hidden" name="action" value="updateTest">
-                    <input type="hidden" name="testId" id="editTestId" value="<%= test.getTestID() %>">
-                    <div class="form-group">
-                        <label for="editTestName">Test Name:</label>
-                        <input type="text" id="editTestName" name="testName" value="<%= test.getName() != null ? test.getName() : "" %>" required>
-                    </div>
-                    <div id="editQuestionsContainer">
-                        <% if (questions != null && !questions.isEmpty()) { %>
-                            <% for (int i = 0; i < questions.size(); i++) { 
-                                QuestionEX question = questions.get(i);
-                                String correctAnswer = questionDAO.getCorrectAnswerByQuestionId(question.getQuestionID());
-                                boolean noCorrectAnswer = (correctAnswer == null);
-                                if (noCorrectAnswer) {
-                                    correctAnswer = "A"; // Mặc định chọn A nếu không có đáp án đúng
-                                }
-                            %>
-                                <div class="question-block" data-index="<%= i %>">
-                                    <!-- Thêm trường ẩn để lưu QuestionID -->
-                                    <input type="hidden" name="questionId[]" value="<%= question.getQuestionID() %>">
+            <c:if test="${not empty success}">
+                <div class="notification success">${success}</div>
+            </c:if>
+            <c:if test="${not empty error}">
+                <div class="notification error">${error}</div>
+            </c:if>
+
+            <c:choose>
+                <c:when test="${not empty test}">
+                    <form action="TestServlet" method="post" id="updateTestForm">
+                        <input type="hidden" name="testId" value="${test.testID}">
+                        <input type="hidden" name="questionCount" value="${questions.size()}">
+                        <input type="hidden" name="deleteIndex" value="-1">
+                        <div class="form-group">
+                            <label for="testName">Test Name:</label>
+                            <input type="text" id="testName" name="testName" value="${test.name}" required>
+                        </div>
+                        <div id="questionsContainer">
+                            <c:forEach var="question" items="${questions}" varStatus="loop">
+                                <jsp:useBean id="questionDAO" class="dal.QuestionEXDAO" scope="page"/>
+                                <c:set var="correctAnswer" value="${questionDAO.getCorrectAnswerByQuestionId(question.questionID)}"/>
+                                <div class="question-block">
+                                    <input type="hidden" name="questionId[]" value="${question.questionID != -1 ? question.questionID : ''}">
                                     <div class="form-group">
-                                        <label for="editQuestion<%= i %>">Question:</label>
-                                        <textarea id="editQuestion<%= i %>" name="question[]" rows="3" required><%= question.getQuestionContent() != null ? question.getQuestionContent() : "" %></textarea>
+                                        <label>Question ${loop.count}:</label>
+                                        <textarea name="question[]" latexit="false" rows="3">${question.questionContent != null ? question.questionContent : ''}</textarea>
                                     </div>
-                                    <% if (noCorrectAnswer) { %>
-                                        <p style="color: var(--accent-red);">No correct answer found for this question. Defaulting to A. Please confirm.</p>
-                                    <% } %>
                                     <div class="options">
                                         <div class="option">
-                                            <input type="radio" name="correctAnswer[<%= i %>]" value="A" <%= "A".equals(correctAnswer) ? "checked" : "" %>>
-                                            <label>Option</label>
-                                            <label>A:</label>
-                                            <input type="text" name="optionA[]" value="<%= question.getOptionA() != null ? question.getOptionA() : "" %>" required>
+                                            <input type="radio" name="correctAnswer_${loop.index}" value="A" ${correctAnswer == 'A' ? 'checked' : ''}>
+                                            <label>Option A:</label>
+                                            <input type="text" name="optionA[]" value="${question.optionA != null ? question.optionA : ''}">
                                         </div>
                                         <div class="option">
-                                            <input type="radio" name="correctAnswer[<%= i %>]" value="B" <%= "B".equals(correctAnswer) ? "checked" : "" %>>
-                                            <label>Option</label>
-                                            <label>B:</label>
-                                            <input type="text" name="optionB[]" value="<%= question.getOptionB() != null ? question.getOptionB() : "" %>" required>
+                                            <input type="radio" name="correctAnswer_${loop.index}" value="B" ${correctAnswer == 'B' ? 'checked' : ''}>
+                                            <label>Option B:</label>
+                                            <input type="text" name="optionB[]" value="${question.optionB != null ? question.optionB : ''}">
                                         </div>
                                         <div class="option">
-                                            <input type="radio" name="correctAnswer[<%= i %>]" value="C" <%= "C".equals(correctAnswer) ? "checked" : "" %>>
-                                            <label>Option</label>
-                                            <label>C:</label>
-                                            <input type="text" name="optionC[]" value="<%= question.getOptionC() != null ? question.getOptionC() : "" %>" required>
+                                            <input type="radio" name="correctAnswer_${loop.index}" value="C" ${correctAnswer == 'C' ? 'checked' : ''}>
+                                            <label>Option C:</label>
+                                            <input type="text" name="optionC[]" value="${question.optionC != null ? question.optionC : ''}">
                                         </div>
                                         <div class="option">
-                                            <input type="radio" name="correctAnswer[<%= i %>]" value="D" <%= "D".equals(correctAnswer) ? "checked" : "" %>>
-                                            <label>Option</label>
-                                            <label>D:</label>
-                                            <input type="text" name="optionD[]" value="<%= question.getOptionD() != null ? question.getOptionD() : "" %>" required>
+                                            <input type="radio" name="correctAnswer_${loop.index}" value="D" ${correctAnswer == 'D' ? 'checked' : ''}>
+                                            <label>Option D:</label>
+                                            <input type="text" name="optionD[]" value="${question.optionD != null ? question.optionD : ''}">
                                         </div>
                                     </div>
                                     <div class="form-actions">
-                                        <button type="button" class="btn btn-danger" onclick="deactivateQuestion(<%= question.getQuestionID() %>, <%= test.getTestID() %>)">Delete Question</button>
+                                        <button type="submit" name="action" value="deleteQuestion" class="btn btn-danger" 
+                                                onclick="this.form.elements['deleteIndex'].value = ${loop.index}">Delete Question</button>
                                     </div>
                                 </div>
-                            <% } %>
-                        <% } else { %>
-                            <p>No questions available. You can add new questions below.</p>
-                        <% } %>
-                    </div>
-                    <div class="form-buttons">
-                        <button type="button" class="btn btn-primary add-question" onclick="addEditQuestion()">Add Question</button>
-                        <button type="submit" class="btn btn-success">Save Changes</button>
-                    </div>
-                </form>
-            <% } else { %>
-                <p>Test not found.</p>
-            <% } %>
-            <button class="btn btn-primary" onclick="window.location.href='CourseServlet?courseId=<%= test != null ? test.getCourseID() : 0 %>'">Return to Course Details</button>
+                            </c:forEach>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" name="action" value="addQuestion" class="btn btn-primary">Add Question</button>
+                            <button type="submit" name="action" value="updateTest" class="btn btn-success">Save Changes</button>
+                        </div>
+                    </form>
+                </c:when>
+                <c:otherwise>
+                    <p>Test not found.</p>
+                </c:otherwise>
+            </c:choose>
+                    
+            <button class="btn btn-primary" onclick="window.location.href='CourseServlet?courseId=${test != null ? test.courseID : 0}'">Return to Course Details</button>
         </main>
     </div>
 
     <script>
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdownMenu');
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            // Chuyển đổi giữa hiển thị và ẩn
+            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
         }
 
-        window.onclick = function (event) {
-            if (!event.target.matches('.user-profile img')) {
-                const dropdown = document.getElementById('dropdownMenu');
-                if (dropdown.style.display === 'block') {
-                    dropdown.style.display = 'none';
-                }
-            }
-        };
-
-        function updateQuestionIndices() {
-            const editQuestionsContainer = document.getElementById('editQuestionsContainer');
-            const questionBlocks = editQuestionsContainer.getElementsByClassName('question-block');
-            for (let i = 0; i < questionBlocks.length; i++) {
-                const block = questionBlocks[i];
-                block.setAttribute('data-index', i);
-
-                // Cập nhật name của các trường
-                const correctAnswerRadios = block.querySelectorAll(`input[name^="correctAnswer"]`);
-                correctAnswerRadios.forEach(radio => {
-                    const currentValue = radio.value;
-                    radio.name = `correctAnswer[${i}]`;
-                    if (radio.checked) {
-                        radio.checked = true; // Giữ trạng thái checked
-                    }
-                });
-
-                const questionTextarea = block.querySelector('textarea[name="question[]"]');
-                questionTextarea.name = `question[]`;
-
-                const optionAInput = block.querySelector('input[name="optionA[]"]');
-                optionAInput.name = `optionA[]`;
-
-                const optionBInput = block.querySelector('input[name="optionB[]"]');
-                optionBInput.name = `optionB[]`;
-
-                const optionCInput = block.querySelector('input[name="optionC[]"]');
-                optionCInput.name = `optionC[]`;
-
-                const optionDInput = block.querySelector('input[name="optionD[]"]');
-                optionDInput.name = `optionD[]`;
-
-                const questionIdInput = block.querySelector('input[name="questionId[]"]');
-                questionIdInput.name = `questionId[]`;
-            }
-        }
-
-        function addEditQuestion() {
-            const editQuestionsContainer = document.getElementById('editQuestionsContainer');
-            const qCount = editQuestionsContainer.getElementsByClassName('question-block').length;
-            const newQuestionBlock = document.createElement('div');
-            newQuestionBlock.classList.add('question-block', 'new'); // Thêm class 'new' để phân biệt
-            newQuestionBlock.setAttribute('data-index', qCount);
-            newQuestionBlock.innerHTML = `
-                <!-- Trường ẩn cho câu hỏi mới (không có QuestionID) -->
-                <input type="hidden" name="questionId[]" value="">
-                <div class="form-group">
-                    <label for="editQuestion${qCount}">Question (New):</label>
-                    <textarea id="editQuestion${qCount}" name="question[]" rows="3" placeholder="Enter your question" required></textarea>
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="correctAnswer[${qCount}]" value="A" checked>
-                        <label>Option</label>
-                        <label>A:</label>
-                        <input type="text" name="optionA[]" placeholder="Option A" required>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="correctAnswer[${qCount}]" value="B">
-                        <label>Option</label>
-                        <label>B:</label>
-                        <input type="text" name="optionB[]" placeholder="Option B" required>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="correctAnswer[${qCount}]" value="C">
-                        <label>Option</label>
-                        <label>C:</label>
-                        <input type="text" name="optionC[]" placeholder="Option C" required>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="correctAnswer[${qCount}]" value="D">
-                        <label>Option</label>
-                        <label>D:</label>
-                        <input type="text" name="optionD[]" placeholder="Option D" required>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-danger" onclick="removeEditQuestion(this)">Delete Question</button>
-                </div>
-            `;
-            editQuestionsContainer.appendChild(newQuestionBlock);
-            updateQuestionIndices();
-        }
-
-        function removeEditQuestion(button) {
-            const questionBlock = button.parentElement.parentElement;
-            questionBlock.remove();
-            updateQuestionIndices();
-        }
-
-        function deactivateQuestion(questionId, testId) {
-            if (confirm("Are you sure you want to delete this question?")) {
-                fetch(`TestServlet?action=deactivateQuestion&questionId=${questionId}&testId=${testId}`, {
-                    method: 'POST'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert("Question deactivated successfully!");
-                        window.location.reload();
-                    } else {
-                        alert("Failed to deactivate question.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred while deactivating the question.");
-                });
-            }
-        }
-
-        document.getElementById('editTestForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            let isValid = true;
-            const questions = document.getElementsByName('question[]');
-            const questionBlocks = document.getElementsByClassName('question-block');
-
-            // Xóa trạng thái lỗi trước đó
-            for (let block of questionBlocks) {
-                block.classList.remove('error');
-            }
-
-            // Kiểm tra tính hợp lệ của dữ liệu (nếu có câu hỏi)
-            if (questions.length > 0) {
-                for (let i = 0; i < questions.length; i++) {
-                    const questionContent = questions[i].value.trim();
-                    const radios = document.getElementsByName(`correctAnswer[${i}]`);
-                    const optionA = document.getElementsByName(`optionA[]`)[i].value.trim();
-                    const optionB = document.getElementsByName(`optionB[]`)[i].value.trim();
-                    const optionC = document.getElementsByName(`optionC[]`)[i].value.trim();
-                    const optionD = document.getElementsByName(`optionD[]`)[i].value.trim();
-                    const questionBlock = questionBlocks[i];
-
-                    // Kiểm tra nội dung câu hỏi
-                    if (!questionContent) {
-                        alert(`Question ${i + 1} content cannot be empty`);
-                        questionBlock.classList.add('error');
-                        isValid = false;
-                        break;
-                    }
-
-                    // Kiểm tra các lựa chọn A, B, C, D
-                    if (!optionA || !optionB || !optionC || !optionD) {
-                        alert(`All options for Question ${i + 1} must be filled`);
-                        questionBlock.classList.add('error');
-                        isValid = false;
-                        break;
-                    }
-
-                    // Kiểm tra đáp án đúng
-                    let isChecked = false;
-                    for (let radio of radios) {
-                        if (radio.checked) {
-                            isChecked = true;
-                            break;
-                        }
-                    }
-                    if (!isChecked) {
-                        alert(`Please select a correct answer for Question ${i + 1}`);
-                        questionBlock.classList.add('error');
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            // Nếu hợp lệ, gửi form
-            if (isValid) {
-                alert("Saving changes...");
-                this.submit();
+        // Đóng dropdown khi nhấp ra ngoài
+        document.addEventListener('click', function(event) {
+            const userProfile = document.querySelector('.user-profile');
+            const dropdown = document.getElementById('dropdownMenu');
+            
+            // Nếu nhấp ra ngoài user-profile và dropdown đang mở, thì đóng nó
+            if (!userProfile.contains(event.target) && dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
             }
         });
     </script>

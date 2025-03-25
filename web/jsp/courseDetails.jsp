@@ -258,18 +258,19 @@
         </style>
     </head>
     <body>
-        <header class="header">
-            <div class="logo">
-                <h1>Online Learning</h1>
+       <header class="header">
+        <a href="ShowexpertServlet" class="logo">
+            <h1>Online Learning</h1>
+        </a>
+        <div class="user-profile">
+            <img src="./img/logo/logo.JPG" alt="User Avatar" onclick="toggleDropdown()">
+            <div class="dropdown" id="dropdownMenu">
+                <a href="ViewProfile">View Profile</a>
+                <a href="ChangePasswordServlet">Change Password</a>
+                <a href="LogoutServlet">Logout</a>
             </div>
-            <div class="user-profile">
-                <img src="avatar.png" alt="User Avatar" onclick="toggleDropdown()">
-                <div class="dropdown" id="dropdownMenu">
-                    <a href="#">View Profile</a>
-                    <a href="LogoutServlet">Logout</a>
-                </div>
-            </div>
-        </header>
+        </div>
+    </header>
 
         <div class="container">
             <aside class="sidebar">
@@ -316,7 +317,10 @@
 
                 <h3>Lessons</h3>
                 <div style="margin-bottom: 16px;">
-                    <button class="btn btn-primary <%= course.getStatus() == 4 ? "hidden" : "" %>" onclick="window.location.href = 'LessonServlet?action=add&courseId=<%= course.getCourseID() %>'">Add Lesson</button>
+                    <button class="btn btn-primary <%= course.getStatus() == 1 || course.getStatus() == 3 ? "" : "hidden" %>" 
+                            onclick="window.location.href = 'LessonServlet?action=add&courseId=<%= course.getCourseID() %>'">
+                        Add Lesson
+                    </button>
                 </div>
                 <table id="lessonTable">
                     <thead>
@@ -341,14 +345,14 @@
                             <td><%= lesson.getContent() != null ? lesson.getContent() : "N/A" %></td>
                             <td>
                                 <a href="LessonServlet?action=edit&lessonId=<%= lesson.getLessonID() %>">
-                                    <button class="btn btn-primary <%= course != null && course.getStatus() == 4 ? "hidden" : "" %>" 
+                                    <button class="btn btn-primary <%= course != null && (course.getStatus() == 1 || course.getStatus() == 3) ? "" : "hidden" %>" 
                                             style="padding: 8px 16px; font-size: 12px;">Edit</button>
                                 </a>
                                 <% 
                                     int lessonId = lesson.getLessonID();
                                     System.out.println("Rendering Delete button with lessonId: " + lessonId);
                                 %>
-                                <button class="btn btn-danger <%= course != null && course.getStatus() == 4 ? "hidden" : "" %>" 
+                                <button class="btn btn-danger <%= course != null && (course.getStatus() == 1 || course.getStatus() == 3) ? "" : "hidden" %>" 
                                         style="padding: 8px 16px; font-size: 12px;" 
                                         onclick="deleteLesson(<%= lessonId %>)">
                                     Delete
@@ -365,7 +369,8 @@
                         <tr>
                             <td colspan="4">No lessons available</td>
                         </tr>
-                        <% } %>                    </tbody>
+                        <% } %>
+                    </tbody>
                 </table>
 
                 <h3>Tests</h3>
@@ -380,12 +385,11 @@
                     <tbody id="testListInCourse">
                         <% if (tests != null && !tests.isEmpty()) { %>
                         <% for (TestEX test : tests) { %>
-                        <% if (test != null && test.getTestID() != 0) { %>
+                        <% if (test != null && test.getTestID() != 0 && test.getStatus() != 0) { %>
                         <tr>
                             <td><%= test.getTestID() %></td>
                             <td>
                                 <% if (course != null && course.getStatus() == 4) { %>
-                                
                                 <a href="QuestionController?action=getQuestions&testId=<%= test.getTestID() %>">
                                     <%= test.getName() != null ? test.getName() : "N/A" %>
                                 </a>
@@ -396,10 +400,14 @@
                                 <% } %>
                             </td>
                             <td>
-                                <% if (course != null && course.getStatus() != 4) { %>
+                                <% if (course != null && (course.getStatus() == 1 || course.getStatus() == 3)) { %>
                                 <a href="TestServlet?testId=<%= test.getTestID() %>">
                                     <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Edit</button>
                                 </a>
+                                <button class="btn btn-danger" style="padding: 8px 16px; font-size: 12px;" 
+                                        onclick="deleteTest(<%= test.getTestID() %>)">
+                                    Delete
+                                </button>
                                 <% } %>
                             </td>
                         </tr>
@@ -434,6 +442,7 @@
                     }
                 }
             };
+
             function deleteLesson(lessonId) {
                 console.log("Delete button clicked for lessonId: " + lessonId);
 
@@ -449,51 +458,69 @@
                             'Content-Type': 'application/x-www-form-urlencoded'
                         }
                     })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok ' + response.statusText);
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log("Server response: " + data);
+                        if (data.trim() === "success") {
+                            alert("Lesson deleted successfully!");
+                            const table = document.getElementById('lessonTable');
+                            const rows = table.getElementsByTagName('tr');
+                            let rowToDelete = null;
+                            for (let i = 0; i < rows.length; i++) {
+                                const firstCell = rows[i].getElementsByTagName('td')[0];
+                                if (firstCell && firstCell.textContent.trim() === lessonId.toString()) {
+                                    rowToDelete = rows[i];
+                                    break;
                                 }
-                                return response.text();
-                            })
-                            .then(data => {
-                                console.log("Server response: " + data);
-                                if (data.trim() === "success") {
-                                    alert("Lesson deleted successfully!");
-                                    // Tìm hàng chứa lessonId và xóa nó
-                                    const table = document.getElementById('lessonTable');
-                                    const rows = table.getElementsByTagName('tr');
-                                    let rowToDelete = null;
+                            }
 
-                                    // Duyệt qua các hàng trong tbody
-                                    for (let i = 0; i < rows.length; i++) {
-                                        const firstCell = rows[i].getElementsByTagName('td')[0];
-                                        if (firstCell && firstCell.textContent.trim() === lessonId.toString()) {
-                                            rowToDelete = rows[i];
-                                            break;
-                                        }
-                                    }
-
-                                    if (rowToDelete) {
-                                        rowToDelete.remove();
-                                        console.log("Lesson row with ID " + lessonId + " removed from table");
-                                        // Kiểm tra nếu không còn lesson nào thì hiển thị thông báo
-                                        const lessonList = document.getElementById('lessonList');
-                                        if (lessonList.children.length === 0) {
-                                            lessonList.innerHTML = '<tr><td colspan="4">No lessons available</td></tr>';
-                                        }
-                                    } else {
-                                        console.error("Could not find row with lessonId: " + lessonId);
-                                    }
-                                } else {
-                                    alert("Failed to delete lesson: " + data);
+                            if (rowToDelete) {
+                                rowToDelete.remove();
+                                console.log("Lesson row with ID " + lessonId + " removed from table");
+                                const lessonList = document.getElementById('lessonList');
+                                if (lessonList.children.length === 0) {
+                                    lessonList.innerHTML = '<tr><td colspan="4">No lessons available</td></tr>';
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error during fetch:', error);
-                                alert("An error occurred while deleting the lesson: " + error.message);
-                            });
+                            } else {
+                                console.error("Could not find row with lessonId: " + lessonId);
+                            }
+                        } else {
+                            alert("Failed to delete lesson: " + data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during fetch:', error);
+                        alert("An error occurred while deleting the lesson: " + error.message);
+                    });
                 }
             }
+
+            window.deleteTest = function (testId) {
+                if (confirm("Are you sure you want to delete this test?")) {
+                    fetch('NoticeServlet?action=deleteTest&testId=' + testId, {
+                        method: 'POST'
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        if (data === "success") {
+                            alert("Test marked as deleted successfully!");
+                            window.location.reload();
+                        } else {
+                            alert("Failed to mark test as deleted: " + data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while marking the test as deleted: " + error.message);
+                    });
+                }
+            };
+
             document.addEventListener('DOMContentLoaded', function () {
                 const lessonRows = document.querySelectorAll('#lessonList tr');
                 console.log('Total lessons displayed: ' + lessonRows.length);
@@ -501,6 +528,14 @@
                     const lessonId = row.cells[0].textContent;
                     const title = row.cells[1].textContent;
                     console.log(`Lesson ${index + 1}: ID=${lessonId}, Title=${title}`);
+                });
+
+                const testRows = document.querySelectorAll('#testListInCourse tr');
+                console.log('Total tests displayed: ' + testRows.length);
+                testRows.forEach((row, index) => {
+                    const testId = row.cells[0].textContent;
+                    const name = row.cells[1].textContent;
+                    console.log(`Test ${index + 1}: ID=${testId}, Name=${name}`);
                 });
             });
         </script>

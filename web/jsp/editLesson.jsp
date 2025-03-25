@@ -182,17 +182,25 @@
             gap: 16px;
             margin-top: 24px;
         }
+
+        .error-message {
+            color: var(--accent-red);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="logo">
+        <a href="ShowexpertServlet" class="logo">
             <h1>Online Learning</h1>
-        </div>
+        </a>
         <div class="user-profile">
-            <img src="avatar.png" alt="User Avatar" onclick="toggleDropdown()">
+            <img src="./img/logo/logo.JPG" alt="User Avatar" onclick="toggleDropdown()">
             <div class="dropdown" id="dropdownMenu">
-                <a href="#">View Profile</a>
+                <a href="ViewProfile">View Profile</a>
+                <a href="ChangePasswordServlet">Change Password</a>
                 <a href="LogoutServlet">Logout</a>
             </div>
         </div>
@@ -200,7 +208,7 @@
 
     <main class="main-content">
         <h2><%= isEdit ? "Edit Lesson" : "Add Lesson" %></h2>
-        <form action="LessonServlet" method="post">
+        <form action="LessonServlet" method="post" onsubmit="return validateForm()">
             <input type="hidden" name="action" value="<%= isEdit ? "updateLesson" : "addLesson" %>">
             <input type="hidden" name="courseId" value="<%= courseId %>">
             <% if (isEdit) { %>
@@ -213,8 +221,9 @@
             </div>
 
             <div class="form-group">
-                <label for="content">Content</label>
-                <textarea id="content" name="content" required><%= isEdit ? lesson.getContent() : "" %></textarea>
+                <label for="content">Content (YouTube URL)</label>
+                <textarea id="content" name="content" required oninput="validateYouTubeUrl()"><%= isEdit ? lesson.getContent() : "" %></textarea>
+                <div id="content-error" class="error-message">Content must be a valid YouTube URL starting with 'https://www.youtube.com/watch?v='</div>
             </div>
 
             <div class="button-group">
@@ -238,6 +247,28 @@
                 }
             }
         };
+
+        function validateYouTubeUrl() {
+            const contentInput = document.getElementById('content');
+            const contentError = document.getElementById('content-error');
+            const youtubeUrlPattern = /^https:\/\/www\.youtube\.com\/watch\?v=[A-Za-z0-9_-]+/;
+
+            if (!contentInput.value.match(youtubeUrlPattern)) {
+                contentError.style.display = 'block';
+                return false;
+            } else {
+                contentError.style.display = 'none';
+                return true;
+            }
+        }
+
+        function validateForm() {
+            const isYouTubeUrlValid = validateYouTubeUrl();
+            if (!isYouTubeUrlValid) {
+                return false; // Ngăn gửi form nếu URL không hợp lệ
+            }
+            return true; // Cho phép gửi form nếu tất cả hợp lệ
+        }
     </script>
 </body>
 </html>

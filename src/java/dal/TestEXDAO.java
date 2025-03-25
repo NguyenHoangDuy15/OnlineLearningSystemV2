@@ -21,47 +21,39 @@ import java.sql.SQLException;
 public class TestEXDAO extends DBContext {
 
    public int addAnswer(String correctAnswer, int questionId) {
-        if (correctAnswer == null) {
-            System.out.println("correctAnswer is null for questionId: " + questionId);
+        if (correctAnswer == null || correctAnswer.trim().isEmpty()) {
+            System.out.println("Failed to add answer: correctAnswer is null or empty for questionId: " + questionId);
             return -1;
         }
 
-        System.out.println("Received correctAnswer: " + correctAnswer); // Debug
+        if (!("A".equals(correctAnswer) || "B".equals(correctAnswer) || "C".equals(correctAnswer) || "D".equals(correctAnswer))) {
+            System.out.println("Failed to add answer: Invalid correctAnswer: " + correctAnswer + " for questionId: " + questionId);
+            return -1;
+        }
+
+        System.out.println("Adding answer: Received correctAnswer: " + correctAnswer + " for questionId: " + questionId); // Debug
 
         String sql = "INSERT INTO Answer(AnswerContent, QuestionID) VALUES(?, ?)";
         try {
             PreparedStatement st = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-
-            String answerContent;
-            if (correctAnswer.startsWith("optionA")) {
-                answerContent = "A";
-            } else if (correctAnswer.startsWith("optionB")) {
-                answerContent = "B";
-            } else if (correctAnswer.startsWith("optionC")) {
-                answerContent = "C";
-            } else if (correctAnswer.startsWith("optionD")) {
-                answerContent = "D";
-            } else {
-                System.out.println("Invalid correctAnswer: " + correctAnswer + " for questionId: " + questionId);
-                return -1;
-            }
-
-            st.setString(1, answerContent);
+            st.setString(1, correctAnswer);
             st.setInt(2, questionId);
             int rows = st.executeUpdate();
-            System.out.println("Inserted answer, rows affected: " + rows); // Debug
 
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1);
+            if (rows > 0) {
+                System.out.println("Successfully added answer: " + correctAnswer + " for questionId: " + questionId + ", rows affected: " + rows);
+                ResultSet rs = st.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            } else {
+                System.out.println("Failed to add answer: No rows affected for correctAnswer: " + correctAnswer + " and questionId: " + questionId);
             }
         } catch (SQLException e) {
-            System.out.println("Error adding answer: " + e.getMessage());
+            System.out.println("Failed to add answer: Error - " + e.getMessage());
         }
         return -1;
     }
-
-
 
     public void updateTestStatus(int testId, int status) {
         String sql = "UPDATE Test SET Status = ? WHERE TestID = ?";

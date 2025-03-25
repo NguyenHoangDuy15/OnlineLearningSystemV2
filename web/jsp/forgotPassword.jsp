@@ -15,7 +15,7 @@
                 <input type="text" name="username" value="${username}" placeholder="User name" required>
                 <input type="password" name="newpassword" value="${newpassword}" placeholder="New Password" required>
                 <input type="password" name="repassword" value="${repassword}" placeholder="Re-Password" required>
-                ${err}
+                <h1> ${err} </h1>
                 <button type="submit">Change</button>
             </form>
         </div>
