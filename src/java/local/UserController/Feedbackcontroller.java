@@ -73,7 +73,7 @@ public class Feedbackcontroller extends HttpServlet {
 
                 boolean added = feedbackDao.addFeedback(userId, courseId, rating, comment);
                 if (added) {
-                    response.sendRedirect("detail?courseId=" + courseId);
+                   response.sendRedirect("detail?courseId=" + courseId + "&commentAdded=true");
                 } else {
                     request.setAttribute("errorMessage", "Failed to add the comment.");
                     request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
@@ -102,7 +102,7 @@ public class Feedbackcontroller extends HttpServlet {
                 boolean updated = feedbackDao.updateFeedback(feedbackId, rating, comment);
                 System.out.println("Update result: " + updated);
                 if (updated) {
-                    response.sendRedirect("detail?courseId=" + courseId);
+                 response.sendRedirect("detail?courseId=" + courseId + "&commentUpdated=true");
                 } else {
                     request.setAttribute("errorMessage", "Failed to update the comment. It may not exist or is inactive.");
                     request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
@@ -125,7 +125,7 @@ public class Feedbackcontroller extends HttpServlet {
 
                 boolean deleted = feedbackDao.deleteFeedback(feedbackId);
                 if (deleted) {
-                    response.sendRedirect("detail?courseId=" + courseId);
+                  response.sendRedirect("detail?courseId=" + courseId + "&commentDeleted=true");
                 } else {
                     request.setAttribute("errorMessage", "Failed to delete the comment.");
                     request.getRequestDispatcher("jsp/Error.jsp").forward(request, response);
