@@ -1,4 +1,4 @@
-﻿--Create database OnlineLearning
+﻿Create database OnlineLearning
 --Use OnlineLearning
 CREATE TABLE Roles (
     RoleID INT PRIMARY KEY,
@@ -189,7 +189,7 @@ INSERT INTO [dbo].[Users]
            ,'Congninh123@'
            ,'ninhhche187071@fpt.edu.vn'
            ,'Q29uZ25pbmgxMjNAZndlcWZ3ZTtoZml1ZHNmYXNkZmFzZGZhcw==' --Congninh123@
-           ,'https://cdn.eva.vn/upload/2-2024/images/2024-05-28/1-1716871247-805-width800height600.jpg'
+           ,'https://cdn.codegym.vn/wp-content/uploads/2023/01/27.Nguyen-Thanh-Cong-_-Giang-Vien.JPG.jpg'
            ,2
            ,1)
 INSERT INTO [dbo].[Users]
@@ -205,7 +205,7 @@ INSERT INTO [dbo].[Users]
            ,'NinhNH123@'
            ,'abc@gmail.com'
            ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
-           ,'https://vcdn1-vnexpress.vnecdn.net/2020/04/24/dien-vien-8352-1587729717.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=Qq7nxYZpze-Ft9ezOCz7OA'
+           ,'https://cdn.codegym.vn/wp-content/uploads/2020/05/1.-Duong-Thi-Minh-Chau-1.png'
            ,2
            ,1)
 		   
@@ -267,11 +267,11 @@ INSERT INTO [dbo].[Users]
            ,[RoleID]
            ,[Status])
      VALUES
-           (N'Nguyễn Thu Uyên'
-           ,'UyenNT123@'
-           ,'uyennthe186381@fpt.edu.vn'
+           (N' Hồ Thị Thanh Phương'
+           ,'Phuong123@'
+           ,'phuongnthe186141@fpt.edu.vn'
            ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
-           ,'https://media-cdn-v2.laodong.vn/storage/newsportal/2024/11/11/1420091/IU-2I.jpeg'
+           ,'https://cdn.codegym.vn/wp-content/uploads/2023/01/27.-Nguyen-Hong-Hanh-HQ.jpg.jpg'
            ,2
            ,1)
 		   INSERT INTO [dbo].[Users]
@@ -283,11 +283,11 @@ INSERT INTO [dbo].[Users]
            ,[RoleID]
            ,[Status])
      VALUES
-           (N'Phạm Trung Hiếu'
-           ,'Hieuu123@'
-           ,'congninh@gmail.com'
+           (N'Hà Anh Tài'
+           ,'Tai123@'
+           ,'anhtai@gmail.com'
            ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
-           ,'https://kenhnguoinoitieng.com/wp-content/uploads/2025/03/a2cv0l4zx91-uriwwxbjti2-84qh9ubcya3.png'
+           ,'https://cdn.codegym.vn/wp-content/uploads/2022/12/22.Doan-Phuoc-Trung_-CAH.jpg.jpg'
            ,2
            ,1)
 		   INSERT INTO [dbo].[Users]
@@ -299,11 +299,11 @@ INSERT INTO [dbo].[Users]
            ,[RoleID]
            ,[Status])
      VALUES
-           (N'Nguyễn Hoàng Duy'
-           ,'Duy123@'
+           (N'Nguyễn Đức Việt'
+           ,'Viet123@'
            ,'hoangduy@gmail.com'
            ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
-           ,'https://media.vneconomy.vn/w800/images/upload/2025/02/11/musk.png'
+           ,'https://cdn.codegym.vn/wp-content/uploads/2022/12/1.CGH_-Nguyen-Huu-Anh-Khoa.jpg.jpg'
            ,2
            ,1)
 INSERT INTO Category (CategoryName, Description) VALUES 
@@ -321,7 +321,7 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 
 
 -- Python Courses
-(N'Python Basics', N'Python Basics is an introductory guide to the fundamental concepts of Python programming. It covers essential topics such as variables, data types, loops, functions, and object-oriented programming. This course provides a hands-on approach to learning Python with practical examples and exercises. Whether you are a beginner or transitioning from another language, Python Basics will equip you with the foundational skills needed to start coding and developing applications efficiently.', 120000, 'https://miro.medium.com/v2/resize:fit:2000/1*Zipt5ex6sSVSkciwlJoG4Q.png', 2, 2, GETDATE(),2),
+(N'Python Basics', N'Python Basics is an introductory guide to the fundamental concepts of Python programming. It covers essential topics such as variables, data types, loops, functions, and object-oriented programming. This course provides a hands-on approach to learning Python with practical examples and exercises. Whether you are a beginner or transitioning from another language, Python Basics will equip you with the foundational skills needed to start coding and developing applications efficiently.', 120000, 'https://miro.medium.com/v2/resize:fit:2000/1*Zipt5ex6sSVSkciwlJoG4Q.png', 9, 2, GETDATE(),2),
 (N'Data Science with Python', N'Data Science with Python explores the power of Python for data analysis, visualization, and machine learning. This course covers essential libraries such as NumPy, Pandas, Matplotlib, and Scikit-learn, enabling learners to process, analyze, and interpret complex datasets. It includes practical examples and real-world applications to help build strong analytical skills. Whether you are a beginner or an experienced programmer, this course provides a solid foundation in data science using Python.', 190000, 'https://cdn.shopaccino.com/igmguru/products/data-science--with-python-igmguru_176161162_l.jpg?v=509', 7, 2, GETDATE(),4),
 (N'Python for Web Development', N'Build Web Applications using Django and Flask Frameworks is a comprehensive course designed to help learners create dynamic and scalable web applications using Python. The course covers the fundamentals of both Django and Flask, including routing, database integration, authentication, and REST API development. With hands-on projects and real-world examples, participants will gain practical experience in building modern web applications efficiently. Whether you are a beginner or an experienced developer, this course provides essential skills for mastering Python web development.', 170000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220826185259/Why-to-Use-Python-for-Web-Development.jpg', 9, 2, GETDATE(),4),
 
