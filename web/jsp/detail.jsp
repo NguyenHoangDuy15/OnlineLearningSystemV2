@@ -450,7 +450,7 @@
                             </c:forEach>
                         </div>
 
-                        <div class="comment-section">
+                        <div class="comment-section" id="commentSection">
                             <h2 class="mb-4">Comments</h2>
                             <c:if test="${empty feedbacks}">
                                 <p>No comments yet.</p>
@@ -595,69 +595,160 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Xử lý nút Edit
-                document.querySelectorAll('.edit-comment').forEach(button => {
-                    button.addEventListener('click', function () {
-                        // Tìm comment-box và edit-form bằng closest()
-                        const commentBox = button.closest('.comment-box');
-                        const editForm = commentBox.querySelector('.edit-form');
+                                                document.addEventListener('DOMContentLoaded', function () {
+                                                    // Hàm kiểm tra xem có tham số bình luận trong URL không
+                                                    function hasCommentAction() {
+                                                        const urlParams = new URLSearchParams(window.location.search);
+                                                        return urlParams.has('commentAdded') || urlParams.has('commentUpdated') || urlParams.has('commentDeleted');
+                                                    }
 
-                        // Kiểm tra xem commentBox và editForm có tồn tại không
-                        if (!commentBox || !editForm) {
-                            console.error('Cannot find commentBox or editForm');
-                            return;
-                        }
+                                                    // Hàm cuộn đến phần bình luận và highlight
+                                                    function scrollToComments() {
+                                                        const commentSection = document.getElementById('commentSection');
+                                                        if (commentSection) {
+                                                            setTimeout(() => {
+                                                                commentSection.scrollIntoView({behavior: 'smooth'});
 
-                        // Toggle trạng thái form chỉnh sửa
-                        editForm.classList.toggle('active');
+                                                                // Highlight comment mới nếu là thêm mới
+                                                                if (new URLSearchParams(window.location.search).has('commentAdded')) {
+                                                                    const comments = document.querySelectorAll('.comment-box');
+                                                                    if (comments.length > 0) {
+                                                                        const lastComment = comments[comments.length - 1];
+                                                                        lastComment.style.animation = 'highlight 2s';
 
-                        // Ẩn/hiện nội dung ban đầu
-                        const content = commentBox.querySelector('.content');
-                        const rating = commentBox.querySelector('.rating');
-                        const commentActions = commentBox.querySelector('.comment-actions');
+                                                                        // Tạo animation highlight nếu chưa có
+                                                                        if (!document.getElementById('highlight-style')) {
+                                                                            const style = document.createElement('style');
+                                                                            style.id = 'highlight-style';
+                                                                            style.textContent = `
+                                            @keyframes highlight {
+                                                0% { background-color: rgba(0, 123, 255, 0.1); }
+                                                50% { background-color: rgba(0, 123, 255, 0.3); }
+                                                100% { background-color: transparent; }
+                                            }
+                                        `;
+                                                                            document.head.appendChild(style);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }, 100);
+                                                        }
+                                                    }
 
-                        if (editForm.classList.contains('active')) {
-                            if (content) content.style.display = 'none';
-                            if (rating) rating.style.display = 'none';
-                            if (commentActions) commentActions.style.display = 'none';
-                        } else {
-                            if (content) content.style.display = 'block';
-                            if (rating) rating.style.display = 'block';
-                            if (commentActions) commentActions.style.display = 'block';
-                        }
-                    });
-                });
+                                                    // Chỉ cuộn xuống nếu có thao tác với comment
+                                                    if (hasCommentAction()) {
+                                                        scrollToComments();
 
-                // Xử lý nút Cancel
-                document.addEventListener('click', function (event) {
-                    if (event.target.classList.contains('cancel-edit')) {
-                        // Tìm comment-box và edit-form bằng closest()
-                        const editForm = event.target.closest('.edit-form');
-                        const commentBox = event.target.closest('.comment-box');
+                                                        // Xóa tham số từ URL để không bị cuộn lại khi refresh
+                                                        if (window.history.replaceState) {
+                                                            const url = new URL(window.location);
+                                                            url.searchParams.delete('commentAdded');
+                                                            url.searchParams.delete('commentUpdated');
+                                                            url.searchParams.delete('commentDeleted');
+                                                            window.history.replaceState(null, '', url);
+                                                        }
+                                                    }
 
-                        // Kiểm tra xem commentBox và editForm có tồn tại không
-                        if (!commentBox || !editForm) {
-                            console.error('Cannot find commentBox or editForm');
-                            return;
-                        }
+                                                    // Xử lý nút Edit
+                                                    document.querySelectorAll('.edit-comment').forEach(button => {
+                                                        button.addEventListener('click', function (event) {
+                                                            event.preventDefault(); // Prevent any default behavior
+                                                            event.stopPropagation(); // Stop event propagation to parent elements
 
-                        // Ẩn form chỉnh sửa
-                        editForm.classList.remove('active');
+                                                            console.log('Edit button clicked!'); // Debug: Confirm the event fires
+                                                            const feedbackId = button.getAttribute('data-feedback-id');
+                                                            console.log('Feedback ID:', feedbackId); // Debug: Check the feedback ID
 
-                        // Hiển thị lại nội dung ban đầu
-                        const content = commentBox.querySelector('.content');
-                        const rating = commentBox.querySelector('.rating');
-                        const commentActions = commentBox.querySelector('.comment-actions');
-                        if (content) content.style.display = 'block';
-                        if (rating) rating.style.display = 'block';
-                        if (commentActions) commentActions.style.display = 'block';
-                    }
-                });
-            });
+                                                            const commentBox = document.getElementById(`comment-${feedbackId}`);
+                                                            const editForm = document.getElementById(`edit-form-${feedbackId}`);
+
+                                                            console.log('Comment Box:', commentBox); // Debug: Check if commentBox is found
+                                                            console.log('Edit Form:', editForm); // Debug: Check if editForm is found
+
+                                                            if (!commentBox || !editForm) {
+                                                                console.error('Cannot find commentBox or editForm for feedback ID:', feedbackId);
+                                                                return;
+                                                            }
+
+                                                            // Toggle the edit form visibility
+                                                            editForm.classList.toggle('active');
+                                                            console.log('Edit form classList after toggle:', editForm.classList); // Debug: Check classes
+
+                                                            const content = commentBox.querySelector('.content');
+                                                            const rating = commentBox.querySelector('.rating');
+                                                            const commentActions = commentBox.querySelector('.comment-actions');
+
+                                                            console.log('Content:', content); // Debug: Check if content is found
+                                                            console.log('Rating:', rating); // Debug: Check if rating is found
+                                                            console.log('Comment Actions:', commentActions); // Debug: Check if comment actions are found
+
+                                                            if (editForm.classList.contains('active')) {
+                                                                // Hide the original comment content, rating, and actions
+                                                                if (content)
+                                                                    content.style.display = 'none';
+                                                                if (rating)
+                                                                    rating.style.display = 'none';
+                                                                if (commentActions)
+                                                                    commentActions.style.display = 'none';
+
+                                                                // Scroll to the edit form
+                                                                setTimeout(() => {
+                                                                    editForm.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+                                                                }, 100);
+                                                            } else {
+                                                                // Show the original comment content, rating, and actions
+                                                                if (content)
+                                                                    content.style.display = 'block';
+                                                                if (rating)
+                                                                    rating.style.display = 'block';
+                                                                if (commentActions)
+                                                                    commentActions.style.display = 'block';
+                                                            }
+                                                        });
+                                                    });
+
+                                                    // Xử lý nút Cancel
+                                                    document.addEventListener('click', function (event) {
+                                                        if (event.target.classList.contains('cancel-edit')) {
+                                                            console.log('Cancel button clicked!'); // Debug: Check if the event fires
+                                                            const feedbackId = event.target.getAttribute('data-feedback-id');
+                                                            console.log('Feedback ID:', feedbackId); // Debug: Check the feedback ID
+
+                                                            const editForm = document.getElementById(`edit-form-${feedbackId}`);
+                                                            const commentBox = document.getElementById(`comment-${feedbackId}`);
+
+                                                            console.log('Edit Form:', editForm); // Debug: Check if editForm is found
+                                                            console.log('Comment Box:', commentBox); // Debug: Check if commentBox is found
+
+                                                            if (!commentBox || !editForm) {
+                                                                console.error('Cannot find commentBox or editForm for feedback ID:', feedbackId);
+                                                                return;
+                                                            }
+
+                                                            console.log('Before removing active class:', editForm.classList); // Debug: Check classes before
+                                                            editForm.classList.remove('active');
+                                                            editForm.style.display = 'none'; // Force hide as a fallback
+                                                            console.log('After removing active class:', editForm.classList); // Debug: Check classes after
+
+                                                            const content = commentBox.querySelector('.content');
+                                                            const rating = commentBox.querySelector('.rating');
+                                                            const commentActions = commentBox.querySelector('.comment-actions');
+
+                                                            console.log('Content:', content); // Debug: Check if content is found
+                                                            console.log('Rating:', rating); // Debug: Check if rating is found
+                                                            console.log('Comment Actions:', commentActions); // Debug: Check if comment actions are found
+
+                                                            if (content)
+                                                                content.style.display = 'block';
+                                                            if (rating)
+                                                                rating.style.display = 'block';
+                                                            if (commentActions)
+                                                                commentActions.style.display = 'block';
+                                                        }
+                                                    });
+                                                });
         </script>
-         <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 </html>

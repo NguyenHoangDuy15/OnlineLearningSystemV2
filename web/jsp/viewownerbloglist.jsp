@@ -169,10 +169,10 @@
 
     <body>
         <%@ include file="header.jsp" %>
-        <h3 style="color: #153e7a;">List of Blogs</h3>
+        <h3 style="color: #153e7a;" name = "listblog">List of Blogs</h3>
 
         <div class="container">
-            <a href="CreateBlog" class="create-btn">Create New Blog</a>
+            <a href="CreateBlog" class="create-btn" name ="create-btn">Create New Blog</a>
             <form action="viewownerbloglist" method="get" class="search-box">
                 <input type="text" name="search"  placeholder="Search blogs..." value="${param.search}">
                 <button type="submit" class="search-input" >Search </button>

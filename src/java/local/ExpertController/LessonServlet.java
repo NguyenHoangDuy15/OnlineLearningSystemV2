@@ -104,13 +104,9 @@ public class LessonServlet extends HttpServlet {
                 int courseId = Integer.parseInt(request.getParameter("courseId"));
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
-
-                // Kiểm tra title và content không được rỗng
                 if (title == null || title.trim().isEmpty() || content == null || content.trim().isEmpty()) {
                     throw new Exception("Title and content cannot be empty");
                 }
-
-                // Kiểm tra định dạng URL YouTube cho content
                 String youtubeUrlPattern = "^https://www\\.youtube\\.com/watch\\?v=[A-Za-z0-9_-]+";
                 if (!content.matches(youtubeUrlPattern)) {
                     throw new Exception("Content must be a valid YouTube URL starting with 'https://www.youtube.com/watch?v='");
@@ -136,8 +132,6 @@ public class LessonServlet extends HttpServlet {
                 int courseId = Integer.parseInt(request.getParameter("courseId"));
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
-
-                // Kiểm tra title và content không được rỗng
                 if (title == null || title.trim().isEmpty() || content == null || content.trim().isEmpty()) {
                     throw new Exception("Title and content cannot be empty");
                 }

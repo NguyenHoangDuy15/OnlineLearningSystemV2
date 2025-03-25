@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
 public class QuestionController extends HttpServlet {
     private TestEXDAO testDAO;
     private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
-    private static final int MAX_QUESTION_COUNT = 30; 
+    private static final int MAX_QUESTION_COUNT = 30;
 
     @Override
     public void init() throws ServletException {
@@ -69,21 +70,42 @@ public class QuestionController extends HttpServlet {
             }
 
             String testName = request.getParameter("testName");
-            String[] questions = new String[questionCount];
-            String[] optionsA = new String[questionCount];
-            String[] optionsB = new String[questionCount];
-            String[] optionsC = new String[questionCount];
-            String[] optionsD = new String[questionCount];
+            String[] questions = request.getParameterValues("questions[]");
+            String[] optionsA = request.getParameterValues("optionsA[]");
+            String[] optionsB = request.getParameterValues("optionsB[]");
+            String[] optionsC = request.getParameterValues("optionsC[]");
+            String[] optionsD = request.getParameterValues("optionsD[]");
             String[] correctAnswers = new String[questionCount];
 
+            // Lấy giá trị của radio button
             for (int i = 0; i < questionCount; i++) {
-                questions[i] = request.getParameter("questions[" + i + "]");
-                optionsA[i] = request.getParameter("optionsA[" + i + "]");
-                optionsB[i] = request.getParameter("optionsB[" + i + "]");
-                optionsC[i] = request.getParameter("optionsC[" + i + "]");
-                optionsD[i] = request.getParameter("optionsD[" + i + "]");
-                correctAnswers[i] = request.getParameter("correctAnswers[" + i + "]");
+                correctAnswers[i] = request.getParameter("correctAnswers_" + i);
             }
+
+            // Lưu dữ liệu vào session
+            List<String> tempQuestions = new ArrayList<>();
+            List<String> tempOptionsA = new ArrayList<>();
+            List<String> tempOptionsB = new ArrayList<>();
+            List<String> tempOptionsC = new ArrayList<>();
+            List<String> tempOptionsD = new ArrayList<>();
+            List<String> tempCorrectAnswers = new ArrayList<>();
+
+            for (int i = 0; i < questionCount; i++) {
+                tempQuestions.add(questions != null && i < questions.length ? questions[i] : "");
+                tempOptionsA.add(optionsA != null && i < optionsA.length ? optionsA[i] : "");
+                tempOptionsB.add(optionsB != null && i < optionsB.length ? optionsB[i] : "");
+                tempOptionsC.add(optionsC != null && i < optionsC.length ? optionsC[i] : "");
+                tempOptionsD.add(optionsD != null && i < optionsD.length ? optionsD[i] : "");
+                tempCorrectAnswers.add(correctAnswers != null && i < correctAnswers.length ? correctAnswers[i] : "");
+            }
+
+            session.setAttribute("tempTestName_" + courseId, testName);
+            session.setAttribute("tempQuestions_" + courseId, tempQuestions);
+            session.setAttribute("tempOptionsA_" + courseId, tempOptionsA);
+            session.setAttribute("tempOptionsB_" + courseId, tempOptionsB);
+            session.setAttribute("tempOptionsC_" + courseId, tempOptionsC);
+            session.setAttribute("tempOptionsD_" + courseId, tempOptionsD);
+            session.setAttribute("tempCorrectAnswers_" + courseId, tempCorrectAnswers);
 
             if ("addQuestion".equals(action)) {
                 if (questionCount >= MAX_QUESTION_COUNT) {
@@ -91,25 +113,38 @@ public class QuestionController extends HttpServlet {
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", questionCount);
                     request.setAttribute("testName", testName);
-                    request.setAttribute("questions", questions);
-                    request.setAttribute("optionsA", optionsA);
-                    request.setAttribute("optionsB", optionsB);
-                    request.setAttribute("optionsC", optionsC);
-                    request.setAttribute("optionsD", optionsD);
-                    request.setAttribute("correctAnswers", correctAnswers);
+                    request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                    request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                    request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                    request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                    request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                    request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                     request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                     return;
                 }
 
+                tempQuestions.add("");
+                tempOptionsA.add("");
+                tempOptionsB.add("");
+                tempOptionsC.add("");
+                tempOptionsD.add("");
+                tempCorrectAnswers.add("");
+                session.setAttribute("tempQuestions_" + courseId, tempQuestions);
+                session.setAttribute("tempOptionsA_" + courseId, tempOptionsA);
+                session.setAttribute("tempOptionsB_" + courseId, tempOptionsB);
+                session.setAttribute("tempOptionsC_" + courseId, tempOptionsC);
+                session.setAttribute("tempOptionsD_" + courseId, tempOptionsD);
+                session.setAttribute("tempCorrectAnswers_" + courseId, tempCorrectAnswers);
+
                 request.setAttribute("courseId", courseId);
                 request.setAttribute("questionCount", questionCount + 1);
                 request.setAttribute("testName", testName);
-                request.setAttribute("questions", questions);
-                request.setAttribute("optionsA", optionsA);
-                request.setAttribute("optionsB", optionsB);
-                request.setAttribute("optionsC", optionsC);
-                request.setAttribute("optionsD", optionsD);
-                request.setAttribute("correctAnswers", correctAnswers);
+                request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                 request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                 return;
             }
@@ -117,44 +152,40 @@ public class QuestionController extends HttpServlet {
             if ("deleteQuestion".equals(action)) {
                 int deleteIndex = Integer.parseInt(request.getParameter("deleteIndex"));
                 if (deleteIndex >= 0 && deleteIndex < questionCount && questionCount > 1) {
-                    ArrayList<String> newQuestions = new ArrayList<>();
-                    ArrayList<String> newOptionsA = new ArrayList<>();
-                    ArrayList<String> newOptionsB = new ArrayList<>();
-                    ArrayList<String> newOptionsC = new ArrayList<>();
-                    ArrayList<String> newOptionsD = new ArrayList<>();
-                    ArrayList<String> newCorrectAnswers = new ArrayList<>();
+                    tempQuestions.remove(deleteIndex);
+                    tempOptionsA.remove(deleteIndex);
+                    tempOptionsB.remove(deleteIndex);
+                    tempOptionsC.remove(deleteIndex);
+                    tempOptionsD.remove(deleteIndex);
+                    tempCorrectAnswers.remove(deleteIndex);
 
-                    for (int i = 0; i < questionCount; i++) {
-                        if (i != deleteIndex) {
-                            newQuestions.add(questions[i]);
-                            newOptionsA.add(optionsA[i]);
-                            newOptionsB.add(optionsB[i]);
-                            newOptionsC.add(optionsC[i]);
-                            newOptionsD.add(optionsD[i]);
-                            newCorrectAnswers.add(correctAnswers[i]);
-                        }
-                    }
+                    session.setAttribute("tempQuestions_" + courseId, tempQuestions);
+                    session.setAttribute("tempOptionsA_" + courseId, tempOptionsA);
+                    session.setAttribute("tempOptionsB_" + courseId, tempOptionsB);
+                    session.setAttribute("tempOptionsC_" + courseId, tempOptionsC);
+                    session.setAttribute("tempOptionsD_" + courseId, tempOptionsD);
+                    session.setAttribute("tempCorrectAnswers_" + courseId, tempCorrectAnswers);
 
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", questionCount - 1);
                     request.setAttribute("testName", testName);
-                    request.setAttribute("questions", newQuestions.toArray(new String[0]));
-                    request.setAttribute("optionsA", newOptionsA.toArray(new String[0]));
-                    request.setAttribute("optionsB", newOptionsB.toArray(new String[0]));
-                    request.setAttribute("optionsC", newOptionsC.toArray(new String[0]));
-                    request.setAttribute("optionsD", newOptionsD.toArray(new String[0]));
-                    request.setAttribute("correctAnswers", newCorrectAnswers.toArray(new String[0]));
+                    request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                    request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                    request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                    request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                    request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                    request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                     request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                 } else {
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", questionCount);
                     request.setAttribute("testName", testName);
-                    request.setAttribute("questions", questions);
-                    request.setAttribute("optionsA", optionsA);
-                    request.setAttribute("optionsB", optionsB);
-                    request.setAttribute("optionsC", optionsC);
-                    request.setAttribute("optionsD", optionsD);
-                    request.setAttribute("correctAnswers", correctAnswers);
+                    request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                    request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                    request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                    request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                    request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                    request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                     request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                 }
                 return;
@@ -166,12 +197,12 @@ public class QuestionController extends HttpServlet {
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", questionCount);
                     request.setAttribute("testName", testName);
-                    request.setAttribute("questions", questions);
-                    request.setAttribute("optionsA", optionsA);
-                    request.setAttribute("optionsB", optionsB);
-                    request.setAttribute("optionsC", optionsC);
-                    request.setAttribute("optionsD", optionsD);
-                    request.setAttribute("correctAnswers", correctAnswers);
+                    request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                    request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                    request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                    request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                    request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                    request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                     request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                     return;
                 }
@@ -187,12 +218,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -201,12 +232,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -215,12 +246,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -229,12 +260,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -243,12 +274,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -257,12 +288,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -274,12 +305,12 @@ public class QuestionController extends HttpServlet {
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", questionCount);
                     request.setAttribute("testName", testName);
-                    request.setAttribute("questions", questions);
-                    request.setAttribute("optionsA", optionsA);
-                    request.setAttribute("optionsB", optionsB);
-                    request.setAttribute("optionsC", optionsC);
-                    request.setAttribute("optionsD", optionsD);
-                    request.setAttribute("correctAnswers", correctAnswers);
+                    request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                    request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                    request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                    request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                    request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                    request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                     request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                     return;
                 }
@@ -299,12 +330,12 @@ public class QuestionController extends HttpServlet {
                         request.setAttribute("courseId", courseId);
                         request.setAttribute("questionCount", questionCount);
                         request.setAttribute("testName", testName);
-                        request.setAttribute("questions", questions);
-                        request.setAttribute("optionsA", optionsA);
-                        request.setAttribute("optionsB", optionsB);
-                        request.setAttribute("optionsC", optionsC);
-                        request.setAttribute("optionsD", optionsD);
-                        request.setAttribute("correctAnswers", correctAnswers);
+                        request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                        request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                        request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                        request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                        request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                        request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                         request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
                         return;
                     }
@@ -317,6 +348,15 @@ public class QuestionController extends HttpServlet {
                 }
 
                 if (allSuccess) {
+                    // Xóa dữ liệu tạm trong session sau khi submit thành công
+                    session.removeAttribute("tempTestName_" + courseId);
+                    session.removeAttribute("tempQuestions_" + courseId);
+                    session.removeAttribute("tempOptionsA_" + courseId);
+                    session.removeAttribute("tempOptionsB_" + courseId);
+                    session.removeAttribute("tempOptionsC_" + courseId);
+                    session.removeAttribute("tempOptionsD_" + courseId);
+                    session.removeAttribute("tempCorrectAnswers_" + courseId);
+
                     request.setAttribute("success", "Test created successfully");
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", 1);
@@ -332,12 +372,12 @@ public class QuestionController extends HttpServlet {
                     request.setAttribute("courseId", courseId);
                     request.setAttribute("questionCount", questionCount);
                     request.setAttribute("testName", testName);
-                    request.setAttribute("questions", questions);
-                    request.setAttribute("optionsA", optionsA);
-                    request.setAttribute("optionsB", optionsB);
-                    request.setAttribute("optionsC", optionsC);
-                    request.setAttribute("optionsD", optionsD);
-                    request.setAttribute("correctAnswers", correctAnswers);
+                    request.setAttribute("questions", tempQuestions.toArray(new String[0]));
+                    request.setAttribute("optionsA", tempOptionsA.toArray(new String[0]));
+                    request.setAttribute("optionsB", tempOptionsB.toArray(new String[0]));
+                    request.setAttribute("optionsC", tempOptionsC.toArray(new String[0]));
+                    request.setAttribute("optionsD", tempOptionsD.toArray(new String[0]));
+                    request.setAttribute("correctAnswers", tempCorrectAnswers.toArray(new String[0]));
                 }
                 request.getRequestDispatcher("jsp/CreateTest.jsp").forward(request, response);
             }

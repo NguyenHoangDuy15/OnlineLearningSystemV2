@@ -125,7 +125,7 @@
                         <label>Image: </label>
                         <input type="file" name="image" accept="image/*" required>
                     </div>
-                    <button type="submit">Add Blog</button>
+                    <button type="submit" name="submit" >Add Blog</button>
                 </form>
             </div>
         </div>

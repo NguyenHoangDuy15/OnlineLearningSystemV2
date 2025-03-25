@@ -86,6 +86,10 @@ public class TestServlet extends HttpServlet {
             String[] optionCs = request.getParameterValues("optionC[]");
             String[] optionDs = request.getParameterValues("optionD[]");
             String[] questionIds = request.getParameterValues("questionId[]");
+            String[] selectedCorrectAnswers = new String[questionCount];
+            for (int i = 0; i < questionCount; i++) {
+                selectedCorrectAnswers[i] = request.getParameter("correctAnswer_" + i);
+            }
 
             List<QuestionEX> questions = (List<QuestionEX>) session.getAttribute("tempQuestions_" + testId);
             if (questions == null) {
@@ -119,11 +123,8 @@ public class TestServlet extends HttpServlet {
                     throw new Exception("At least one question must be provided");
                 }
 
-                // Kiểm tra tất cả các câu hỏi khi nhấn "Save Changes"
                 for (int i = 0; i < questionCount; i++) {
                     String correctAnswer = request.getParameter("correctAnswer_" + i);
-
-                    // Yêu cầu tất cả các câu hỏi phải được điền đầy đủ
                     if (questionContents[i] == null || questionContents[i].trim().isEmpty()) {
                         throw new Exception("Question content must be filled for question " + (i + 1));
                     }
@@ -174,6 +175,7 @@ public class TestServlet extends HttpServlet {
                 session.setAttribute("tempQuestions_" + testId, questions);
                 request.setAttribute("test", test);
                 request.setAttribute("questions", questions);
+                request.setAttribute("selectedCorrectAnswers", selectedCorrectAnswers); // Gửi lại các đáp án đã chọn
                 request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
             } else if ("deleteQuestion".equals(action)) {
                 int deleteIndex = Integer.parseInt(request.getParameter("deleteIndex"));
@@ -186,6 +188,14 @@ public class TestServlet extends HttpServlet {
                         }
                     }
                     questions.remove(deleteIndex);
+                    // Cập nhật lại selectedCorrectAnswers sau khi xóa
+                    List<String> updatedCorrectAnswers = new ArrayList<>();
+                    for (int i = 0; i < selectedCorrectAnswers.length; i++) {
+                        if (i != deleteIndex) {
+                            updatedCorrectAnswers.add(selectedCorrectAnswers[i]);
+                        }
+                    }
+                    selectedCorrectAnswers = updatedCorrectAnswers.toArray(new String[0]);
                     session.setAttribute("tempQuestions_" + testId, questions);
                     request.setAttribute("success", "Question removed successfully");
                 } else {
@@ -193,6 +203,7 @@ public class TestServlet extends HttpServlet {
                 }
                 request.setAttribute("test", test);
                 request.setAttribute("questions", questions);
+                request.setAttribute("selectedCorrectAnswers", selectedCorrectAnswers);
                 request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
             }
         } catch (Exception e) {

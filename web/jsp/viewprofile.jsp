@@ -98,9 +98,9 @@
                 </div>
                 <div class="form-group mb-3">
                     <label for="email">Email:</label>
-                    <input type="email" name="email" class="form-control" value="<%= userNew.getEmail() %>">
+                    <input type="email" name="email" class="form-control" required value="<%= userNew.getEmail() %>">
                 </div>
-                <button type="submit" class="save-btn">Save changes</button>
+                <button type="submit" class="save-btn" name ="save-btn">Save changes</button>
             </form>
         </div>
         <%@ include file="footer.jsp" %>
