@@ -103,13 +103,17 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("rollID", a.getRoleID());
             sec.setAttribute("username", a.getUserName());
             if (a.getRoleID() == 1) {
+                sec.setAttribute("admin", a.getRoleID());
                 response.sendRedirect("ShowAdminDasboardServlet");
-            } else if(a.getRoleID() == 2)
+            } else if (a.getRoleID() == 2) {
+                sec.setAttribute("expert", a.getRoleID());
                 response.sendRedirect("ShowexpertServlet");
-            else if (a.getRoleID() == 3) {
+            } else if (a.getRoleID() == 3) {
+                sec.setAttribute("sale", a.getRoleID());
                 response.sendRedirect("viewownerbloglist");
                 sec.setAttribute("isSale", true);
             } else {
+                sec.setAttribute("customer", a.getRoleID());
                 response.sendRedirect("index");
             }
 

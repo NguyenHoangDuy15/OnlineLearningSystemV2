@@ -132,14 +132,7 @@ CREATE TABLE UserAnswers (
     IsCorrectAnswer INT CHECK (IsCorrectAnswer IN (0,1)), -- Đánh dấu đúng/sai
     HistoryID INT FOREIGN KEY REFERENCES History(HistoryID) -- Liên kết với lần làm bài
 );
-CREATE TABLE ChatHistory (
-    ChatID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT NOT NULL,
-    MessageContent nvarchar(max)  NOT NULL,
-    Timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ChatType VARCHAR(10) NOT NULL DEFAULT 'User-AI' CHECK (ChatType = 'User-AI'),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
-);
+
 CREATE TABLE Enrollments (
     EnrollmentID INT PRIMARY KEY  IDENTITY(1,1),
     UserID INT FOREIGN KEY REFERENCES Users(UserID),
@@ -335,7 +328,7 @@ INSERT INTO [dbo].[Users]
 ,'tranhung@gmail.com'
 ,'SHVuZzEyM0Bmd2VxZndlO2hmaXVkc2Zhc2RmYXNkZmFz' -- Hung123@
 ,'https://i1-vnexpress.vnecdn.net/2021/05/13/xter-Minh-4629-1620880505.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=JvK4ee9YMs_ppLU6KHzxmA'
-,4
+,3
 ,1)
 INSERT INTO [dbo].[Users]
            ([FullName]
@@ -351,7 +344,7 @@ INSERT INTO [dbo].[Users]
 ,'hongngoc@gmail.com'
 ,'TmdvYzEyM0Bmd2VxZndlO2hmaXVkc2Zhc2RmYXNkZmFz' -- Ngoc123@
 ,'https://aptechcantho.cusc.vn/DesktopModules/DANHSACH/HINH/QC2018813727251.jpg'
-,3
+,2
 ,1)
 INSERT INTO [dbo].[Users]
            ([FullName]
