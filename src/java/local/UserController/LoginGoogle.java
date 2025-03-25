@@ -65,7 +65,7 @@ public class LoginGoogle extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     User getuserByEmail(List<User> list, String email) {
-
+        
         for (User p : list) {
             if (p.getEmail().equals(email)) {
                 return p;
@@ -73,7 +73,7 @@ public class LoginGoogle extends HttpServlet {
         }
         return null;
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -81,7 +81,7 @@ public class LoginGoogle extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         HttpSession sec = request.getSession();
-
+        
         String code = request.getParameter("code");
 
         // Kiểm tra nếu không có code
@@ -90,7 +90,7 @@ public class LoginGoogle extends HttpServlet {
             request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
             return;
         }
-
+        
         try {
             // Lấy access token từ Google
             String accessToken = getToken(code);
@@ -108,7 +108,7 @@ public class LoginGoogle extends HttpServlet {
             UserDAO d = new UserDAO();
             List<User> list = d.getAll();
             User account = getuserByEmail(list, user.getEmail());
-
+            
             if (account == null) {
                 d.add(customer.getUserName(), null, null, customer.getEmail());
                 list = d.getAll();
@@ -123,22 +123,26 @@ public class LoginGoogle extends HttpServlet {
             }
 
             // Đặt tài khoản vào session
+          
             sec.setAttribute("account", account);
             sec.setAttribute("isLoggedIn", true);
             sec.setAttribute("userid", account.getUserID());
             if (account.getRoleID() == 1) {
+                sec.setAttribute("admin", account.getRoleID());
                 response.sendRedirect("ShowAdminDasboardServlet");
             } else if (account.getRoleID() == 2) {
+                sec.setAttribute("expert", account.getRoleID());
                 response.sendRedirect("ShowexpertServlet");
             } else if (account.getRoleID() == 3) {
+                sec.setAttribute("sale", account.getRoleID());
                 response.sendRedirect("viewownerbloglist");
                 sec.setAttribute("isSale", true);
             } else {
                 User u = new User();
-
+                sec.setAttribute("customer", account.getRoleID());
                 response.sendRedirect("index");
             }
-
+            
         } catch (IOException e) {
             request.setAttribute("err", "Connect Google Fail!");
             request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
@@ -161,16 +165,16 @@ public class LoginGoogle extends HttpServlet {
                                     .build()
                     )
                     .execute().returnContent().asString(StandardCharsets.UTF_8);
-
+            
             JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
 
             // Kiểm tra nếu có lỗi từ Google
             if (jobj.has("error")) {
                 throw new IOException("Lỗi từ Google: " + jobj.get("error").getAsString());
             }
-
+            
             return jobj.get("access_token").getAsString();
-
+            
         } catch (HttpResponseException e) {
             System.err.println("Lỗi khi gọi API lấy token từ Google: " + e.getMessage());
             throw new IOException("Không thể lấy token từ Google. Vui lòng kiểm tra lại client_id và client_secret.");
