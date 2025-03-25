@@ -6,6 +6,7 @@ package dal;
 
 import Model.Courses;
 import Model.Expert;
+import Model.ExpertNew;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
@@ -113,6 +114,32 @@ public class ExpertDao extends DBContext {
         }
         return experts;
     }
+    public List<ExpertNew> getExpertswCourses() {
+    List<ExpertNew> experts = new ArrayList<>();
+    String sql = "SELECT DISTINCT u.UserID, u.UserName, u.FullName, u.Email, u.Avartar, c.Name "
+               + "FROM Users u "
+               + "LEFT JOIN Courses c ON u.UserID = c.UserID "
+               + "WHERE u.RoleID = 2 "
+               + "ORDER BY u.UserID";
+
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int userID = rs.getInt("UserID");
+            String userName = rs.getString("UserName");
+            String fullName = rs.getString("FullName"); // Thêm FullName
+            String email = rs.getString("Email");
+            String avatar = rs.getString("Avartar");
+            String courseName = rs.getString("Name");
+
+            experts.add(new ExpertNew(userID, userName, fullName, email, avatar, courseName));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return experts;
+}
 
     public static void main(String[] args) {
         ExpertDao expertDAO = new ExpertDao();

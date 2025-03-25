@@ -24,6 +24,24 @@
 
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
+        <style>
+            .team-item {
+                width: 100%;
+                max-width: 300px; /* ?i?u ch?nh kích th??c t?i ?a c?a khung ?nh */
+                margin: auto;
+                overflow: hidden;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .team-item img {
+                width: 100%;
+                height: 250px; /* ??m b?o t?t c? ?nh có cùng chi?u cao */
+                object-fit: cover; /* C?t ?nh ?? v?a khung mà không b? méo */
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+        </style>
     </head>
 
     <body>
@@ -35,11 +53,11 @@
         <!-- Header Start -->
         <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
             <div class="container text-center py-5">
-                <h1 class="text-white display-1">Instructors</h1>
+                <h1 class="text-white display-1">Experts</h1>
                 <div class="d-inline-flex text-white mb-5">
                     <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
                     <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                    <p class="m-0 text-uppercase">Instructors</p>
+                    <p class="m-0 text-uppercase">Experts</p>
                 </div>
 
             </div>
@@ -51,15 +69,15 @@
         <div class="container-fluid py-5">
             <div class="container py-5">
                 <div class="section-title text-center position-relative mb-5">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Instructors</h6>
-                    <h1 class="display-4">Meet Our Instructors</h1>
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Experts</h6>
+                    <h1 class="display-4">Meet Our Experts</h1>
                 </div>
                 <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                     <c:forEach items="${experts}" var="i">
                         <div class="team-item">
                             <img class="img-fluid w-100" src="${i.avatar}" alt="">
                             <div class="bg-light text-center p-4">
-                                <h5 class="mb-3">${i.username}</h5>
+                                <h5 class="mb-3">${i.fullname}</h5>
 
                                 <p class="mb-2">${i.courseName}</p>
                                 <div class="d-flex justify-content-center">
@@ -98,7 +116,7 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-        <%@ include file="chatbot-widget.jsp" %>
+         <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 
 </html>

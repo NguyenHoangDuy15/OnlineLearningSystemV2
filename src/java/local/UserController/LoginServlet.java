@@ -83,10 +83,14 @@ public class LoginServlet extends HttpServlet {
 
         if (a == null) {  // Hợp nhất logic từ cả hai nhánh
             sec.setAttribute("isLoggedIn", false);
+            request.setAttribute("username", u);
+            request.setAttribute("password", p);
             request.setAttribute("err", "Username or password invalid ");
             request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
         } else if (a.getStatus() == 0) {
             sec.setAttribute("isLoggedIn", false);
+            request.setAttribute("username", u);
+            request.setAttribute("password", p);
             request.setAttribute("err", "Your account was banned");
             request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
         } else {

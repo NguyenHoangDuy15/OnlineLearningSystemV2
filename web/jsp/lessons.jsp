@@ -18,7 +18,7 @@
             }
 
             .sidebar {
-                width: 19%; /* Giảm từ 20% xuống 17% */
+                width: 20%;
                 height: 100vh;
                 position: fixed;
                 left: 0;
@@ -28,10 +28,11 @@
                 padding: 20px;
                 box-shadow: 5px 0 15px rgba(0,0,0,0.1);
                 transition: width 0.3s ease;
+                overflow-y: auto;
             }
 
             .sidebar:hover {
-                width: 19%; /* Tăng từ 17% lên 19% khi hover */
+                width: 20%;
             }
 
             .sidebar h4 {
@@ -69,7 +70,7 @@
             }
 
             .content {
-                margin-left: 17%; /* Đồng bộ với width của sidebar */
+                margin-left: 17%;
                 padding: 40px;
                 min-height: 100vh;
                 background: #ffffff;
@@ -91,7 +92,7 @@
 
             .video-container iframe {
                 width: 100%;
-                height: 500px;
+                height: 700px;
                 border-radius: 10px;
                 border: none;
             }
@@ -125,6 +126,21 @@
             .fa-times-circle {
                 color: #dc3545;
             }
+
+            .course-info-link {
+                margin-top: 10px;
+            }
+
+            .course-info-link a {
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .course-info-link a i {
+                color: #ffd700;
+            }
         </style>
     </head>
 
@@ -139,7 +155,7 @@
                 <c:forEach var="lesson" items="${lessonsAndTests}">
                     <li>
                         <i class="fas ${lesson.type eq 'Lesson' ? 'fa-video' : 'fa-book'}"></i>
-                        <a href="#" onclick="changeContent('${lesson.type}', '${lesson.content}', ${lesson.id})">
+                        <a href="#" onclick="changeContent('${lesson.type}', '${lesson.content}', ${lesson.id}, '${testStatuses[lesson.id]}')">
                             ${lesson.name}
                         </a>
                         <c:if test="${lesson.type eq 'Test'}">
@@ -162,6 +178,12 @@
                     </li>
                 </c:if>
             </ul>
+
+            <h5 class="course-info-link">
+                <a href="detail?courseId=${courseId}">
+                    <i class="fas fa-info-circle"></i> Course Information
+                </a>
+            </h5>
         </div>
 
         <div class="content">
@@ -169,7 +191,7 @@
                 <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
                 <div id="testContainer" style="display: none;">
                     <h3 id="testTitle"></h3>
-                    <a id="testLink" href="TestAnswer?testId=${firstLesson.id}" class="btn">Take a test</a>
+                    <a id="testLink" href="#" class="btn"></a>
                 </div>
             </div>
         </div>
@@ -180,7 +202,7 @@
                 courseList.style.display = courseList.style.display === "none" ? "block" : "none";
             }
 
-            function changeContent(type, content, testId) {
+            function changeContent(type, content, testId, status) {
                 let videoFrame = document.getElementById("videoFrame");
                 let testContainer = document.getElementById("testContainer");
                 let testTitle = document.getElementById("testTitle");
@@ -195,19 +217,27 @@
                     videoFrame.style.display = "none";
                     testTitle.innerText = "Bài kiểm tra";
                     testLink.href = "TestAnswer?testId=" + testId;
+
+                    // Kiểm tra status để hiển thị text phù hợp
+                    if (status === null || status === undefined || status === '') {
+                        testLink.innerText = "Take test";
+                    } else if (status === '0' || status === '1') {
+                        testLink.innerText = "Retry test";
+                    }
                     testContainer.style.display = "block";
                 }
             }
 
             window.onload = function () {
-                <c:forEach var="lesson" items="${lessonsAndTests}" begin="0" end="0">
-                    changeContent('${lesson.type}', '${lesson.content}', ${lesson.id});
-                </c:forEach>
+            <c:forEach var="lesson" items="${lessonsAndTests}" begin="0" end="0">
+                changeContent('${lesson.type}', '${lesson.content}', ${lesson.id}, '${testStatuses[lesson.id]}');
+            </c:forEach>
                 let firstLesson = document.querySelector("#courseList a");
                 if (firstLesson) {
                     firstLesson.click();
                 }
             };
         </script>
+        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 </html>

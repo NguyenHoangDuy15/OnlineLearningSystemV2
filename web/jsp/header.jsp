@@ -264,7 +264,7 @@
         <div class="container-fluid p-0">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
                 <a href="index" class="navbar-brand ml-lg-3">
-                    <h3 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
+                    <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -286,7 +286,7 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0">
-                                <a href="Instructor" class="dropdown-item">Instructors</a>
+                                <a href="Instructor" class="dropdown-item">Experts</a>
                             </div>
                         </div>
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
@@ -306,7 +306,7 @@
                     %>
                     <!-- Avatar Dropdown -->
                     <div class="dropdown">
-                        <img src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img name="btnAvar" src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
                             <!-- Header with User Info -->
                             <li class="dropdown-header">
@@ -336,7 +336,7 @@
 
                             
                             <li>
-                                <a class="dropdown-item" href="ChangePasswordServlet">
+                                <a name="btncp" class="dropdown-item" href="ChangePasswordServlet">
                                     <i class="fas fa-lock mr-2"></i> Change Password
                                 </a>
                             </li>
@@ -356,8 +356,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="LogoutServlet">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                <a name="btnlg" class="dropdown-item" href="LogoutServlet">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
                                 </a>
                             </li>
                         </ul>
@@ -366,7 +366,7 @@
                         } else {
                     %>
                     <!-- Login Button -->
-                    <a href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
+                    <a name="btnlogin" href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
                     <%
                         }
                     %>

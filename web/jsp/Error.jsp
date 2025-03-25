@@ -14,7 +14,7 @@
         <link href="css/style.css" rel="stylesheet">
     </head>
     <body>
-        <%@ include file="header.jsp" %>
+        
         
         <div class="container text-center my-5">
             <div class="card p-5 shadow-lg border-danger">
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <%@ include file="footer.jsp" %>
+      
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
         <script src="js/main.js"></script>

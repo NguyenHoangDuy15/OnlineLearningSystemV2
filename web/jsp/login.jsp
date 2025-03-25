@@ -34,6 +34,9 @@
             i{
                 margin-right: 5px;
             }
+            .noti{
+                color: red;
+            }
         </style>
     </head>
     <body>
@@ -48,7 +51,7 @@
                         <td align="right"><a href="RegisterServlet">Sign Up</a></td>
                     </tr>
                 </table>
-                ${err}
+                <div name="noti" class="noti">${err}</div>
                 <button name="login" type="submit">Login</button>
             </form>
             <div class="g_id_signin" id="google-sign-in">

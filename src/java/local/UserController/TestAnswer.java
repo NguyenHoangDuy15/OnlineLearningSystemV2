@@ -93,7 +93,6 @@ public class TestAnswer extends HttpServlet {
                     uncertainQuestions.put(markedQuestionId, true);
                 }
             } catch (NumberFormatException e) {
-                // Log lỗi nếu cần
                 System.err.println("Invalid markUncertain value: " + markUncertain);
             }
         }
@@ -112,7 +111,6 @@ public class TestAnswer extends HttpServlet {
                     }
                 }
             } catch (NumberFormatException e) {
-                // Log lỗi nếu cần
                 System.err.println("Invalid navigateQuestionId value: " + navigateQuestionId);
             }
         } else {
