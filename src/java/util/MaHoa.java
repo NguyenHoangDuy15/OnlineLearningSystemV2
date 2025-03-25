@@ -21,6 +21,6 @@ public class MaHoa {
     
     public static void main(String[] args) {
         MaHoa mh = new MaHoa();
-        System.out.println(mh.toSHA1("janecustomer"));
+        System.out.println(mh.toSHA1("123"));
     }
 }

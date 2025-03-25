@@ -582,7 +582,3 @@ VALUES
 ('C', 51), ('B', 52), ('C', 53), ('B', 54), ('B', 55),
 ('A', 56), ('A', 57), ('B', 58), ('C', 59), ('D', 60);
 
-select * from ChatHistory
-
-select * from Roles
-
