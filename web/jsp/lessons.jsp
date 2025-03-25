@@ -80,6 +80,7 @@
 
             .video-container {
                 background: #fff;
+                margin-left: 20px;
                 padding: 20px;
                 border-radius: 15px;
                 box-shadow: 0 5px 25px rgba(0,0,0,0.1);

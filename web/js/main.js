@@ -105,30 +105,4 @@
         }
     });
 
-    // Xử lý nút "Edit" để hiển thị form chỉnh sửa
-    $(document).ready(function () {
-        console.log("Script loaded, attaching event listeners...");
-        const editButtons = document.querySelectorAll('.edit-comment');
-        console.log("Edit buttons found:", editButtons.length);
-
-        editButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const feedbackId = this.getAttribute('data-feedback-id');
-                console.log('Edit button clicked - Feedback ID:', feedbackId);
-
-                const commentBox = document.querySelector(`#comment-${feedbackId}`);
-                const content = commentBox.querySelector('.content');
-                const rating = commentBox.querySelector('.rating');
-                const commentActions = commentBox.querySelector('.comment-actions');
-                const editForm = document.getElementById(`edit-form-${feedbackId}`);
-
-                // Ẩn nội dung hiện tại và hiển thị form chỉnh sửa
-                content.style.display = 'none';
-                rating.style.display = 'none';
-                commentActions.style.display = 'none';
-                editForm.style.display = 'block';
-            });
-        });
-    });
-
 })(jQuery);

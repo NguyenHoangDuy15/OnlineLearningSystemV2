@@ -500,11 +500,8 @@
             // Hiệu ứng click cho courses-list-item
             document.querySelectorAll('.courses-list-item').forEach(item => {
                 item.addEventListener('click', function () {
-                    // Xóa class active khỏi tất cả các item
                     document.querySelectorAll('.courses-list-item').forEach(i => i.classList.remove('active'));
-                    // Thêm class active cho item được click
                     this.classList.add('active');
-                    // Thêm hiệu ứng phóng to nhẹ
                     this.style.transform = 'scale(1.02)';
                 });
             });
@@ -530,7 +527,22 @@
                 this.style.background = '#ff6f61';
                 this.style.transform = 'scale(1.05)';
             });
+
+            // Hàm kiểm tra tham số lọc và cuộn xuống phần khóa học
+            function hasFilterParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.has('category') || urlParams.has('priceOrder') || urlParams.has('ratingOrder') || urlParams.has('search');
+            }
+
+            window.onload = function () {
+                if (hasFilterParams()) {
+                    const coursesSection = document.querySelector('.container-fluid.py-5');
+                    if (coursesSection) {
+                        coursesSection.scrollIntoView({behavior: 'smooth'});
+                    }
+                }
+            };
         </script>
-         <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
     </body>
 </html>
