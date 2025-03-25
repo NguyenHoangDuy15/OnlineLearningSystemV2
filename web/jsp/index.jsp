@@ -28,7 +28,7 @@
             /* Course Image Container */
             .course-img-container {
                 width: 100%;
-                height: 250px;
+                height: 200px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -285,8 +285,8 @@
         <div class="container-fluid py-5">
             <div class="container py-5">
                 <div class="section-title text-center position-relative mb-5">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Instructors</h6>
-                    <h1 class="display-4">Meet Our Instructors</h1>
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Expert</h6>
+                    <h1 class="display-4">Meet Our Expert</h1>
                 </div>
                 <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                     <c:forEach items="${coursedao}" var="course">
