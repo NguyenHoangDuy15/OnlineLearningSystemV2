@@ -1,10 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package dal;
 
+import Model.Courses;
+import Model.LessionAdmin;
 import Model.Lesson;
+import Model.TestAdmin;
 
 import dal.DBContext;
 import java.util.ArrayList;
@@ -58,5 +58,35 @@ public class LessonsDao extends DBContext {
         }
         return list;
     }
+    
+    public List<LessionAdmin> getLessionByCourseID(int courseId) {
+        List<LessionAdmin> list = new ArrayList<>();
+        String sql = "SELECT [LessonID]\n"
+                + "      ,[Content]\n"
+                + "      ,[CourseID]\n"
+                + "      ,[Title]\n"
+                + "      ,[Status]\n"
+                + "  FROM [dbo].[Lessons]\n"
+                + "  WHERE [CourseID] = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, courseId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                LessionAdmin m = new LessionAdmin(
+                            rs.getInt("LessonID"),
+                            rs.getString("Content"),
+                            rs.getInt("CourseID"),
+                            rs.getString("Title"),
+                            rs.getInt("Status")
+                    );
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
 
+   
 }
