@@ -924,3 +924,12 @@ VALUES
 ('B', 241), ('A', 242), ('B', 243), ('A', 244), ('A', 245), ('B', 246), ('A', 247), ('A', 248), ('A', 249), ('B', 250),
 ('D', 251), ('A', 252), ('A', 253), ('D', 254), ('A', 255), ('C', 256), ('A', 257), ('B', 258), ('A', 259), ('B', 260),
 ('B', 261), ('D', 262), ('B', 263), ('A', 264), ('B', 265), ('B', 266), ('B', 267), ('A', 268), ('B', 269), ('D', 270);
+Insert into Feedbacks(UserID, CourseID,Rating, Comment, CreatedAt)
+Values (10,5,4,'Good course',GETDATE()),
+(6,2, 2, 'Not what I expected, content is too basic.', GETDATE()),
+(6, 1, 4, 'Really enjoyed this course, highly recommend!', GETDATE()),
+(10, 3, 5, 'Excellent course, very informative!', GETDATE()),
+(10, 1, 3, 'Good content, but the videos are too long.',GETDATE());
+Insert into Requests(RequestedRole, UserID)
+VALUES(3,6),
+(2,10);
