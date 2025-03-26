@@ -27,12 +27,29 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Test - Online Learning</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <head>
+        <meta charset="utf-8">
+        <title>Edukate - Online Education Website Template</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Free HTML Templates" name="keywords">
+        <meta content="Free HTML Templates" name="description">
+
+        <!-- Favicon -->
+        <link href="img/favicon.ico" rel="icon">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="css/style.css" rel="stylesheet">
+    </head>
     <style>
         :root {
             --primary: #4A90E2;
@@ -317,8 +334,8 @@
         .sidebar {
             position: fixed;
             top: 0;
-            left: -250px;
-            width: 250px;
+            left: -400px;
+            width: 400px;
             height: 100%;
             background-color: var(--secondary);
             padding: 24px;
@@ -344,6 +361,7 @@
         }
 
         .button-group {
+            padding-top: 50px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -359,7 +377,7 @@
         }
 
         .main-content.shifted {
-            margin-left: 250px;
+            margin-left: 400px; /* Phải khớp với width của sidebar */
         }
 
         .form-group {
@@ -497,8 +515,8 @@
 
         @media (max-width: 768px) {
             .sidebar {
-                width: 200px;
-                left: -200px;
+                width: 400px;
+                left: -400px;
             }
 
             .sidebar.active {
@@ -506,7 +524,7 @@
             }
 
             .main-content.shifted {
-                margin-left: 200px;
+                margin-left: 400px;
             }
         }
     </style>
@@ -629,7 +647,7 @@
     </div>
     <!-- Navbar End -->
 
-     <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="dashboard-actions">
             <h2>
                 <i class="fas fa-tachometer-alt"></i>
@@ -735,36 +753,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const sidebar = document.getElementById('sidebar');
-        function toggleSidebar() {
-            const mainContent = document.getElementById('mainContent');
-            sidebar.classList.toggle('active');
-            mainContent.classList.toggle('shifted');
-        }
+                                                const sidebar = document.getElementById('sidebar');
+                                                function toggleSidebar() {
+                                                    const mainContent = document.getElementById('mainContent');
+                                                    sidebar.classList.toggle('active');
+                                                    mainContent.classList.toggle('shifted');
+                                                }
 
-        document.getElementById('updateTestForm').addEventListener('submit', function (event) {
-            sessionStorage.setItem('scrollPosition', window.scrollY);
-        });
+                                                document.getElementById('updateTestForm').addEventListener('submit', function (event) {
+                                                    sessionStorage.setItem('scrollPosition', window.scrollY);
+                                                });
 
-        window.addEventListener('load', function () {
-            const scrollPosition = sessionStorage.getItem('scrollPosition');
-            if (scrollPosition) {
-                window.scrollTo(0, parseInt(scrollPosition));
-                sessionStorage.removeItem('scrollPosition');
-            }
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('click', function () {
-                    document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-            document.querySelectorAll('.stat-item').forEach(item => {
-                item.addEventListener('click', function () {
-                    document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
-                    this.style.background = '#e6f0ff';
-                });
-            });
-        });
+                                                window.addEventListener('load', function () {
+                                                    const scrollPosition = sessionStorage.getItem('scrollPosition');
+                                                    if (scrollPosition) {
+                                                        window.scrollTo(0, parseInt(scrollPosition));
+                                                        sessionStorage.removeItem('scrollPosition');
+                                                    }
+                                                    document.querySelectorAll('.dropdown-item').forEach(item => {
+                                                        item.addEventListener('click', function () {
+                                                            document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                                                            this.classList.add('active');
+                                                        });
+                                                    });
+                                                    document.querySelectorAll('.stat-item').forEach(item => {
+                                                        item.addEventListener('click', function () {
+                                                            document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
+                                                            this.style.background = '#e6f0ff';
+                                                        });
+                                                    });
+                                                });
     </script>
 </body>
 </html>
