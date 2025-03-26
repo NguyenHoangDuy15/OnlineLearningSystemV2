@@ -37,11 +37,9 @@
             }
 
             .topbar a:hover i {
-                color: #ffeb3b; /* Vàng sáng khi hover */
+                color: #ffeb3b; 
                 transition: color 0.3s ease;
             }
-
-            /* Navbar */
             .navbar {
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                 padding: 15px 0;
@@ -67,8 +65,6 @@
             .nav-link:hover, .nav-link.active {
                 color: #007bff !important;
             }
-
-            /* Avatar */
             .avatar {
                 width: 50px;
                 height: 50px;
@@ -83,8 +79,6 @@
                 transform: scale(1.1);
                 box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
             }
-
-            /* Dropdown Menu */
             .dropdown-menu {
                 background: #fff;
                 border: none;

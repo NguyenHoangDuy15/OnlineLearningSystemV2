@@ -70,8 +70,6 @@ public class Role extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
-
-        // Kiểm tra nếu người dùng chưa đăng nhập
         if (userId == null) {
             response.sendRedirect("LoginServlet");
             return;
@@ -80,7 +78,7 @@ public class Role extends HttpServlet {
         // Lấy vai trò yêu cầu từ form
         int requestedRole;
         try {
-            requestedRole = Integer.parseInt(request.getParameter("role"));
+            requestedRole = Integer.parseInt(request.getParameter("rollID"));
         } catch (NumberFormatException e) {
             request.setAttribute("message", "Invalid role selected.");
             request.setAttribute("selectedRole", null); // Đặt giá trị mặc định nếu lỗi

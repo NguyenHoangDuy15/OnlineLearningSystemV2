@@ -54,7 +54,6 @@
                             ${message}
                         </div>
                     </c:if>
-
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Submit Request</button>
                     </div>
