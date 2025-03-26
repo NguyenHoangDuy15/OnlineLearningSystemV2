@@ -401,7 +401,7 @@ INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate)
 
 
 INSERT INTO Lessons (Title, Content, CourseID) VALUES 
-('Java Programming for Beginner-Full-Course', 'https://www.youtube.com/watch?v=GoXwIVyNvX0', 4),
+('Java Programming for Beginner-Full-Course', 'https://www.youtube.com/watch?v=GoXwIVyNvX0', 1),
 ('Advanced Java Programming A Comprehensive Full-Course', 'https://www.youtube.com/watch?v=I_qP7H3STMg', 2),
 ('Java Spring Boot Web Development-Full-Course', 'https://www.youtube.com/watch?v=I_qP7H3STMg', 3),
 ('Python Full Course for Beginners', 'https://www.youtube.com/watch?v=_uQrJ0TkZlc', 4),
