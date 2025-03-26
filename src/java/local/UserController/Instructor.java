@@ -67,8 +67,8 @@ public class Instructor extends HttpServlet {
         Double minRating = request.getParameter("minRating") != null ? Double.parseDouble(request.getParameter("minRating")) : null;
         String sortOrder = request.getParameter("sortOrder"); // "asc" hoặc "desc"
 
-        List<ExpertNew> experts = expertDAO.getExpertsWithFilters(category, name, minRating, sortOrder);
-        request.setAttribute("experts", experts);
+//        List<ExpertNew> experts = expertDAO.getExpertsWithFilters(category, name, minRating, sortOrder);
+//        request.setAttribute("experts", experts);
 
         // Chuyển dữ liệu sang JSP
         request.getRequestDispatcher("jsp/Instructor.jsp").forward(request, response);
