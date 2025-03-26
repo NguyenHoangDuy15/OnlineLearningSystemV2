@@ -196,7 +196,7 @@
             }
 
             .bg-primary .d-flex:hover {
-                background: rgba(255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.1);
             }
 
             .bg-primary h6 {
@@ -270,14 +270,8 @@
                 background-color: #f9f9f9;
             }
 
-            .comment-box .source {
-                font-size: 0.9rem;
-                color: #555;
-                margin-bottom: 5px;
-            }
-
             .comment-box .rating {
-                color: #ff4d4f; /* Red color like Shopee */
+                color: #ff4d4f;
                 margin-bottom: 5px;
             }
 
@@ -286,7 +280,7 @@
             }
 
             .comment-box .rating .fa-star.empty {
-                color: #ddd; /* Gray color for empty stars */
+                color: #ddd;
             }
 
             .comment-box .timestamp {
@@ -306,11 +300,11 @@
             }
 
             .edit-form {
-                display: none; /* Ẩn mặc định */
+                display: none;
             }
 
             .edit-form.active {
-                display: block; /* Hiển thị khi có class active */
+                display: block !important;
             }
 
             .comment-form textarea, .edit-form textarea {
@@ -376,7 +370,6 @@
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             }
 
-            /* Style for avatar and user info */
             .comment-box .avatar {
                 width: 40px;
                 height: 40px;
@@ -384,21 +377,23 @@
                 margin-right: 10px;
                 vertical-align: middle;
             }
+
             .comment-box .user-info {
                 display: flex;
                 align-items: center;
                 margin-bottom: 5px;
             }
+
             .comment-box .user-name {
                 font-size: 0.9rem;
                 color: #555;
                 font-weight: 600;
             }
 
-            /* Style for Edit and Delete buttons */
             .comment-actions {
                 margin-top: 10px;
             }
+
             .comment-actions .btn {
                 margin-right: 5px;
             }
@@ -597,6 +592,75 @@
         <script src="js/main.js"></script>
         <script>
                                                 document.addEventListener('DOMContentLoaded', function () {
+                                                    // Xử lý nút Edit
+                                                    document.querySelectorAll('.edit-comment').forEach(button => {
+                                                        button.addEventListener('click', function () {
+                                                            // Tìm comment-box và edit-form bằng closest()
+                                                            const commentBox = button.closest('.comment-box');
+                                                            const editForm = commentBox.querySelector('.edit-form');
+
+                                                            // Kiểm tra xem commentBox và editForm có tồn tại không
+                                                            if (!commentBox || !editForm) {
+                                                                console.error('Cannot find commentBox or editForm');
+                                                                return;
+                                                            }
+
+                                                            // Toggle trạng thái form chỉnh sửa
+                                                            editForm.classList.toggle('active');
+
+                                                            // Ẩn/hiện nội dung ban đầu
+                                                            const content = commentBox.querySelector('.content');
+                                                            const rating = commentBox.querySelector('.rating');
+                                                            const commentActions = commentBox.querySelector('.comment-actions');
+
+                                                            if (editForm.classList.contains('active')) {
+                                                                if (content)
+                                                                    content.style.display = 'none';
+                                                                if (rating)
+                                                                    rating.style.display = 'none';
+                                                                if (commentActions)
+                                                                    commentActions.style.display = 'none';
+                                                            } else {
+                                                                if (content)
+                                                                    content.style.display = 'block';
+                                                                if (rating)
+                                                                    rating.style.display = 'block';
+                                                                if (commentActions)
+                                                                    commentActions.style.display = 'block';
+                                                            }
+                                                        });
+                                                    });
+
+                                                    // Xử lý nút Cancel
+                                                    document.addEventListener('click', function (event) {
+                                                        if (event.target.classList.contains('cancel-edit')) {
+                                                            // Tìm comment-box và edit-form bằng closest()
+                                                            const editForm = event.target.closest('.edit-form');
+                                                            const commentBox = event.target.closest('.comment-box');
+
+                                                            // Kiểm tra xem commentBox và editForm có tồn tại không
+                                                            if (!commentBox || !editForm) {
+                                                                console.error('Cannot find commentBox or editForm');
+                                                                return;
+                                                            }
+
+                                                            // Ẩn form chỉnh sửa
+                                                            editForm.classList.remove('active');
+
+                                                            // Hiển thị lại nội dung ban đầu
+                                                            const content = commentBox.querySelector('.content');
+                                                            const rating = commentBox.querySelector('.rating');
+                                                            const commentActions = commentBox.querySelector('.comment-actions');
+                                                            if (content)
+                                                                content.style.display = 'block';
+                                                            if (rating)
+                                                                rating.style.display = 'block';
+                                                            if (commentActions)
+                                                                commentActions.style.display = 'block';
+                                                        }
+                                                    });
+                                                });
+                                                document.addEventListener('DOMContentLoaded', function () {
                                                     // Hàm kiểm tra xem có tham số bình luận trong URL không
                                                     function hasCommentAction() {
                                                         const urlParams = new URLSearchParams(window.location.search);
@@ -622,12 +686,12 @@
                                                                             const style = document.createElement('style');
                                                                             style.id = 'highlight-style';
                                                                             style.textContent = `
-                                            @keyframes highlight {
-                                                0% { background-color: rgba(0, 123, 255, 0.1); }
-                                                50% { background-color: rgba(0, 123, 255, 0.3); }
-                                                100% { background-color: transparent; }
-                                            }
-                                        `;
+                                             @keyframes highlight {
+                                                 0% { background-color: rgba(0, 123, 255, 0.1); }
+                                                 50% { background-color: rgba(0, 123, 255, 0.3); }
+                                                 100% { background-color: transparent; }
+                                             }
+                                         `;
                                                                             document.head.appendChild(style);
                                                                         }
                                                                     }
@@ -750,5 +814,6 @@
                                                 });
         </script>
         <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+      
     </body>
 </html>

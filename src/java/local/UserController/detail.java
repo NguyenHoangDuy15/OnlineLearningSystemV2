@@ -19,7 +19,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,7 +39,12 @@ public class detail extends HttpServlet {
 
         // Lấy top 5 khóa học phổ biến
         CustomerDao coDAO = new CustomerDao();
-        List<Courses> courses = coDAO.getTop5PopularCourses();
+        List<Courses> courses = null;
+        try {
+            courses = coDAO.getTop5PopularCourses();
+        } catch (SQLException ex) {
+            Logger.getLogger(detail.class.getName()).log(Level.SEVERE, null, ex);
+        }
         request.setAttribute("courses", courses);
 
         Courses course = null;

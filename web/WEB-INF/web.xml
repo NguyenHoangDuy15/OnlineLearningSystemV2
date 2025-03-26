@@ -84,6 +84,12 @@
         <servlet-name>ChangeUserForAdminServlet</servlet-name>
         <servlet-class>local.AdminController.ChangeUserForAdminServlet</servlet-class>
     </servlet>
+  
+    <error-page>
+        <error-code>404</error-code>
+        <location>/jsp/Error4.jsp</location>
+    </error-page>
+  
     <servlet-mapping>
         <servlet-name>ForgotPassword</servlet-name>
         <url-pattern>/ForgotPassword</url-pattern>
