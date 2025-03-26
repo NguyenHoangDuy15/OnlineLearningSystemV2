@@ -28,11 +28,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= isEdit ? "Edit Lessons" : "Add Lessons" %> - Online Learning</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+   <head>
+        <meta charset="utf-8">
+        <title>Edukate - Online Education Website Template</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Free HTML Templates" name="keywords">
+        <meta content="Free HTML Templates" name="description">
+
+        <!-- Favicon -->
+        <link href="img/favicon.ico" rel="icon">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="css/style.css" rel="stylesheet">
+    </head>
     <style>
         :root {
             --primary: #4A90E2;
@@ -317,8 +335,8 @@
         .sidebar {
             position: fixed;
             top: 0;
-            left: -250px;
-            width: 250px;
+            left: -400px;
+            width: 400px;
             height: 100%;
             background-color: var(--secondary);
             padding: 24px;
@@ -342,9 +360,9 @@
             transition: margin-left 0.3s ease;
         }
 
-        .main-content.shifted {
-            margin-left: 250px;
-        }
+       .main-content.shifted {
+                margin-left: 400px; /* Phải khớp với width của sidebar */
+            }
 
         .form-container {
             max-width: 80%;
@@ -407,6 +425,7 @@
         }
 
         .button-group {
+            padding-top: 50px;
             display: flex;
             gap: 16px;
             margin-top: 24px;

@@ -53,14 +53,8 @@
 
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
-
     </head>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Expert Dashboard - Online Learning</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
         <style>
             :root {
                 --primary: #4A90E2;
@@ -349,17 +343,18 @@
             .sidebar {
                 position: fixed;
                 top: 0;
-                left: -250px;
-                width: 250px;
+                left: -400px;
+                width: 400px; /* Tăng chiều rộng */
                 height: 100%;
                 background-color: var(--secondary);
-                padding: 24px;
+                padding: 16px; /* Giảm padding */
                 display: flex;
                 flex-direction: column;
-                gap: 32px;
+                gap: 16px; /* Giảm gap */
                 border-right: 1px solid var(--border);
                 transition: left 0.3s ease;
                 z-index: 1000;
+                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung dài */
             }
 
             .sidebar.active {
@@ -376,9 +371,19 @@
             }
 
             .button-group {
+                padding-top: 50px; /* Tăng khoảng cách từ phía trên */
                 display: flex;
                 flex-direction: column;
-                gap: 16px;
+                gap: 20px; /* Khoảng cách giữa các nút */
+            }
+
+            .button-group .btn {
+                padding-top: 20px;
+                padding: 8px 16px; /* Giảm padding của nút */
+                font-size: 14px; /* Giảm kích thước chữ */
+                text-align: center; /* Căn giữa nội dung nút */
+                width: 100%; /* Đảm bảo nút chiếm toàn bộ chiều rộng */
+                box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước tổng */
             }
 
             .main-content {
@@ -391,7 +396,7 @@
             }
 
             .main-content.shifted {
-                margin-left: 250px;
+                margin-left: 400px; /* Phải khớp với width của sidebar */
             }
 
             .welcome {
@@ -559,8 +564,8 @@
 
             @media (max-width: 768px) {
                 .sidebar {
-                    width: 200px;
-                    left: -200px;
+                    width: 250px; /* Tăng chiều rộng trên thiết bị nhỏ */
+                    left: -250px;
                 }
 
                 .sidebar.active {
@@ -568,7 +573,7 @@
                 }
 
                 .main-content.shifted {
-                    margin-left: 200px;
+                    margin-left: 250px;
                 }
             }
         </style>
@@ -580,9 +585,21 @@
                 <div class="hamburger" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </div>
+                <%
+                           if (userId != null) {
+                %>
                 <a href="index" class="navbar-brand ml-lg-3">
                     <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
                 </a>
+                <%
+                            } else {
+                %>
+                <a href="Landingpage" class="navbar-brand ml-lg-3">
+                    <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
+                </a>
+                <%
+                 }
+                %>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -611,14 +628,7 @@
                         <%
                             }
                         %>
-                        <%
-                            Boolean isSale = (Boolean) session.getAttribute("isSale");
-                            if (isSale != null && isSale) {
-                        %>
-                        <a href="viewownerbloglist" class="nav-item nav-link">Manage Blogs</a>
-                        <%
-                            }
-                        %>
+
                     </div>
 
                     <%

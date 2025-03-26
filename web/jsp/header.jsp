@@ -37,7 +37,7 @@
             }
 
             .topbar a:hover i {
-                color: #ffeb3b; 
+                color: #ffeb3b;
                 transition: color 0.3s ease;
             }
             .navbar {
@@ -188,7 +188,7 @@
             }
 
             .stat-item.completed i {
-                color: #28a745; 
+                color: #28a745;
             }
 
             .dropdown-item {
@@ -252,16 +252,28 @@
         <!-- Navbar Start -->
         <div class="container-fluid p-0">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                <%
+                           if (userId != null) {
+                %>
                 <a href="index" class="navbar-brand ml-lg-3">
                     <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
                 </a>
+                <%
+                            } else {
+                %>
+                <a href="Landingpage" class="navbar-brand ml-lg-3">
+                    <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
+                </a>
+                <%
+                 }
+                %>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto py-0">
-                       <%
-                            if (userId != null) {
+                        <%
+                             if (userId != null) {
                         %>
                         <a href="index" class="nav-item nav-link active">Home</a>
                         <%
@@ -275,10 +287,10 @@
                         <div class="nav-item dropdown">
                             <a href="Expert" class="nav-item nav-link">Experts</a>
                         </div>
-                       
+
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
-                         <%
-                        if (roleId != null && roleId == 2) {
+                        <%
+                       if (roleId != null && roleId == 2) {
                         %>
                         <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
                         <%
@@ -328,7 +340,7 @@
                             </li>
                             <!-- Menu Items -->
 
-                            
+
                             <li>
                                 <a name="btncp" class="dropdown-item" href="ChangePasswordServlet">
                                     <i class="fas fa-lock mr-2"></i> Change Password
@@ -370,7 +382,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-  
+
             document.querySelectorAll('.dropdown-item').forEach(item => {
                 item.addEventListener('click', function () {
                     // Xóa class active khỏi tất cả các item

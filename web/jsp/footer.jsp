@@ -20,7 +20,8 @@
                         <a href="index.html" class="navbar-brand">
                             <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Online Learning System</h1>
                         </a>
-                        <p class="m-0">Accusam nonumy clita sed rebum kasd eirmod elitr. Ipsum ea lorem at et diam est, tempor rebum ipsum sit ea tempor stet et consetetur dolores. Justo stet diam ipsum lorem vero clita diam</p>
+                       <p class="m-0">An online learning system provides a flexible and interactive platform for students to access courses anytime, anywhere. It enables seamless communication between instructors and learners, offering a variety of resources, assessments, and real-time feedback.</p>
+
                     </div>
                 </div>
                 <div class="row">

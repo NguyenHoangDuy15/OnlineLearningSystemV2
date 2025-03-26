@@ -103,11 +103,11 @@
             <c:choose>
                 <c:when test="${not empty sessionScope.userid}">
                     <!-- Nếu userId tồn tại trong session, chuyển hướng về training index -->
-                    <a href="index.jsp" class="btn">Back to Home</a>
+                    <a href="index" class="btn">Back to Home</a>
                 </c:when>
                 <c:otherwise>
                     <!-- Nếu không có userId hoặc session, chuyển hướng về landing page -->
-                    <a href="Langdingpage.jsp" class="btn">Back to Home</a>
+                    <a href="Langdingpage" class="btn">Back to Home</a>
                 </c:otherwise>
             </c:choose>
         </div>
