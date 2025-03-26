@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 public class TestEXDAO extends DBContext {
 
-   public int addAnswer(String correctAnswer, int questionId) {
+    public int addAnswer(String correctAnswer, int questionId) {
         if (correctAnswer == null || correctAnswer.trim().isEmpty()) {
             System.out.println("Failed to add answer: correctAnswer is null or empty for questionId: " + questionId);
             return -1;
@@ -88,14 +88,15 @@ public class TestEXDAO extends DBContext {
         return -1;
     }
 
-    public List<TestEX> getTestsByCreatorFullName(String fullName) {
+    public List<TestEX> getTestsByCreatorFullName(int userId) {
         List<TestEX> tests = new ArrayList<>();
         String sql = "SELECT t.TestID, t.Name, t.Status, t.CreatedBy, t.CourseID \n"
                 + "FROM Test t \n"
-                + "JOIN Users u ON t.CreatedBy = u.FullName\n"
-                + "WHERE u.FullName = ? AND u.RoleID = 2";
+                + "JOIN Courses c ON t.CourseID = c.CourseID \n"
+                + "JOIN Users u ON c.UserID = u.UserID \n"
+                + "WHERE u.UserID = ? AND u.RoleID = 2";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, fullName);
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 TestEX test = new TestEX(

@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/LessonServlet")
 public class LessonServlet extends HttpServlet {
@@ -100,58 +102,82 @@ public class LessonServlet extends HttpServlet {
             }
         } else if ("updateLesson".equals(action)) {
             try {
-                int lessonId = Integer.parseInt(request.getParameter("lessonId"));
                 int courseId = Integer.parseInt(request.getParameter("courseId"));
-                String title = request.getParameter("title");
-                String content = request.getParameter("content");
-                if (title == null || title.trim().isEmpty() || content == null || content.trim().isEmpty()) {
-                    throw new Exception("Title and content cannot be empty");
-                }
-                String youtubeUrlPattern = "^https://www\\.youtube\\.com/watch\\?v=[A-Za-z0-9_-]+";
-                if (!content.matches(youtubeUrlPattern)) {
-                    throw new Exception("Content must be a valid YouTube URL starting with 'https://www.youtube.com/watch?v='");
+                String[] lessonIds = request.getParameterValues("lessonId[]");
+                String[] titles = request.getParameterValues("title[]");
+                String[] contents = request.getParameterValues("content[]");
+
+                if (titles == null || contents == null || titles.length != contents.length) {
+                    throw new Exception("Invalid lesson data: titles or contents missing or mismatched");
                 }
 
-                LessonEX lesson = new LessonEX();
-                lesson.setLessonID(lessonId);
-                lesson.setTitle(title);
-                lesson.setContent(content);
-                lesson.setCourseID(courseId);
-                System.out.println("Updating lesson with lessonId: " + lessonId);
-                lessonDAO.updateLesson(lesson);
+                String youtubeUrlPattern = "^https://www\\.youtube\\.com/watch\\?v=[A-Za-z0-9_-]+";
+                List<LessonEX> lessonsToUpdate = new ArrayList<>();
+
+                for (int i = 0; i < titles.length; i++) {
+                    if (titles[i] == null || titles[i].trim().isEmpty() || 
+                        contents[i] == null || contents[i].trim().isEmpty()) {
+                        throw new Exception("Title and content cannot be empty for lesson " + (i + 1));
+                    }
+                    if (!contents[i].matches(youtubeUrlPattern)) {
+                        throw new Exception("Invalid YouTube URL for lesson " + (i + 1));
+                    }
+
+                    LessonEX lesson = new LessonEX();
+                    lesson.setLessonID(Integer.parseInt(lessonIds[i]));
+                    lesson.setTitle(titles[i]);
+                    lesson.setContent(contents[i]);
+                    lesson.setCourseID(courseId);
+                    lessonsToUpdate.add(lesson);
+                }
+
+                System.out.println("Updating " + lessonsToUpdate.size() + " lessons");
+                for (LessonEX lesson : lessonsToUpdate) {
+                    lessonDAO.updateLesson(lesson);
+                }
 
                 response.sendRedirect("CourseServlet?courseId=" + courseId + "&message=" + 
-                    java.net.URLEncoder.encode("Lesson updated successfully.", "UTF-8"));
+                    java.net.URLEncoder.encode("Lessons updated successfully.", "UTF-8"));
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("error", "An error occurred while updating the lesson: " + e.getMessage());
+                request.setAttribute("error", "An error occurred while updating lessons: " + e.getMessage());
                 request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
             }
         } else if ("addLesson".equals(action)) {
             try {
                 int courseId = Integer.parseInt(request.getParameter("courseId"));
-                String title = request.getParameter("title");
-                String content = request.getParameter("content");
-                if (title == null || title.trim().isEmpty() || content == null || content.trim().isEmpty()) {
-                    throw new Exception("Title and content cannot be empty");
+                String[] titles = request.getParameterValues("title[]");
+                String[] contents = request.getParameterValues("content[]");
+
+                if (titles == null || contents == null || titles.length != contents.length) {
+                    throw new Exception("Invalid lesson data: titles or contents missing or mismatched");
                 }
 
                 String youtubeUrlPattern = "^https://www\\.youtube\\.com/watch\\?v=[A-Za-z0-9_-]+";
-                if (!content.matches(youtubeUrlPattern)) {
-                    throw new Exception("Content must be a valid YouTube URL starting with 'https://www.youtube.com/watch?v='");
-                }
+                List<Integer> newLessonIds = new ArrayList<>();
 
-                System.out.println("Adding new lesson for courseId: " + courseId);
-                int newLessonId = lessonDAO.addLesson(courseId, title, content);
-                if (newLessonId == -1) {
-                    throw new Exception("Failed to add new lesson");
+                for (int i = 0; i < titles.length; i++) {
+                    if (titles[i] == null || titles[i].trim().isEmpty() || 
+                        contents[i] == null || contents[i].trim().isEmpty()) {
+                        throw new Exception("Title and content cannot be empty for lesson " + (i + 1));
+                    }
+                    if (!contents[i].matches(youtubeUrlPattern)) {
+                        throw new Exception("Invalid YouTube URL for lesson " + (i + 1));
+                    }
+
+                    System.out.println("Adding lesson " + (i + 1) + " for courseId: " + courseId);
+                    int newLessonId = lessonDAO.addLesson(courseId, titles[i], contents[i]);
+                    if (newLessonId == -1) {
+                        throw new Exception("Failed to add lesson " + (i + 1));
+                    }
+                    newLessonIds.add(newLessonId);
                 }
 
                 response.sendRedirect("CourseServlet?courseId=" + courseId + "&message=" + 
-                    java.net.URLEncoder.encode("Lesson added successfully. Lesson ID: " + newLessonId, "UTF-8"));
+                    java.net.URLEncoder.encode("Added " + newLessonIds.size() + " lessons successfully.", "UTF-8"));
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("error", "An error occurred while adding the lesson: " + e.getMessage());
+                request.setAttribute("error", "An error occurred while adding lessons: " + e.getMessage());
                 request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
             }
         }

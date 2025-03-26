@@ -71,7 +71,7 @@ public class ViewTest extends HttpServlet {
         }
 
         TestEXDAO testDAO = new TestEXDAO();
-        List<TestEX> tests = testDAO.getTestsByCreatorFullName(fullName);
+        List<TestEX> tests = testDAO.getTestsByCreatorFullName(role);
 
         request.setAttribute("tests", tests);
         request.getRequestDispatcher("jsp/viewTests.jsp").forward(request, response);

@@ -188,7 +188,6 @@ public class TestServlet extends HttpServlet {
                         }
                     }
                     questions.remove(deleteIndex);
-                    // Cập nhật lại selectedCorrectAnswers sau khi xóa
                     List<String> updatedCorrectAnswers = new ArrayList<>();
                     for (int i = 0; i < selectedCorrectAnswers.length; i++) {
                         if (i != deleteIndex) {

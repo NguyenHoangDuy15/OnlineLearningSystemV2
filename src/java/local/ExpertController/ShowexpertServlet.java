@@ -78,10 +78,10 @@ public class ShowexpertServlet extends HttpServlet {
         }
 
         CourseEXDAO courseDao = new CourseEXDAO();
-        List<CourseEX> courses = courseDao.getCourseByUserId(userID); // Get courses for the logged-in user
+        List<CourseEX> courses = courseDao.getCourseByUserId(userID);
         request.setAttribute("courses", courses);
          TestEXDAO testDAO = new TestEXDAO();
-        List<TestEX> tests = testDAO.getTestsByCreatorFullName(fullName);
+        List<TestEX> tests = testDAO.getTestsByCreatorFullName(role);
 
         request.setAttribute("tests", tests);
         

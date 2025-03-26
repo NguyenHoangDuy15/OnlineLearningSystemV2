@@ -1,7 +1,5 @@
 package local.ExpertController;
 
-import Model.TestEX;
-import Model.QuestionEX;
 import dal.TestEXDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -76,13 +74,9 @@ public class QuestionController extends HttpServlet {
             String[] optionsC = request.getParameterValues("optionsC[]");
             String[] optionsD = request.getParameterValues("optionsD[]");
             String[] correctAnswers = new String[questionCount];
-
-            // Lấy giá trị của radio button
             for (int i = 0; i < questionCount; i++) {
                 correctAnswers[i] = request.getParameter("correctAnswers_" + i);
             }
-
-            // Lưu dữ liệu vào session
             List<String> tempQuestions = new ArrayList<>();
             List<String> tempOptionsA = new ArrayList<>();
             List<String> tempOptionsB = new ArrayList<>();
@@ -348,7 +342,6 @@ public class QuestionController extends HttpServlet {
                 }
 
                 if (allSuccess) {
-                    // Xóa dữ liệu tạm trong session sau khi submit thành công
                     session.removeAttribute("tempTestName_" + courseId);
                     session.removeAttribute("tempQuestions_" + courseId);
                     session.removeAttribute("tempOptionsA_" + courseId);
