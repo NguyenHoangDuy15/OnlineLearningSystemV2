@@ -80,7 +80,7 @@ public class Role extends HttpServlet {
         // Lấy vai trò yêu cầu từ form
         int requestedRole;
         try {
-            requestedRole = Integer.parseInt(request.getParameter("role"));
+            requestedRole = Integer.parseInt(request.getParameter("rollID"));
         } catch (NumberFormatException e) {
             request.setAttribute("message", "Invalid role selected.");
             request.setAttribute("selectedRole", null); // Đặt giá trị mặc định nếu lỗi
