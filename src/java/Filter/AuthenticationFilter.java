@@ -20,11 +20,11 @@ public class AuthenticationFilter implements Filter {
     // Danh sách các URL công khai (không cần đăng nhập)
     private static final List<String> ALLOWED_URLS = Arrays.asList(
             "/LoginServlet", "/jsp/login.jsp", "/jsp/course.jsp", "/jsp/detail.jsp", "/detail",
-            "/jsp/Landingpage.jsp", "/jsp/chatbot-widget.jsp", "/jsp/Instructor.jsp", "/jsp/register.jsp",
+            "/jsp/Landingpage.jsp", "/jsp/Instructor.jsp", "/jsp/register.jsp",
             "/jsp/viewblog.jsp", "/ViewBlog", "/RegisterServlet", "/VerifyServlet",
             "/jsp/verify.jsp", "/jsp/changePassword.jsp", "/jsp/forgetPassword.jsp", "/jsp/header",
             "/assets/", "/jsp/footer.jsp", "/css", "/img", "/js", "/Landingpage", "/course",
-            "/ChatbotServlet", "/ForgotPassword", "/LogoutServlet", "/Instructor", "/SearchBlog",
+             "/ForgotPassword", "/LogoutServlet", "/Instructor", "/SearchBlog","/Expert",
             // Thêm các URL liên quan đến đăng nhập Google
             "/LoginGoogle", // Servlet xử lý đăng nhập Google
             "/oauth2callback", // URL callback của Google (nếu có)
@@ -65,7 +65,7 @@ public class AuthenticationFilter implements Filter {
         }
 
         // Nếu chưa đăng nhập và không phải trang login -> chuyển hướng về trang đăng nhập
-        if (!requestURI.endsWith("/LoginServlet") && !requestURI.endsWith("/jsp/login.jsp") && !requestURI.endsWith("/LoginGoogleServlet")) {
+        if (!requestURI.endsWith("/LoginServlet") && !requestURI.endsWith("/jsp/login.jsp") && !requestURI.endsWith("/LoginGoogle")) {
             res.sendRedirect(req.getContextPath() + "/LoginServlet");
         } else {
             chain.doFilter(request, response);

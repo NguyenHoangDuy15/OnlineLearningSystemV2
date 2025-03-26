@@ -15,6 +15,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,12 +29,10 @@ import java.util.List;
 public class Authorize implements Filter {
 
     private static final List<String> ADMIN_ALLOW = Arrays.asList(
-            "/admin/", "/addBlog.jsp", "/addCustomer.jsp", "/addDepartment.jsp",
-            "/addService.jsp", "/addStaff.jsp", "/adminDashboard.jsp", "/blogs-detail.jsp",
-            "/blogs.jsp", "/customerDetail.jsp", "/departmentDetail.jsp", "/editCustomer.jsp",
-            "/listCustomer.jsp", "/listDepartment.jsp", "/listService.jsp",
-            "/manage-banners.jsp", "/manage-footer.jsp", "/serviceDetail.jsp", "/staffDetail.jsp",
-            "/updateBlog.jsp", "/updateDepartment.jsp", "/updateService.jsp", "/updateStaff.jsp"
+            "/jsp/", "/ChangeUserForAdmin", "/ListofBlogByAdmin.jsp", "/ListofBlogByAdmin.jsp",
+            "/ListOfCourseRequestByAdmin.jsp", "/ListOfCourseByAdmin.jsp", "/ListOfExpert.jsp", "/ListOfFeedbackByAdmin.jsp",
+            "/ListOfMoneyHistoryByAdmin.jsp", "/ListOfRequestByAdmin.jsp", "/ListOfSeller.jsp", "/ListOfUserByAdmin.jsp",
+            "/dashboard.jsp", "/navbar-header.jsp", "/sidebarManager.jsp", "/addNewUser.jsp"
     );
 
     private static final List<String> EXPERT_ALLOW = Arrays.asList(
@@ -39,14 +40,17 @@ public class Authorize implements Filter {
             "/ReviewTest.jsp", "/Role.jsp", "/chatbot-widget.jsp", "/PaymentVN.jsp", "/Request.jsp", "/Result.jsp",
             "/changePassword.jsp", "/course.jsp", "/Role.jsp", "/detail.jsp", "/enrollment.jsp", "/header.jsp", "/footer.jsp",
             "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp", "/Instructor.jsp",
-            "/viewblog.jsp", "/error1.jsp"
+            "/viewblog.jsp", "/error1.jsp", "/courseDetails.jsp", "/editLesson.jsp", "/NoticeJSP.jsp", "/CreateTest.jsp",
+            "/expertDashboard.jsp", "/editTest.jsp", "/ViewCourse.jsp", "/viewQuestions.jsp", "/viewTests.jsp",
+            "/createCourse.jsp", "/test.jsp"
     );
 
     private static final List<String> SALE_ALLOW = Arrays.asList(
             "/jsp/", "/Certificate.jsp", "/Dotest.jsp", "/Error.jsp",
             "/ReviewTest.jsp", "/Role.jsp", "/chatbot-widget.jsp", "/PaymentVN.jsp", "/Request.jsp", "/Result.jsp",
             "/changePassword.jsp", "/course.jsp", "/Role.jsp", "/detail.jsp", "/enrollment.jsp", "/header.jsp", "/footer.jsp",
-            "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp", "/createblog.jsp", "/updateblog.jsp", "/viewownerbloglist.jsp", "/Instructor.jsp",
+            "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp",
+            "/createblog.jsp", "/updateblog.jsp", "/viewownerbloglist.jsp", "/Instructor.jsp",
             "/viewblog.jsp"
     );
 
@@ -129,40 +133,64 @@ public class Authorize implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain)
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        if (debug) {
-            log("Authorize:doFilter()");
-        }
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+        String requestURI = req.getRequestURI();
+        HttpSession session = req.getSession(false);
 
-        doBeforeProcessing(request, response);
-
-        Throwable problem = null;
-        try {
+        // If session doesn't exist, let Authenticate filter handle it
+        if (session == null) {
             chain.doFilter(request, response);
-        } catch (Throwable t) {
-            // If an exception is thrown somewhere down the filter chain,
-            // we still want to execute our after processing, and then
-            // rethrow the problem after that.
-            problem = t;
-            t.printStackTrace();
+            return;
         }
 
-        doAfterProcessing(request, response);
+        // Check if user is authenticated with a specific role
+        Object admin = session.getAttribute("admin");
+        Object expert = session.getAttribute("expert");
+        Object sale = session.getAttribute("sale");
+        Object customer = session.getAttribute("customer");
 
-        // If there was a problem, we want to rethrow it if it is
-        // a known type, otherwise log it.
-        if (problem != null) {
-            if (problem instanceof ServletException) {
-                throw (ServletException) problem;
-            }
-            if (problem instanceof IOException) {
-                throw (IOException) problem;
-            }
-            sendProcessingError(problem, response);
+        // Check role-specific authorization
+        if (admin != null && isURLAllowed(requestURI, ADMIN_ALLOW)) {
+            chain.doFilter(request, response);
+            return;
+        } else if (expert != null && isURLAllowed(requestURI, EXPERT_ALLOW)) {
+            chain.doFilter(request, response);
+            return;
+        } else if (sale != null && isURLAllowed(requestURI, SALE_ALLOW)) {
+            chain.doFilter(request, response);
+            return;
+        } else if (customer != null && isURLAllowed(requestURI, CUSTOMER_ALLOW)) {
+            chain.doFilter(request, response);
+            return;
         }
+
+        // If we're here, let's see if the user is trying to access a protected area they shouldn't
+        if ((admin == null && isURLAllowed(requestURI, ADMIN_ALLOW))
+                || (expert == null && isURLAllowed(requestURI, EXPERT_ALLOW))
+                || (sale == null && isURLAllowed(requestURI, SALE_ALLOW))
+                || (customer == null && isURLAllowed(requestURI, CUSTOMER_ALLOW))) {
+            // User is trying to access a protected area without proper role
+            req.setAttribute("errorMessage", "Bạn không có quyền truy cập trang này.");
+            req.getRequestDispatcher("/Unauthorized.jsp").forward(request, response);
+            return;
+        }
+
+        // If not matching any specific role-based URL, let request pass through
+        chain.doFilter(request, response);
+    }
+
+    private boolean isURLAllowed(String requestURI, List<String> allowedURLs) {
+        for (String url : allowedURLs) {
+            if (requestURI.contains(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
