@@ -2,11 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package local.UserController;
 
-import Model.Expert;
-import Model.ExpertNew;
-import dal.ExpertDao;
+package local.AdminController;
+
+import Model.Courses;
+import Model.LessionAdmin;
+import Model.TestAdmin;
+import dal.CourseDao;
+import dal.LessonsDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,70 +17,59 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  *
- * @author Administrator
+ * @author DELL
  */
-@WebServlet(name = "Instructor", urlPatterns = {"/Instructor"})
-public class Instructor extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+@WebServlet(name="ShowCourseDetailByAdmin", urlPatterns={"/ShowCourseDetailByAdmin"})
+public class ShowCourseDetailByAdmin extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Instructor</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Instructor at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            HttpSession session = request.getSession();
+            String CourseID = request.getParameter("CourseID");
+            CourseDao cdao = new CourseDao();
+            LessonsDao ldao = new LessonsDao();
+            Courses c = cdao.getCourseById(Integer.parseInt(CourseID));
+            List<LessionAdmin> listLession = ldao.getLessionByCourseID(Integer.parseInt(CourseID));
+            List<TestAdmin> listTest = cdao.getTestByCourseID(Integer.parseInt(CourseID));
+            request.setAttribute("courseID", CourseID);
+            session.setAttribute("courseName", c.getName());
+            session.setAttribute("NumberTest", listTest.size());
+            session.setAttribute("listLession", listLession);
+            session.setAttribute("listTest", listTest);
+            request.getRequestDispatcher("jsp/showDetailCourseForAdmin.jsp").forward(request, response);
         }
-    }
-
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     */    @Override
+     */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        ExpertDao expertDAO = new ExpertDao();
-        String category = request.getParameter("category");
-        String name = request.getParameter("name");
-        Double minRating = request.getParameter("minRating") != null ? Double.parseDouble(request.getParameter("minRating")) : null;
-        String sortOrder = request.getParameter("sortOrder"); // "asc" hoặc "desc"
+    throws ServletException, IOException {
+        processRequest(request, response);
+    } 
 
-//        List<ExpertNew> experts = expertDAO.getExpertsWithFilters(category, name, minRating, sortOrder);
-//        request.setAttribute("experts", experts);
-
-        // Chuyển dữ liệu sang JSP
-        request.getRequestDispatcher("jsp/Instructor.jsp").forward(request, response);
-
-    }
-
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -85,12 +77,12 @@ public class Instructor extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
+        processRequest(request, response);
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

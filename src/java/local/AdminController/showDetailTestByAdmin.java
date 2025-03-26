@@ -2,11 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package local.UserController;
+package local.AdminController;
 
-import Model.Expert;
-import Model.ExpertNew;
-import dal.ExpertDao;
+import Model.QuestionEX;
+import Model.TestEX;
+import dal.QuestionEXDAO;
+import dal.TestEXDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,10 +19,10 @@ import java.util.List;
 
 /**
  *
- * @author Administrator
+ * @author DELL
  */
-@WebServlet(name = "Instructor", urlPatterns = {"/Instructor"})
-public class Instructor extends HttpServlet {
+@WebServlet(name = "showDetailTestByAdmin", urlPatterns = {"/showDetailTestByAdmin"})
+public class showDetailTestByAdmin extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,15 +41,14 @@ public class Instructor extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Instructor</title>");
+            out.println("<title>Servlet showDetailTestByAdmin</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Instructor at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet showDetailTestByAdmin at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -58,21 +58,29 @@ public class Instructor extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     */    @Override
+     */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ExpertDao expertDAO = new ExpertDao();
-        String category = request.getParameter("category");
-        String name = request.getParameter("name");
-        Double minRating = request.getParameter("minRating") != null ? Double.parseDouble(request.getParameter("minRating")) : null;
-        String sortOrder = request.getParameter("sortOrder"); // "asc" hoặc "desc"
+        QuestionEXDAO questionDAO = new QuestionEXDAO();
+        TestEXDAO testDAO = new TestEXDAO();
+        try {
+            // Lấy testId từ request
+            int testId = Integer.parseInt(request.getParameter("testId"));
 
-//        List<ExpertNew> experts = expertDAO.getExpertsWithFilters(category, name, minRating, sortOrder);
-//        request.setAttribute("experts", experts);
-
-        // Chuyển dữ liệu sang JSP
-        request.getRequestDispatcher("jsp/Instructor.jsp").forward(request, response);
-
+            // Lấy danh sách câu hỏi và thông tin bài test
+            List<QuestionEX> questions = questionDAO.getQuestionsByTestId(testId);
+            TestEX test = testDAO.getTestById(testId);
+            // Đặt các thuộc tính vào request
+            request.setAttribute("questions", questions);
+            request.setAttribute("test", test);
+            request.setAttribute("CourseID", test.getCourseID());
+            request.getRequestDispatcher("jsp/showDetailTestForAdmin.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "An error occurred while fetching questions: " + e.getMessage());
+            request.getRequestDispatcher("jsp/expertDashboard.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -86,6 +94,7 @@ public class Instructor extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**

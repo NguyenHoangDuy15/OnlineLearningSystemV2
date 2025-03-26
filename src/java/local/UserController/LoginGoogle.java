@@ -110,7 +110,7 @@ public class LoginGoogle extends HttpServlet {
             User account = getuserByEmail(list, user.getEmail());
             
             if (account == null) {
-                d.add(customer.getUserName(), null, null, customer.getEmail());
+                d.add(customer.getUserName(), null, customer.getUserName(), customer.getEmail());
                 list = d.getAll();
                 account = getuserByEmail(list, customer.getEmail()); // Cập nhật lại account
             }
@@ -123,9 +123,15 @@ public class LoginGoogle extends HttpServlet {
             }
 
             // Đặt tài khoản vào session
+            
+            sec.setAttribute("sessionID", sec.getId());
+            sec.setAttribute("rollID", account.getRoleID()); // Thêm rollID vào session
+            request.setAttribute("rollID", account.getRoleID());
+            sec.setAttribute("username", account.getUserName());
           
             sec.setAttribute("account", account);
             sec.setAttribute("isLoggedIn", true);
+            sec.setAttribute("Fullname", account.getFullName());
             sec.setAttribute("userid", account.getUserID());
             if (account.getRoleID() == 1) {
                 sec.setAttribute("admin", account.getRoleID());

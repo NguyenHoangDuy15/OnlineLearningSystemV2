@@ -279,7 +279,7 @@
                         %>
                         <a href="course" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">
-                            <a href="Instructor" class="nav-item nav-link">Experts</a>
+                            <a href="Expert" class="nav-item nav-link">Experts</a>
                         </div>
                        
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>

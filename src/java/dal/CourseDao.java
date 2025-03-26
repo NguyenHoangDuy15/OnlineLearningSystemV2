@@ -4,11 +4,14 @@
  */
 package dal;
 
+import Model.CatergoryPrint;
 import Model.CoursePrint;
 import java.sql.*;
 import Model.Courses;
 import Model.History;
+import Model.LessionAdmin;
 import Model.MoneyHistoryByAdmin;
+import Model.TestAdmin;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -278,6 +281,35 @@ public class CourseDao extends DBContext {
         }
         // Nếu không tìm thấy, trả về một đối tượng mặc định thay vì null
         return new Courses(0, "Unknown", "default.jpg", "No description available");
+    }
+    
+    public List<TestAdmin> getTestByCourseID(int courseId) {
+        List<TestAdmin> list = new ArrayList<>();
+        String sql = "SELECT [TestID]\n"
+                + "      ,[Name]\n"
+                + "      ,[Status]\n"
+                + "      ,[CreatedBy]\n"
+                + "      ,[CourseID]\n"
+                + "  FROM [dbo].[Test]\n"
+                + "  Where [CourseID] = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, courseId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                TestAdmin m = new TestAdmin(
+                            rs.getInt("TestID"),
+                            rs.getString("Name"),
+                            rs.getInt("Status"),
+                            rs.getString("CreatedBy"),
+                            rs.getInt("CourseID")
+                    );
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
     }
 
     public List<Courses> getFilteredCourses(String category, String priceOrder, String ratingOrder, int offset, int limit) {
