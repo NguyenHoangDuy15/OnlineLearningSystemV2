@@ -415,7 +415,6 @@
 
         <aside class="sidebar" id="sidebar">
             <div class="dashboard-actions">
-                <h2>Dashboard</h2>
                 <div class="button-group">
                     <button id="viewOwnerTestBtn" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet'">View Owner Test</button>
                     <button id="viewOwnerCourseBtn" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet'">View Owner Course</button>

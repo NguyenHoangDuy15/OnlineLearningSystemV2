@@ -284,7 +284,8 @@
                        
                         <a href="ViewBlog" class="nav-item nav-link">Blog</a>
                          <%
-                        if (roleId != null && roleId == 2) {
+                            Boolean isExpert = (Boolean) session.getAttribute("isExpert");
+                            if (isExpert != null && isExpert) {
                         %>
                         <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
                         <%

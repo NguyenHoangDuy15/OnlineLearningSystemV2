@@ -108,6 +108,7 @@ public class LoginServlet extends HttpServlet {
             } else if (a.getRoleID() == 2) {
                 sec.setAttribute("expert", a.getRoleID());
                 response.sendRedirect("ShowexpertServlet");
+                sec.setAttribute("isExpert", true);
             } else if (a.getRoleID() == 3) {
                 sec.setAttribute("sale", a.getRoleID());
                 response.sendRedirect("viewownerbloglist");

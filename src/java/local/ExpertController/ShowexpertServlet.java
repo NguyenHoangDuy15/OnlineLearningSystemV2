@@ -7,6 +7,7 @@ package local.ExpertController;
 import Model.CourseEX;
 import Model.Expert;
 import Model.TestEX;
+import Model.User;
 import dal.CourseEXDAO;
 import dal.ExpertDao;
 import dal.LessonEXDAO;
@@ -66,22 +67,21 @@ public class ShowexpertServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         Integer userID = (Integer) session.getAttribute("userid");
         Integer role = (Integer) session.getAttribute("rollID");
         String username = (String) session.getAttribute("username");
         String fullName = (String) session.getAttribute("Fullname");
-
-        if (userID == null || role == null || role != 2) {
-            response.sendRedirect("login");
+         User user = (User) session.getAttribute("account");
+         if (user == null || user.getRoleID() != 2) {
+            response.sendRedirect("LoginServlet");
             return;
         }
-
         CourseEXDAO courseDao = new CourseEXDAO();
         List<CourseEX> courses = courseDao.getCourseByUserId(userID);
         request.setAttribute("courses", courses);
          TestEXDAO testDAO = new TestEXDAO();
-        List<TestEX> tests = testDAO.getTestsByCreatorFullName(role);
+        List<TestEX> tests = testDAO.getTestsByCreatorFullName(userID);
 
         request.setAttribute("tests", tests);
         
