@@ -508,7 +508,7 @@
 
         <div id="welcome" class="welcome active">
             <h2>Welcome to Expert Dashboard, <%= fullName != null ? fullName : "Expert" %></h2>
-            <img src="https://png.pngtree.com/png-clipart/20200701/original/pngtree-online-education-at-home-png-image_5418278.jpg" 
+            <img src="https://i.pinimg.com/736x/88/96/07/889607b6dd0ad7b32fa56d3ad75b393a.jpg" 
                  alt="Welcome Image" class="welcome-image">
         </div>
 
