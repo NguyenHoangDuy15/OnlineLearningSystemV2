@@ -1,5 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,26 +24,117 @@
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
         <style>
-            /* Giá»¯ nguyÃªn pháº§n CSS cá»§a báº¡n */
             .experts-list-item {
                 width: 100%;
-                max-width: 320px;
-                height: 500px;
+                max-width: 320px; /* ??m b?o chi?u r?ng c? ??nh */
+                height: 500px; /* ??m b?o chi?u cao c? ??nh */
                 margin: auto;
                 overflow: hidden;
-                border-radius: 15px;
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                background-color: #fff;
+                border-radius: 15px; /* Bo tròn khung */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Bóng nh? */
+                transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hi?u ?ng m??t mà khi hover */
+                background-color: #fff; /* N?n tr?ng cho khung */
             }
 
             .experts-list-item:hover {
-                transform: scale(1.25);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-                border: 2px solid #0077b6;
+                transform: scale(1.25); /* Phóng to khung khi hover */
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Bóng ??m h?n khi hover */
+                border: 2px solid #0077b6; /* Vi?n xanh khi hover */
             }
 
-            /* ... (CÃ¡c pháº§n CSS khÃ¡c giá»¯ nguyÃªn) ... */
+            .experts-list-item img {
+                width: 100%;
+                height: 280px; /* T?ng chi?u cao ?nh ?? l?p ??y kho?ng tr?ng */
+                object-fit: cover;
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+                margin-top: 10px; /* Di chuy?n ?nh xu?ng d??i m?t chút */
+            }
+
+            .experts-text {
+                padding: 15px;
+                height: 220px; /* Gi?m chi?u cao ph?n n?i dung ?? cân ??i v?i ?nh */
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .experts-text h4 {
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+                color: #333; /* Màu ch? ??m h?n */
+            }
+
+            .experts-text h6 {
+                font-size: 0.9rem;
+                color: #555;
+                margin-bottom: 5px;
+            }
+
+            .experts-text ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                max-height: 80px; /* Gi?m chi?u cao danh sách ?? cân ??i */
+                overflow-y: auto;
+                font-size: 0.85rem;
+                color: #666;
+            }
+
+            .experts-text ul li {
+                margin-bottom: 5px;
+            }
+
+            .experts-text .border-top {
+                border-top: 1px solid #eee;
+                padding-top: 10px;
+            }
+
+            .experts-text .d-flex {
+                gap: 10px; /* Kho?ng cách gi?a các bi?u t??ng m?ng xã h?i */
+            }
+
+            .experts-text .d-flex a {
+                color: #555;
+                transition: color 0.3s ease;
+            }
+
+            .experts-text .d-flex a:hover {
+                color: #0077b6; /* Màu xanh khi hover vào bi?u t??ng */
+            }
+
+            /* ?i?u ch?nh kho?ng cách gi?a các khung */
+            .col-lg-4.col-md-6.pb-4 {
+                padding: 10px; /* Gi?m padding ?? các khung g?n nhau h?n */
+            }
+
+            /* CSS cho phân trang */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            .pagination a {
+                margin: 0 5px;
+                padding: 8px 16px;
+                text-decoration: none;
+                border: 1px solid #ddd;
+                color: #0077b6;
+                border-radius: 20px; /* Bo tròn button */
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            .pagination a.active {
+                background-color: #0077b6;
+                color: white;
+                border: 1px solid #0077b6;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #e6f0fa; /* Màu n?n nh? khi hover */
+                color: #005f8b; /* Màu ch? ??m h?n khi hover */
+            }
         </style>
     </head>
     <body>
@@ -112,36 +202,40 @@
                 <div class="row">
                     <c:choose>
                         <c:when test="${not empty searchResults}">
-                            <!-- Hiá»ƒn thá»‹ káº¿t quáº£ tÃ¬m kiáº¿m -->
+                            <!-- Hi?n th? k?t qu? tìm ki?m -->
                             <c:forEach items="${searchResults}" var="e">
                                 <div class="col-lg-4 col-md-6 pb-4">
                                     <div class="experts-list-item position-relative d-block overflow-hidden mb-2">
                                         <img class="img-fluid" src="${e.avartar}" alt="${e.fullName}">
                                         <div class="experts-text">
                                             <h4 class="text-center text-dark px-3">${e.fullName}</h4>
-                                            <!-- Hiá»ƒn thá»‹ sao rating -->
+                                            <!-- Hi?n th? sao rating -->
                                             <div class="text-center mb-2">
-                                                <c:forEach begin="1" end="5" var="i">
-                                                    <c:choose>
-                                                        <c:when test="${e.avgRating >= i}">
-                                                            <i class="fas fa-star" style="color: #f1c40f;"></i>
-                                                        </c:when>
-                                                        <c:when test="${e.avgRating >= i - 0.5}">
-                                                            <i class="fas fa-star-half-alt" style="color: #f1c40f;"></i>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <i class="far fa-star" style="color: #f1c40f;"></i>
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                <c:set var="rating" value="${e.avgRating}"/>
+                                                <c:set var="fullStars" value="${Math.floor(rating)}"/>
+                                                <c:set var="hasHalfStar" value="${rating - fullStars >= 0.5}"/>
+                                                <c:set var="emptyStars" value="${5 - Math.ceil(rating)}"/>
+
+                                                <!-- Sao ??y -->
+                                                <c:forEach begin="1" end="${fullStars}">
+                                                    <i class="fas fa-star" style="color: #f1c40f;"></i>
                                                 </c:forEach>
-                                                <span>(${e.avgRating})</span>
+                                                <!-- Sao n?a -->
+                                                <c:if test="${hasHalfStar}">
+                                                    <i class="fas fa-star-half-alt" style="color: #f1c40f;"></i>
+                                                </c:if>
+                                                <!-- Sao r?ng -->
+                                                <c:forEach begin="1" end="${emptyStars}">
+                                                    <i class="far fa-star" style="color: #f1c40f;"></i>
+                                                </c:forEach>
+                                                <span>(${rating})</span>
                                             </div>
                                             <div class="text-center">
                                                 <h6>Courses:</h6>
                                                 <ul style="list-style-type: none; padding: 0;">
                                                     <c:forEach items="${e.courseNames}" var="course">
                                                         <li>${course}</li>
-                                                    </c:forEach>
+                                                        </c:forEach>
                                                 </ul>
                                             </div>
                                         </div>
@@ -150,37 +244,44 @@
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <!-- Hiá»ƒn thá»‹ táº¥t cáº£ Experts -->
+                            <!-- Hi?n th? t?t c? Experts -->
                             <c:forEach items="${experts}" var="e">
                                 <div class="col-lg-4 col-md-6 pb-4">
                                     <div class="experts-list-item position-relative d-block overflow-hidden mb-2">
                                         <img class="img-fluid" src="${e.avartar}" alt="${e.fullName}">
                                         <div class="experts-text">
                                             <h4 class="text-center text-dark px-3">${e.fullName}</h4>
-                                            <!-- Hiá»ƒn thá»‹ sao rating -->
+                                            <!-- Hi?n th? sao rating -->
                                             <div class="text-center mb-2">
-                                                <c:forEach begin="1" end="5" var="i">
-                                                    <c:choose>
-                                                        <c:when test="${e.avgRating >= i}">
-                                                            <i class="fas fa-star" style="color: #f1c40f;"></i>
-                                                        </c:when>
-                                                        <c:when test="${e.avgRating >= i - 0.5}">
-                                                            <i class="fas fa-star-half-alt" style="color: #f1c40f;"></i>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <i class="far fa-star" style="color: #f1c40f;"></i>
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                <c:set var="rating" value="${e.avgRating}"/>
+                                                <c:set var="fullStars" value="${Math.floor(rating)}"/>
+                                                <c:set var="hasHalfStar" value="${rating - fullStars >= 0.5}"/>
+                                                <c:set var="emptyStars" value="${5 - Math.ceil(rating)}"/>
+
+                                                <!-- Sao ??y -->
+                                                <c:forEach begin="1" end="${fullStars}">
+                                                    <i class="fas fa-star" style="color: #f1c40f;"></i>
                                                 </c:forEach>
-                                                <span>(${e.avgRating})</span>
+                                                <!-- Sao n?a -->
+                                                <c:if test="${hasHalfStar}">
+                                                    <i class="fas fa-star-half-alt" style="color: #f1c40f;"></i>
+                                                </c:if>
+                                                <!-- Sao r?ng -->
+                                                <c:forEach begin="1" end="${emptyStars}">
+                                                    <i class="far fa-star" style="color: #f1c40f;"></i>
+                                                </c:forEach>
+                                                <span>(${rating})</span>
                                             </div>
                                             <div class="text-center">
                                                 <h6>Courses:</h6>
                                                 <ul style="list-style-type: none; padding: 0;">
                                                     <c:forEach items="${e.courseNames}" var="course">
                                                         <li>${course}</li>
-                                                    </c:forEach>
+                                                        </c:forEach>
                                                 </ul>
+                                            </div>
+                                            <div class="border-top w-100 mt-3">
+
                                             </div>
                                         </div>
                                     </div>
@@ -195,17 +296,19 @@
                     </c:if>
                 </div>
 
-                <!-- PhÃ¢n trang -->
+                <!-- Phân trang -->
                 <c:if test="${totalPages > 1}">
                     <div class="pagination">
                         <c:if test="${currentPage > 1}">
                             <a href="Expert?page=${currentPage - 1}&category=${selectedCategory}&ratingOrder=${selectedRatingOrder}&search=${keyword}&searchSubmitted=${param.searchSubmitted}">Previous</a>
+
                         </c:if>
                         <c:forEach begin="1" end="${totalPages}" var="i">
                             <a href="Expert?page=${i}&category=${selectedCategory}&ratingOrder=${selectedRatingOrder}&search=${keyword}&searchSubmitted=${param.searchSubmitted}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                         </c:forEach>
                         <c:if test="${currentPage < totalPages}">
                             <a href="Expert?page=${currentPage + 1}&category=${selectedCategory}&ratingOrder=${selectedRatingOrder}&search=${keyword}&searchSubmitted=${param.searchSubmitted}">Next</a>
+
                         </c:if>
                     </div>
                 </c:if>
@@ -213,9 +316,12 @@
         </div>
         <!-- Experts End -->
 
+
+    
         <%@ include file="footer.jsp" %>
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
 
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -227,13 +333,19 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-
-        <!-- Chatbot Widget -->
-        <c:if test="${not empty sessionScope.userid}">
-            <iframe 
-                src="jsp/chatbot-widget.jsp" 
-                style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
-            </iframe>
-        </c:if>
+        <% 
+            // Không khai báo l?i, ch? gán giá tr?
+            userId = (Integer) session.getAttribute("userid");
+    
+            // Ki?m tra n?u userId t?n t?i (khác null)
+            if (userId != null) {
+        %>
+        <iframe 
+            src="jsp/chatbot-widget.jsp" 
+            style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
+        </iframe>
+        <% 
+            } 
+        %>
     </body>
 </html>
