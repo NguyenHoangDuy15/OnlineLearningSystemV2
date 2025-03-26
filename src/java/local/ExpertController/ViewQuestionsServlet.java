@@ -27,14 +27,11 @@ public class ViewQuestionsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // Lấy testId từ request
-            int testId = Integer.parseInt(request.getParameter("testId"));
 
-            // Lấy danh sách câu hỏi và thông tin bài test
+            int testId = Integer.parseInt(request.getParameter("testId"));
             List<QuestionEX> questions = questionDAO.getQuestionsByTestId(testId);
             TestEX test = testDAO.getTestById(testId);
 
-            // Đặt các thuộc tính vào request
             request.setAttribute("questions", questions);
             request.setAttribute("test", test);
 

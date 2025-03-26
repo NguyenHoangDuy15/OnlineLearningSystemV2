@@ -370,7 +370,7 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 -- Java Courses
 
 
-(N'Java for Beginners', N'Java for Beginners is an ideal course for those new to Java programming. It covers fundamental concepts, including setting up the environment, variables, data types, loops, conditions, and object-oriented programming (OOP). You will learn how to create and use classes, objects, inheritance, polymorphism, and exception handling. The course also introduces Java Collections, database connectivity (JDBC), and web application development using JSP and Servlets. This is a valuable resource for building a strong foundation in Java and preparing for professional software development.', 150000,'https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/lap-trinh-java-for-beginner-63739300179.8416.jpg', 3, 1, GETDATE(),4),
+(N'Java for Beginners', N'Java for Beginners is an ideal course for those new to Java programming. It covers fundamental concepts, including setting up the environment, variables, data types, loops, conditions, and object-oriented programming (OOP). You will learn how to create and use classes, objects, inheritance, polymorphism, and exception handling. The course also introduces Java Collections, database connectivity (JDBC), and web application development using JSP and Servlets. This is a valuable resource for building a strong foundation in Java and preparing for professional software development.', 150000,'https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/lap-trinh-java-for-beginner-63739300179.8416.jpg', 2, 1, GETDATE(),4),
 (N'Advanced Java Development', N'Advanced Java Development is designed for experienced Java programmers looking to deepen their skills. This course covers advanced topics such as multi-threading, concurrency, design patterns, and JVM internals. You will explore Java EE, including Servlets, JSP, Spring Framework, and RESTful APIs. Additionally, it introduces enterprise-level solutions like microservices, message queues, and security best practices. With hands-on projects and real-world scenarios, this course helps developers master Java for large-scale applications and professional software development.', 180000,'https://skilltechacademy.in/wp-content/uploads/2024/07/advanced-java-online-training-1024x585.jpeg' , 2, 1, GETDATE(),4),
 (N'Java Spring Boot Web Development', N'Java Spring Boot Web Development is a comprehensive guide for building modern web applications using the Spring Boot framework. This course covers core Spring concepts such as dependency injection, MVC architecture, RESTful APIs, and database integration with JPA and Hibernate. You will also explore security mechanisms, authentication, and deployment strategies. With hands-on projects, you will learn how to create scalable, high-performance web applications while following industry best practices.', 200000,'https://www.adm.ee/wordpress/wp-content/uploads/2023/12/Spring-768x512.png', 2, 1, GETDATE(),4),
 -- Python Courses
@@ -531,11 +531,11 @@ INSERT INTO [dbo].[Test] ([Name],  [CreatedBy],[CourseID])
 VALUES ('Final test','Hoàng Công Ninh', 1),
 ('Final test',N'Hoàng Công Ninh', 2),
 ('Final Test',N'Hoàng Công Ninh', 3),
-('Final test',N'Hoàng Công Ninh', 4),
+('Final test',N'Nguyễn Đức Việt', 4),
 ('Final test',N'Hoàng Công Ninh', 5),
-('Final test',N'Nguyễn Thị Mai', 6),
-('Final test',N'Nguyễn Đức Việt', 7),
-('Final test',N'Lê Thị Hồng Ngọc', 8),
+('Final test',N'Nguyễn Đức Việt', 6),
+('Final test',N' Hồ Thị Thanh Phương', 7),
+('Final test',N'Hoàng Công Ninh', 8),
 ('Final test',N'Hà Anh Tài', 9);
 -- Insert questions into the Question table with TestID = 1
 INSERT INTO Question (QuestionType, QuestionContent, OptionA, OptionB, OptionC, OptionD, TestID) 
@@ -924,3 +924,6 @@ VALUES
 ('B', 241), ('A', 242), ('B', 243), ('A', 244), ('A', 245), ('B', 246), ('A', 247), ('A', 248), ('A', 249), ('B', 250),
 ('D', 251), ('A', 252), ('A', 253), ('D', 254), ('A', 255), ('C', 256), ('A', 257), ('B', 258), ('A', 259), ('B', 260),
 ('B', 261), ('D', 262), ('B', 263), ('A', 264), ('B', 265), ('B', 266), ('B', 267), ('A', 268), ('B', 269), ('D', 270);
+Insert into Requests(RequestedRole, UserID)
+VALUES(3,6),
+(2,10);

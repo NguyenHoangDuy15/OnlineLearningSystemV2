@@ -70,8 +70,6 @@ public class Role extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
-
-        // Kiểm tra nếu người dùng chưa đăng nhập
         if (userId == null) {
             response.sendRedirect("LoginServlet");
             return;

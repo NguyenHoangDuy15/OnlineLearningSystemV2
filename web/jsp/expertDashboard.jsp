@@ -19,6 +19,7 @@
     User user = (User) session.getAttribute("account");
     Usernew userNew = null;
     Integer userId = (Integer) session.getAttribute("userid");
+    Integer roleId = (Integer) session.getAttribute("rollID");
     Integer registeredCourses = (Integer) session.getAttribute("registeredCourses");
     Integer completedCourses = (Integer) session.getAttribute("completedCourses");
     int enrollmentCount = (registeredCourses != null) ? registeredCourses : 0;
@@ -43,6 +44,7 @@
             --accent-green: #2ECC71;
             --accent-red: #E74C3C;
             --text-dark: #333333;
+            --text-light: #6c757d;
             --background: #FFFFFF;
             --border: #E0E0E0;
             --shadow: rgba(0, 0, 0, 0.1);
@@ -67,6 +69,23 @@
             padding: 0;
         }
 
+        /* Topbar */
+        .topbar {
+            background: linear-gradient(90deg, #007bff, #00c6ff);
+            padding: 10px 0;
+        }
+
+        .topbar .text-white {
+            color: #fff !important;
+            font-size: 0.9rem;
+        }
+
+        .topbar a:hover i {
+            color: #ffeb3b;
+            transition: color 0.3s ease;
+        }
+
+        /* Navbar */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px 0;
@@ -74,6 +93,7 @@
         }
 
         .navbar-brand h3 {
+            font-family: 'Jost', sans-serif;
             font-weight: 700;
             color: #007bff;
             transition: color 0.3s ease;
@@ -93,6 +113,7 @@
             color: #007bff !important;
         }
 
+        /* Avatar */
         .avatar {
             width: 50px;
             height: 50px;
@@ -124,30 +145,45 @@
             color: var(--primary);
         }
 
+        /* Dropdown Menu */
         .dropdown-menu {
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #fff;
             border: none;
-            padding: 16px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             min-width: 300px;
-            background-color: var(--background);
+            padding: 0;
+            animation: fadeIn 0.3s ease;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dropdown Header */
         .dropdown-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 8px;
+            gap: 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
         }
 
         .dropdown-header img {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary);
+            border: 2px solid #007bff;
         }
 
         .dropdown-header .user-info {
@@ -155,59 +191,137 @@
         }
 
         .dropdown-header .user-info h6 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-dark);
             margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
         }
 
         .dropdown-header .user-info p {
-            font-size: 12px;
-            color: var(--text-light);
-            margin: 4px 0 8px 0;
+            margin: 0;
+            font-size: 0.85rem;
+            color: #6c757d;
         }
 
         .dropdown-header .btn-view-profile {
-            display: inline-block;
-            padding: 6px 12px;
-            background: var(--gradient-primary);
-            color: #FFFFFF;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
+            background: #6f42c1;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
 
         .dropdown-header .btn-view-profile:hover {
-            background: linear-gradient(90deg, #357ABD, #4A90E2);
-            transform: translateY(-1px);
+            background: #563d7c;
+            transform: translateY(-2px);
         }
 
-        .dropdown-item {
+        /* Stats Section */
+        .dropdown-stats {
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .stat-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 12px;
-            font-size: 14px;
-            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 12px;
             border-radius: 8px;
-            transition: background-color 0.3s ease;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-item i {
+            font-size: 1.2rem;
+        }
+
+        .stat-item.enrollments i {
+            color: #007bff;
+        }
+
+        .stat-item.completed i {
+            color: #28a745;
+        }
+
+        .stat-item .tooltip-text {
+            visibility: hidden;
+            width: 150px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-item:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Dropdown Items */
+        .dropdown-item {
+            color: #1a1a1a;
+            font-weight: 500;
+            padding: 10px 20px;
+            transition: background 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
         }
 
         .dropdown-item:hover {
-            background-color: var(--secondary);
+            background: #007bff;
+            color: #fff !important;
+            padding-left: 25px;
+        }
+
+        .dropdown-item.active {
+            background: #007bff;
+            color: #fff !important;
         }
 
         .dropdown-item i {
-            font-size: 16px;
-            color: var(--text-light);
+            margin-right: 8px;
         }
 
-        .dropdown-item i.fa-sign-out-alt {
-            color: var(--accent-red);
+        .dropdown-item.logout i {
+            color: #E74C3C;
         }
 
+        .btn-login {
+            background: #007bff;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: #0056b3;
+            color: #fff;
+        }
+
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0;
@@ -426,6 +540,7 @@
     </style>
 </head>
 <body>
+    <!-- Navbar Start -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <div class="hamburger" onclick="toggleSidebar()">
@@ -439,28 +554,48 @@
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav mx-auto py-0">
-                    <% if (userId != null) { %>
+                    <%
+                        if (userId != null) {
+                    %>
                     <a href="index" class="nav-item nav-link active">Home</a>
-                    <% } else { %>
+                    <%
+                        } else {
+                    %>
                     <a href="Landingpage" class="nav-item nav-link active">Home</a>
-                    <% } %>
+                    <%
+                        }
+                    %>
                     <a href="course" class="nav-item nav-link">Courses</a>
                     <div class="nav-item dropdown">
-                        <a href="Instructor" class="nav-item nav-link">Experts</a>
+                        <a href="Expert" class="nav-item nav-link">Experts</a>
                     </div>
-                   
                     <a href="ViewBlog" class="nav-item nav-link">Blog</a>
-                     <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
-                    <% Boolean isSale = (Boolean) session.getAttribute("isSale");
-                        if (isSale != null && isSale) { %>
+                    <%
+                        if (roleId != null && roleId == 2) {
+                    %>
+                    <a href="ShowexpertServlet" class="nav-item nav-link">ExpertPage</a>
+                    <%
+                        }
+                    %>
+                    <%
+                        Boolean isSale = (Boolean) session.getAttribute("isSale");
+                        if (isSale != null && isSale) {
+                    %>
                     <a href="viewownerbloglist" class="nav-item nav-link">Manage Blogs</a>
-                    <% } %>
+                    <%
+                        }
+                    %>
                 </div>
-                <% Boolean isLoggedIn = (Boolean) session.getAttribute("isLoggedIn");
-                    if (isLoggedIn != null && isLoggedIn) { %>
+
+                <%
+                    Boolean isLoggedIn = (Boolean) session.getAttribute("isLoggedIn");
+                    if (isLoggedIn != null && isLoggedIn) {
+                %>
+                <!-- Avatar Dropdown -->
                 <div class="dropdown">
                     <img name="btnAvar" src="<%= userNew.getAvatar() %>" alt="Avatar" class="avatar" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
+                        <!-- Header with User Info -->
                         <li class="dropdown-header">
                             <img src="<%= userNew.getAvatar() %>" alt="Avatar">
                             <div class="user-info">
@@ -469,25 +604,63 @@
                             </div>
                             <a href="ViewProfile" class="btn-view-profile" name="btn-view-profile">View profile</a>
                         </li>
-                        <li><a class="dropdown-item" href="myenrollment"><i class="fas fa-book mr-2"></i> My Enrollments</a></li>
-                        <li><a class="dropdown-item" href="Mycourses"><i class="fas fa-check-circle mr-2"></i> My Courses</a></li>
-                        <li><a class="dropdown-item" href="ChangePasswordServlet"><i class="fas fa-lock mr-2"></i> Change Password</a></li>
-                        <li><a class="dropdown-item" href="Historytransaction"><i class="fas fa-history mr-2"></i> History of Transaction</a></li>
-                        <li><a class="dropdown-item" href="Role"><i class="fas fa-user-tie mr-2"></i> Become Expert or Sale</a></li>
-                        <li><a class="dropdown-item" href="Request"><i class="fas fa-hourglass-half mr-2"></i> Wait for Approval</a></li>
-                        <li><a class="dropdown-item" href="LogoutServlet"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a></li>
+                        <!-- Stats -->
+                        <li class="dropdown-stats">
+                            <div class="stat-item enrollments">
+                                <a href="myenrollment" style="text-decoration: none; color: inherit;">
+                                    <i class="fas fa-book"></i> My Enrollments: <%= enrollmentCount %>
+                                    <span class="tooltip-text">Bạn đã đăng ký <%= enrollmentCount %> khóa học</span>
+                                </a>
+                            </div>
+                            <div class="stat-item completed">
+                                <a href="Mycourses" style="text-decoration: none; color: inherit;">
+                                    <i class="fas fa-check-circle"></i> My Courses: <%= completedCoursesCount %>
+                                    <span class="tooltip-text">Bạn đã hoàn thành <%= completedCoursesCount %> khóa học</span>
+                                </a>
+                            </div>
+                        </li>
+                        <!-- Menu Items -->
+                        <li>
+                            <a name="btncp" class="dropdown-item" href="ChangePasswordServlet">
+                                <i class="fas fa-lock"></i> Change Password
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="Historytransaction">
+                                <i class="fas fa-history"></i> History of Transaction
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="Role">
+                                <i class="fas fa-user-tie"></i> Become Expert or Sale
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="Request">
+                                <i class="fas fa-hourglass-half"></i> Wait for Approval
+                            </a>
+                        </li>
+                        <li>
+                            <a name="btnlg" class="dropdown-item logout" href="LogoutServlet">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                <% } else { %>
+                <%
+                    } else {
+                %>
                 <a name="btnlogin" href="LoginServlet" class="btn btn-login py-2 px-4 d-none d-lg-block">Login</a>
-                <% } %>
+                <%
+                    }
+                %>
             </div>
         </nav>
     </div>
+    <!-- Navbar End -->
 
     <aside class="sidebar" id="sidebar">
         <div class="dashboard-actions">
-            <h2>Dashboard</h2>
             <div class="button-group">
                 <button id="viewOwnerTestBtn" class="btn btn-primary">View Owner Test</button>
                 <button id="viewOwnerCourseBtn" class="btn btn-primary">View Owner Course</button>
@@ -680,6 +853,22 @@
 
             returnFromTests.addEventListener('click', () => {
                 showWelcome();
+            });
+
+            // Thêm hiệu ứng click cho dropdown items
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Thêm hiệu ứng click cho stat items
+            document.querySelectorAll('.stat-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
+                    this.style.background = '#e6f0ff';
+                });
             });
 
             window.deleteCourse = function (courseId) {
