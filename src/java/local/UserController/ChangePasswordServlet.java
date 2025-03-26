@@ -96,7 +96,7 @@ public class ChangePasswordServlet extends HttpServlet {
                 pass = MaHoa.toSHA1(pass);
                 d.changePass(pass, a.getUserID());
                 //session.invalidate();
-                request.getRequestDispatcher("jsp/Landingpage.jsp").forward(request, response);
+                request.getRequestDispatcher("LoginServlet").forward(request, response);
             } else {
                 request.setAttribute("err", "Password or re-password invalid");
                 request.setAttribute("oldpassword", oldpass);

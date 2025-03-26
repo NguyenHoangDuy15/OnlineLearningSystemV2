@@ -523,6 +523,19 @@ Hệ thống lớn & tài chính: Java, C++, Go, Rust.',
            ,5
            ,'Good'
            ,GETDATE())
+		   
+	 INSERT INTO [dbo].[Feedbacks]
+           ([UserID]
+           ,[CourseID]
+           ,[Rating]
+           ,[Comment]
+           ,[CreatedAt])
+     VALUES
+           (6
+           ,5
+           ,5
+           ,'Good'
+           ,GETDATE())
 INSERT INTO [dbo].[Feedbacks]
            ([UserID]
            ,[CourseID]
@@ -532,6 +545,18 @@ INSERT INTO [dbo].[Feedbacks]
      VALUES
            (2
            ,2
+           ,4
+           ,'Well'
+           ,GETDATE())
+		   INSERT INTO [dbo].[Feedbacks]
+           ([UserID]
+           ,[CourseID]
+           ,[Rating]
+           ,[Comment]
+           ,[CreatedAt])
+     VALUES
+           (2
+           ,7
            ,4
            ,'Well'
            ,GETDATE())
@@ -547,14 +572,29 @@ INSERT INTO [dbo].[Feedbacks]
            ,4
            ,'Fantastic'
            ,GETDATE())
-
+INSERT INTO [dbo].[Feedbacks]
+           ([UserID]
+           ,[CourseID]
+           ,[Rating]
+           ,[Comment]
+           ,[CreatedAt])
+     VALUES
+           (4
+           ,9
+           ,4
+           ,'Fantastic'
+           ,GETDATE())
 		   INSERT INTO Payment (UserID, CourseID, Amount) VALUES 
 (6, 1, 150000),  -- Java Spring Boot Web Development
 (2, 2, 180000),
 
 (4, 3, 200000)
+		   INSERT INTO Payment (UserID, CourseID, Amount) VALUES 
+(6, 5, 190000),  -- Java Spring Boot Web Development
+(2, 7, 110000),
 
-
+(4, 9, 200000)
+select * from Courses
 -- Data Science with Python
 -- Giao dịch cho khóa học "Java Spring Boot Web Development"
 INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) 
@@ -564,7 +604,13 @@ VALUES (2, 1, GETDATE(), 2,  GETDATE());
 -- Giao dịch cho khóa học "Data Science with Python"
 INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID,  PaymentDate) 
 VALUES (3, 1, GETDATE(), 3, GETDATE());
-
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) 
+VALUES (4, 1, GETDATE(), 5, GETDATE());
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) 
+VALUES (5, 1, GETDATE(), 7,  GETDATE());
+-- Giao dịch cho khóa học "Data Science with Python"
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID,  PaymentDate) 
+VALUES (6, 1, GETDATE(), 9, GETDATE());
 
 -- Insert test
 
@@ -978,6 +1024,16 @@ INSERT INTO [dbo].[Enrollments]
            ,1
            ,1
            ,GETDATE())
+		   INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (6
+           ,5
+           ,1
+           ,GETDATE())
 INSERT INTO [dbo].[Enrollments]
            ([UserID]
            ,[CourseID]
@@ -994,9 +1050,28 @@ INSERT INTO [dbo].[Enrollments]
            ,[Status]
            ,[EnrolledAt])
      VALUES
+           (2
+           ,7
+           ,1
+           ,GETDATE());
+		   INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
            (4
            ,3
            ,1
            ,GETDATE());
-
-		
+		    INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (4
+           ,9
+           ,1
+           ,GETDATE());
+		 

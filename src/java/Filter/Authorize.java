@@ -29,36 +29,53 @@ import java.util.List;
 public class Authorize implements Filter {
 
     private static final List<String> ADMIN_ALLOW = Arrays.asList(
-            "/jsp/", "/ChangeUserForAdmin", "/ListofBlogByAdmin.jsp", "/ListofBlogByAdmin.jsp",
+            "/jsp/", "/ChangeUserForAdmin.jsp", "/ListofBlogByAdmin.jsp", "/ListofBlogByAdmin.jsp",
             "/ListOfCourseRequestByAdmin.jsp", "/ListOfCourseByAdmin.jsp", "/ListOfExpert.jsp", "/ListOfFeedbackByAdmin.jsp",
             "/ListOfMoneyHistoryByAdmin.jsp", "/ListOfRequestByAdmin.jsp", "/ListOfSeller.jsp", "/ListOfUserByAdmin.jsp",
-            "/dashboard.jsp", "/navbar-header.jsp", "/sidebarManager.jsp", "/addNewUser.jsp","/changePassword.jsp"
+            "/dashboard.jsp", "/navbar-header.jsp", "/sidebarManager.jsp", "/addNewUser.jsp", "/changePassword.jsp", "/DeleteFeedbackByAdminServlet",
+            "/AddNewUserServlet", "/ChangeUserForAdminServlet", "/DeleteBlogByAdminServlet", "/DeleteRequestServlet", "/DeleteUserByAdminServlet", "/DenyCourse",
+            "/ListBlogByAdminServlet", "/ListOfCourseByAdminServlet", "/ListOfCourseRequestByAdminServlet", "/ListOfSellerServlet", "/ListOfFeedbackByAdminServlet",
+            "/ListOfRequestByAdminServlet", "/ListOfExpertServlet", "/ListOfTopCourseByAdminServlet", "/ListOfUserByAdminServlet",
+            "/ListTranscriptByAdminServlet", "/SearchExpertByAdminServlet", "/SearchSellerByAdminServlet", "/SearchUserByAdminServlet", "ShowAdminDasboardServlet",
+            "/ShowCourseDetailByAdmin", "/UpdateRoleCourse", "/UpdateRoleUserServlet", "/showDetailTestByAdmin","/ChangePasswordServlet"
     );
 
     private static final List<String> EXPERT_ALLOW = Arrays.asList(
             "/jsp/", "/Certificate.jsp", "/Dotest.jsp", "/Error.jsp",
             "/ReviewTest.jsp", "/Role.jsp", "/chatbot-widget.jsp", "/PaymentVN.jsp", "/Request.jsp", "/Result.jsp",
-            "/changePassword.jsp", "/course.jsp", "/Role.jsp", "/detail.jsp", "/enrollment.jsp", "/header.jsp", "/footer.jsp",
-            "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp", "/Instructor.jsp",
-            "/viewblog.jsp", "/error1.jsp", "/courseDetails.jsp", "/editLesson.jsp", "/NoticeJSP.jsp", "/CreateTest.jsp",
-            "/expertDashboard.jsp", "/editTest.jsp", "/ViewCourse.jsp", "/viewQuestions.jsp", "/viewTests.jsp",
-            "/createCourse.jsp", "/test.jsp"
+            "/changePassword.jsp",  "/Role.jsp",  "/enrollment.jsp", 
+            "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp", 
+           "/error1.jsp", "/courseDetails.jsp", "/editLesson.jsp", "/NoticeJSP.jsp", "/CreateTest.jsp",
+            "/expertDashboard.jsp", "/editTest.jsp", "/ViewCourse.jsp", "/viewQuestions.jsp", "/viewTests.jsp", "/CourseServlet",
+            "/createCourse.jsp", "/test.jsp", "/DownloadCertificateServlet", "/Certificatecontroller",
+            "/ChatbotServlet", "/ChangePasswordServlet",  "/Feedbackcontroller", "/Historytransaction", 
+            "/Lessonservlet", "/Mycourses", "/myenrollment", "/Request", "/enrollment.jsp", "/Role", "/ReviewTest",
+            "/TestAnswer", "/VNPAYReturnServlet", "/VNPAYServlet", "/ViewProfile",  "/index",
+            "/NoticeServlet", "/QuestionController", "/RequestServlet", "/ShowexpertServlet", "/TestServlet",
+            "/ViewCourse", "/ViewQuestionsServlet", "/ViewTest", "/createCourse"
     );
 
     private static final List<String> SALE_ALLOW = Arrays.asList(
             "/jsp/", "/Certificate.jsp", "/Dotest.jsp", "/Error.jsp",
             "/ReviewTest.jsp", "/Role.jsp", "/chatbot-widget.jsp", "/PaymentVN.jsp", "/Request.jsp", "/Result.jsp",
-            "/changePassword.jsp", "/course.jsp", "/Role.jsp", "/detail.jsp", "/enrollment.jsp", "/header.jsp", "/footer.jsp",
+            "/changePassword.jsp", "/Role.jsp", "/detail.jsp", "/enrollment.jsp", 
             "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp",
-            "/createblog.jsp", "/updateblog.jsp", "/viewownerbloglist.jsp", "/Instructor.jsp",
-            "/viewblog.jsp"
+            "/createblog.jsp", "/updateblog.jsp", "/viewownerbloglist.jsp", 
+             "/DownloadCertificateServlet", "/Certificatecontroller",
+            "/ChatbotServlet", "/ChangePasswordServlet",  "/Feedbackcontroller", "/Historytransaction", 
+            "/Lessonservlet", "/Mycourses", "/myenrollment", "/Request", "/enrollment.jsp", "/Role", "/ReviewTest",
+            "/TestAnswer", "/VNPAYReturnServlet", "/VNPAYServlet", "/ViewProfile",  "/index",
+            "/CreateBlog", "/DeleteBlog", "/EditBlog",  "/viewownerbloglist"
     );
 
     private static final List<String> CUSTOMER_ALLOW = Arrays.asList(
             "/jsp/", "/Certificate.jsp", "/Dotest.jsp", "/Error.jsp",
             "/ReviewTest.jsp", "/Role.jsp", "/chatbot-widget.jsp", "/PaymentVN.jsp", "/Request.jsp", "/Result.jsp",
-            "/changePassword.jsp", "/course.jsp", "/Role.jsp", "/detail.jsp", "/enrollment.jsp", "/header.jsp", "/footer.jsp",
-            "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp", "/Instructor.jsp"
+            "/changePassword.jsp",  "/Role.jsp",  "/enrollment.jsp", 
+            "/historytransaction.jsp", "/return.jsp", "/lessons.jsp", "/viewprofile.jsp",  "/DownloadCertificateServlet", "/Certificatecontroller",
+            "/ChatbotServlet", "/ChangePasswordServlet",  "/Feedbackcontroller", "/Historytransaction", 
+            "/Lessonservlet", "/Mycourses", "/myenrollment", "/Request", "/enrollment.jsp", "/Role", "/ReviewTest",
+            "/TestAnswer", "/VNPAYReturnServlet", "/VNPAYServlet", "/ViewProfile",  "/index"
     );
 
     private static final boolean debug = true;
