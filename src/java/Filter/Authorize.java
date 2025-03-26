@@ -32,7 +32,7 @@ public class Authorize implements Filter {
             "/jsp/", "/ChangeUserForAdmin", "/ListofBlogByAdmin.jsp", "/ListofBlogByAdmin.jsp",
             "/ListOfCourseRequestByAdmin.jsp", "/ListOfCourseByAdmin.jsp", "/ListOfExpert.jsp", "/ListOfFeedbackByAdmin.jsp",
             "/ListOfMoneyHistoryByAdmin.jsp", "/ListOfRequestByAdmin.jsp", "/ListOfSeller.jsp", "/ListOfUserByAdmin.jsp",
-            "/dashboard.jsp", "/navbar-header.jsp", "/sidebarManager.jsp", "/addNewUser.jsp"
+            "/dashboard.jsp", "/navbar-header.jsp", "/sidebarManager.jsp", "/addNewUser.jsp","/changePassword.jsp"
     );
 
     private static final List<String> EXPERT_ALLOW = Arrays.asList(
