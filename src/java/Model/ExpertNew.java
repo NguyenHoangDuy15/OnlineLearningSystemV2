@@ -1,58 +1,57 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model;
-import java.util.*;
-import java.lang.*; // day la 2 thu vien rat hay dung trong khoa hoc nay
 
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author THU UYEN
- */
 public class ExpertNew {
-     int userId;
-    String username;
-    String fullname;
+
+    int userID;
+    String userName;
+    String fullName;
     String email;
-    String avatar;
-    String courseName;
+    String avartar;
+    List<String> courseNames; // Thay courseName thành List<String>
+    String categoryName;
+    double avgRating;
 
     public ExpertNew() {
+        this.courseNames = new ArrayList<>(); // Khởi tạo danh sách
     }
 
-    public ExpertNew(int userId, String username, String fullname, String email, String avatar, String courseName) {
-        this.userId = userId;
-        this.username = username;
-        this.fullname = fullname;
+    public ExpertNew(int userID, String userName, String fullName, String email, String avartar, List<String> courseNames, String categoryName, double avgRating) {
+        this.userID = userID;
+        this.userName = userName;
+        this.fullName = fullName;
         this.email = email;
-        this.avatar = avatar;
-        this.courseName = courseName;
+        this.avartar = avartar;
+        this.courseNames = courseNames != null ? courseNames : new ArrayList<>();
+        this.categoryName = categoryName;
+        this.avgRating = avgRating;
     }
 
-    public int getUserId() {
-        return userId;
+    // Getters và Setters
+    public int getUserID() {
+        return userID;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -63,25 +62,49 @@ public class ExpertNew {
         this.email = email;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getAvartar() {
+        return avartar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvartar(String avartar) {
+        this.avartar = avartar;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public List<String> getCourseNames() {
+        return courseNames;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourseNames(List<String> courseNames) {
+        this.courseNames = courseNames != null ? courseNames : new ArrayList<>();
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public double getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(double avgRating) {
+        this.avgRating = avgRating;
     }
 
     @Override
     public String toString() {
-        return "ExpertNew{" + "userId=" + userId + ", username=" + username + ", fullname=" + fullname + ", email=" + email + ", avatar=" + avatar + ", courseName=" + courseName + '}';
+        return "ExpertNew{"
+                + "userID=" + userID
+                + ", userName='" + userName + '\''
+                + ", fullName='" + fullName + '\''
+                + ", email='" + email + '\''
+                + ", avartar='" + avartar + '\''
+                + ", courseNames=" + courseNames
+                + ", categoryName='" + categoryName + '\''
+                + ", avgRating=" + avgRating
+                + '}';
     }
-    
 }

@@ -61,10 +61,18 @@ public class Instructor extends HttpServlet {
      */    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ExpertDao expertDAL = new ExpertDao();
-        List<ExpertNew> experts = expertDAL.getExpertswCourses();
-        request.setAttribute("experts", experts);
+        ExpertDao expertDAO = new ExpertDao();
+        String category = request.getParameter("category");
+        String name = request.getParameter("name");
+        Double minRating = request.getParameter("minRating") != null ? Double.parseDouble(request.getParameter("minRating")) : null;
+        String sortOrder = request.getParameter("sortOrder"); // "asc" hoặc "desc"
+
+//        List<ExpertNew> experts = expertDAO.getExpertsWithFilters(category, name, minRating, sortOrder);
+//        request.setAttribute("experts", experts);
+
+        // Chuyển dữ liệu sang JSP
         request.getRequestDispatcher("jsp/Instructor.jsp").forward(request, response);
+
     }
 
     /**
@@ -78,7 +86,6 @@ public class Instructor extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
     }
 
     /**

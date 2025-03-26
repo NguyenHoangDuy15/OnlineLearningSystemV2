@@ -195,7 +195,7 @@ INSERT INTO [dbo].[Users]
            ,[Status])
      VALUES
            (N'Nguyễn Thị Mai'
-           ,'NinhNH123@'
+           ,'Mai123@'
            ,'abc@gmail.com'
            ,'TmluaE5IMTIzQGZ3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM=' -- NinhNH123@
            ,'https://cdn.codegym.vn/wp-content/uploads/2020/05/1.-Duong-Thi-Minh-Chau-1.png'
@@ -215,7 +215,7 @@ INSERT INTO [dbo].[Users]
            ,'Sale123@'
            ,'nguyenuyenpb68@gmail.com'
            ,'U2FsZTEyM0Bmd2VxZndlO2hmaXVkc2Zhc2RmYXNkZmFz'
-           ,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjA8mLF9lMmoWREqCbb6rT8RLp7In1x_5hlA&s'
+           ,'https://pbs.twimg.com/profile_images/1885008571907399684/cB131PSX_400x400.jpg'
            ,3
            ,1)
 INSERT INTO [dbo].[Users]
@@ -231,7 +231,7 @@ INSERT INTO [dbo].[Users]
            ,'Saler2@123'
            ,'Sale@gmail.com'
            ,'U2FsZXIyQDEyM2Z3ZXFmd2U7aGZpdWRzZmFzZGZhc2RmYXM='
-           ,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjA8mLF9lMmoWREqCbb6rT8RLp7In1x_5hlA&s'
+           ,'https://pbs.twimg.com/profile_images/1885008571907399684/cB131PSX_400x400.jpg'
            ,3
            ,1)
 INSERT INTO [dbo].[Users]
@@ -343,7 +343,7 @@ INSERT INTO [dbo].[Users]
 ,'HongNgoc101'
 ,'hongngoc@gmail.com'
 ,'TmdvYzEyM0Bmd2VxZndlO2hmaXVkc2Zhc2RmYXNkZmFz' -- Ngoc123@
-,'https://aptechcantho.cusc.vn/DesktopModules/DANHSACH/HINH/QC2018813727251.jpg'
+,'https://cdn.codegym.vn/wp-content/uploads/2022/12/1.Ta-Thu-Hang.jpg.jpg'
 ,2
 ,1)
 INSERT INTO [dbo].[Users]
