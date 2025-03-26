@@ -113,7 +113,20 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+    <% 
+        // Không khai báo l?i, ch? gán giá tr?
+        userId = (Integer) session.getAttribute("userid");
+    
+        // Ki?m tra n?u userId t?n t?i (khác null)
+        if (userId != null) {
+    %>
+    <iframe 
+        src="jsp/chatbot-widget.jsp" 
+        style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
+    </iframe>
+    <% 
+        } 
+    %>
 </body>
 
 </html>

@@ -142,6 +142,44 @@
             .course-info-link a i {
                 color: #ffd700;
             }
+            .certificate-btn {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 20px;
+                padding: 12px 20px;
+                background: linear-gradient(45deg, #ffd700, #ffaa00);
+                color: #fff;
+                text-decoration: none;
+                border-radius: 25px;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+                transition: all 0.3s ease;
+            }
+
+            .certificate-btn:hover {
+                background: linear-gradient(45deg, #ffaa00, #ffd700);
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+                color: #fff;
+            }
+
+            .certificate-btn i {
+                font-size: 1.2em;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
         </style>
     </head>
 
@@ -185,6 +223,11 @@
                     <i class="fas fa-info-circle"></i> Course Information
                 </a>
             </h5>
+            <c:if test="${status == 1}">
+                <a class="certificate-btn" href="Certificatecontroller?userid=${userid}&courseId=${courseId}">
+                    <i class="fas fa-certificate"></i> View Certificate
+                </a>
+            </c:if>
         </div>
 
         <div class="content">
@@ -239,6 +282,19 @@
                 }
             };
         </script>
-        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+        <% 
+     // Không khai báo lại, chỉ gán giá trị
+     userId = (Integer) session.getAttribute("userid");
+    
+     // Kiểm tra nếu userId tồn tại (khác null)
+     if (userId != null) {
+        %>
+        <iframe 
+            src="jsp/chatbot-widget.jsp" 
+            style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
+        </iframe>
+        <% 
+            } 
+        %>
     </body>
 </html>

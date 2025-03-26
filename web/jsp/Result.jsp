@@ -39,7 +39,7 @@
                         <div class="d-flex justify-content-center gap-3">
                             <a href="ReviewTest?historyId=${historyId}" class="btn btn-primary">History of Test</a>
                             <a href="Lessonservlet?userid=${userid}&courseId=${courseId}&historyId=${historyId}&testId=${testId}" class="btn btn-primary">Back to Course</a>
-                            <a class="btn btn-primary text-white" href="Certificatecontroller?userid=${userid}&courseId=${courseId}" style="background-color: #007bff; border-color: #007bff;">View certificate</a>
+
 
                         </div>
                     </div>
@@ -59,7 +59,7 @@
         <script src="lib/counterup/counterup.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
         <script src="js/main.js"></script>
-        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+
     </body>
 
 </html>
