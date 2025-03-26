@@ -384,20 +384,6 @@ INSERT INTO Courses (Name, Description, Price, imageCources, UserID, CategoryID,
 (N'Frontend Development with JavaScript', N'Frontend Development with JavaScript is a comprehensive course designed to equip learners with essential skills for building dynamic and interactive web applications. This course covers key JavaScript concepts, including DOM manipulation, event handling, asynchronous programming, and API integration. Students will also explore modern frontend frameworks like React or Vue.js to create responsive user interfaces. Through hands-on projects, participants will gain practical experience in developing real-world web applications. Whether you are a beginner or looking to enhance your frontend skills, this course provides the foundation needed to become a proficient JavaScript developer.', 160000, 'https://media.geeksforgeeks.org/wp-content/uploads/20240703165023/Frontend-Development-(1).webp', 2, 3, GETDATE(),1),
 (N'Backend Development with Node.js', N'Backend Development with Node.js is a hands-on course designed to teach developers how to build scalable and efficient server-side applications. This course covers fundamental Node.js concepts, including event-driven programming, asynchronous operations, and working with modules. Students will also learn how to create RESTful APIs using Express.js, interact with databases like MongoDB and PostgreSQL, and implement authentication and authorization. With practical projects and real-world examples, this course provides the necessary skills to develop modern, high-performance backend applications using Node.js.', 200000, 'https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220517005132/Why-to-Use-NodeJS-for-Backend-Development.jpg', 8, 3, GETDATE(),4);
 --Payment 
-INSERT INTO Payment (UserID, CourseID, Amount) VALUES
-(5, 1, 150000),
-(5, 2, 180000),
-(3, 3, 200000),
-(4, 1, 150000),
-(5, 2, 180000);
--- Transaction History
-
-INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) VALUES
-(1, 1, '2024-03-01 10:15:30', 1, '2024-03-01 10:16:00'),
-(2, 1, '2024-03-02 14:20:45', 2, '2024-03-02 14:21:00'),
-(3, 0, '2024-03-03 09:30:15', 3, NULL),
-(4, 1, '2024-03-04 16:45:50', 1, '2024-03-04 16:46:30'),
-(5, 1, '2024-03-05 11:10:25', 2, '2024-03-05 11:11:00');
 
 
 INSERT INTO Lessons (Title, Content, CourseID) VALUES 
@@ -523,6 +509,61 @@ Lập trình game: C#, Unity, C++ (Unreal Engine).
 Hệ thống lớn & tài chính: Java, C++, Go, Rust.', 
 	'https://topdev.vn/blog/wp-content/uploads/2020/11/top-5-ngon-ngu-lap-trinh-nen-hoc-12.jpg', '2025-03-22', 5);
 
+
+	
+	 INSERT INTO [dbo].[Feedbacks]
+           ([UserID]
+           ,[CourseID]
+           ,[Rating]
+           ,[Comment]
+           ,[CreatedAt])
+     VALUES
+           (6
+           ,1
+           ,5
+           ,'Good'
+           ,GETDATE())
+INSERT INTO [dbo].[Feedbacks]
+           ([UserID]
+           ,[CourseID]
+           ,[Rating]
+           ,[Comment]
+           ,[CreatedAt])
+     VALUES
+           (2
+           ,2
+           ,4
+           ,'Well'
+           ,GETDATE())
+INSERT INTO [dbo].[Feedbacks]
+           ([UserID]
+           ,[CourseID]
+           ,[Rating]
+           ,[Comment]
+           ,[CreatedAt])
+     VALUES
+           (4
+           ,3
+           ,4
+           ,'Fantastic'
+           ,GETDATE())
+
+		   INSERT INTO Payment (UserID, CourseID, Amount) VALUES 
+(6, 1, 150000),  -- Java Spring Boot Web Development
+(2, 2, 180000),
+
+(4, 3, 200000)
+
+
+-- Data Science with Python
+-- Giao dịch cho khóa học "Java Spring Boot Web Development"
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) 
+VALUES (1, 1, GETDATE(), 1, GETDATE());
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID, PaymentDate) 
+VALUES (2, 1, GETDATE(), 2,  GETDATE());
+-- Giao dịch cho khóa học "Data Science with Python"
+INSERT INTO TransactionHistory (PayID, Status, CreatedAt, CourseID,  PaymentDate) 
+VALUES (3, 1, GETDATE(), 3, GETDATE());
 
 
 -- Insert test
@@ -927,3 +968,35 @@ VALUES
 Insert into Requests(RequestedRole, UserID)
 VALUES(3,6),
 (2,10);
+INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (6
+           ,1
+           ,1
+           ,GETDATE())
+INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (2
+           ,2
+           ,1
+           ,GETDATE());
+		   INSERT INTO [dbo].[Enrollments]
+           ([UserID]
+           ,[CourseID]
+           ,[Status]
+           ,[EnrolledAt])
+     VALUES
+           (4
+           ,3
+           ,1
+           ,GETDATE());
+
+		
