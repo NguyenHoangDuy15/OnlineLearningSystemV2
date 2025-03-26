@@ -286,13 +286,7 @@
                             <div class="bg-light text-center p-4">
                                 <h5 class="mb-3">${course.username}</h5> <!-- Hiển thị tên giảng viên -->
                                 <p class="mb-2">${course.courseName}</p> <!-- Hiển thị tên khóa học -->
-                                <div class="d-flex justify-content-center">
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-twitter"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-instagram"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-youtube"></i></a>
-                                </div>
+
                             </div>
                         </div>
                     </c:forEach>

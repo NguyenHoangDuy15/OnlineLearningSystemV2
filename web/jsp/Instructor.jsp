@@ -316,9 +316,12 @@
         </div>
         <!-- Experts End -->
 
+
+    
         <%@ include file="footer.jsp" %>
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
 
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -330,6 +333,19 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-        <iframe src="jsp/chatbot-widget.jsp" style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;"></iframe>
+        <% 
+            // Không khai báo l?i, ch? gán giá tr?
+            userId = (Integer) session.getAttribute("userid");
+    
+            // Ki?m tra n?u userId t?n t?i (khác null)
+            if (userId != null) {
+        %>
+        <iframe 
+            src="jsp/chatbot-widget.jsp" 
+            style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
+        </iframe>
+        <% 
+            } 
+        %>
     </body>
 </html>

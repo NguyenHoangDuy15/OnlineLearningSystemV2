@@ -86,8 +86,8 @@
     </servlet>
   
     <error-page>
-        <error-code>404</error-code>
-        <location>/jsp/Error4.jsp</location>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/Error404.jsp</location>
     </error-page>
   
     <servlet-mapping>

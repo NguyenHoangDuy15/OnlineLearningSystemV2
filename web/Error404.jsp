@@ -1,16 +1,18 @@
-<%-- 
+<%--
     Document   : Error404
     Created on : Mar 26, 2025, 1:07:13 AM
     Author     : Administrator
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>404 - Page Not Found</title>
         <style>
+            /* Giữ nguyên toàn bộ CSS của bạn ở đây */
             * {
                 margin: 0;
                 padding: 0;
@@ -98,7 +100,16 @@
             <h1 class="error-code">404</h1>
             <h2>Oops! Page Not Found</h2>
             <p>It seems we've hit a dead end. The page you're looking for doesn't exist or has been moved.</p>
-            <a href="" class="btn">Back to Home</a>
+            <c:choose>
+                <c:when test="${not empty sessionScope.userid}">
+                    <!-- Nếu userId tồn tại trong session, chuyển hướng về training index -->
+                    <a href="index.jsp" class="btn">Back to Home</a>
+                </c:when>
+                <c:otherwise>
+                    <!-- Nếu không có userId hoặc session, chuyển hướng về landing page -->
+                    <a href="Langdingpage.jsp" class="btn">Back to Home</a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </body>
 </html>
