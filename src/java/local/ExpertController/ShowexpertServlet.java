@@ -73,7 +73,7 @@ public class ShowexpertServlet extends HttpServlet {
         String fullName = (String) session.getAttribute("Fullname");
 
         if (userID == null || role == null || role != 2) {
-            response.sendRedirect("login");
+            response.sendRedirect("LoginServlet");
             return;
         }
 
