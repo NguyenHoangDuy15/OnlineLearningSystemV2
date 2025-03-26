@@ -49,45 +49,77 @@ public class CustomerDao extends DBContext {
         return courses;
     }
 
-    public List<Courses> getTop5PopularCourses() {
+    public List<Courses> getTop5PopularCourses() throws SQLException {
         List<Courses> courses = new ArrayList<>();
-        String sql = "SELECT TOP 5 \n"
-                + "    c.CourseID, \n"
-                + "    c.Name AS CourseName, \n"
-                + "    c.imageCources, \n"
-                + "    u.FullName AS ExpertName, \n"
-                + "    c.Price, \n"
-                + "    c.Status, \n"
-                + "    COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS AverageRating, \n"
-                + "    COUNT(DISTINCT e.EnrollmentID) AS TotalStudents, \n"
-                + "    COUNT(DISTINCT CASE WHEN f.Status = 1 THEN f.FeedbackID END) AS TotalFeedbacks \n"
-                + "FROM Courses c \n"
-                + "INNER JOIN Users u ON c.UserID = u.UserID \n"
-                + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID \n"
-                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID \n"
-                + "WHERE c.Status = 4 \n"
-                + "GROUP BY c.CourseID, c.Name, c.imageCources, u.FullName, c.Price, c.Status \n"
-                + "ORDER BY TotalStudents DESC, TotalFeedbacks DESC;";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Courses course = new Courses();
-                course.setCourseID(rs.getInt("CourseID"));
-                course.setName(rs.getString("CourseName"));
-                course.setImage(rs.getString("imageCources"));
-                course.setExpertName(rs.getString("ExpertName"));
-                course.setPrice(rs.getFloat("Price"));
-                course.setCourseStatus(rs.getInt("Status"));
-                course.setAverageRating(rs.getDouble("AverageRating"));
-                course.setTotalenrollment(rs.getInt("TotalStudents"));
+        String sql = "WITH TopCourses AS (\n"
+                + "    SELECT \n"
+                + "        c.CourseID, \n"
+                + "        c.Name AS CourseName, \n"
+                + "        c.imageCources, \n"
+                + "        u.FullName AS ExpertName, \n"
+                + "        c.Price, \n"
+                + "        c.Status, \n"
+                + "        COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS AverageRating\n"
+                + "    FROM Courses c\n"
+                + "    INNER JOIN Users u ON c.UserID = u.UserID\n"
+                + "    LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID\n"
+                + "    WHERE c.Status = 4\n"
+                + "    GROUP BY c.CourseID, c.Name, c.imageCources, u.FullName, c.Price, c.Status\n"
+                + "),\n"
+                + "EnrollmentData AS (\n"
+                + "    SELECT \n"
+                + "        e.CourseID, \n"
+                + "        COUNT(DISTINCT e.UserID) AS TotalStudents, \n"
+                + "        MAX(e.Status) AS EnrollmentStatus\n"
+                + "    FROM Enrollments e\n"
+                + "    GROUP BY e.CourseID\n"
+                + "),\n"
+                + "UserEnrollment AS (\n"
+                + "    SELECT \n"
+                + "        e.CourseID, \n"
+                + "        MAX(e.Status) AS UserEnrollStatus\n"
+                + "    FROM Enrollments e\n"
+                + "    \n"
+                + "    GROUP BY e.CourseID\n"
+                + ")\n"
+                + "SELECT TOP 5 \n"
+                + "    tc.CourseID, \n"
+                + "    tc.CourseName, \n"
+                + "    tc.imageCources, \n"
+                + "    tc.ExpertName, \n"
+                + "    tc.Price, \n"
+                + "    tc.Status, \n"
+                + "    tc.AverageRating, \n"
+                + "    COALESCE(ed.TotalStudents, 0) AS TotalStudents, \n"
+                + "    COALESCE(ed.EnrollmentStatus, 0) AS EnrollmentStatus, \n"
+                + "    COALESCE(ue.UserEnrollStatus, 0) AS UserEnrollStatus\n"
+                + "FROM TopCourses tc\n"
+                + "LEFT JOIN EnrollmentData ed ON tc.CourseID = ed.CourseID\n"
+                + "LEFT JOIN UserEnrollment ue ON tc.CourseID = ue.CourseID\n"
+                + "ORDER BY \n"
+                + "    tc.AverageRating DESC, \n"
+                + "    ed.TotalStudents DESC;";
 
-                courses.add(course);
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Courses course = new Courses();
+                    course.setCourseID(rs.getInt("CourseID"));
+                    course.setName(rs.getString("CourseName"));
+                    course.setImage(rs.getString("imageCources"));
+                    course.setExpertName(rs.getString("ExpertName"));
+                    course.setPrice(rs.getFloat("Price"));
+                    course.setCourseStatus(rs.getInt("Status"));
+                    course.setAverageRating(rs.getDouble("AverageRating"));
+                    course.setTotalenrollment(rs.getInt("TotalStudents"));
+                    course.setStatusss(rs.getInt("UserEnrollStatus"));
+                    courses.add(course);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return courses;
+
     }
 
     public List<Courses> getTopCourses(int userId) throws SQLException {
@@ -100,12 +132,28 @@ public class CustomerDao extends DBContext {
                 + "        u.FullName AS ExpertName, \n"
                 + "        c.Price, \n"
                 + "        c.Status, \n"
-                + "       COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS AverageRating\n"
+                + "        COALESCE(AVG(CASE WHEN f.Status = 1 THEN f.Rating END), 0) AS AverageRating\n"
                 + "    FROM Courses c\n"
                 + "    INNER JOIN Users u ON c.UserID = u.UserID\n"
                 + "    LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID\n"
                 + "    WHERE c.Status = 4\n"
                 + "    GROUP BY c.CourseID, c.Name, c.imageCources, u.FullName, c.Price, c.Status\n"
+                + "),\n"
+                + "EnrollmentData AS (\n"
+                + "    SELECT \n"
+                + "        e.CourseID, \n"
+                + "        COUNT(DISTINCT e.UserID) AS TotalStudents, \n"
+                + "        MAX(e.Status) AS EnrollmentStatus\n"
+                + "    FROM Enrollments e\n"
+                + "    GROUP BY e.CourseID\n"
+                + "),\n"
+                + "UserEnrollment AS (\n"
+                + "    SELECT \n"
+                + "        e.CourseID, \n"
+                + "        MAX(e.Status) AS UserEnrollStatus\n"
+                + "    FROM Enrollments e\n"
+                + "    WHERE e.UserID = ?  -- Thay 6 bằng UserID động\n"
+                + "    GROUP BY e.CourseID\n"
                 + ")\n"
                 + "SELECT TOP 5 \n"
                 + "    tc.CourseID, \n"
@@ -115,22 +163,15 @@ public class CustomerDao extends DBContext {
                 + "    tc.Price, \n"
                 + "    tc.Status, \n"
                 + "    tc.AverageRating, \n"
-                + "    COUNT(DISTINCT e.UserID) AS TotalStudents, \n"
-                + "    MAX(e.Status) AS EnrollmentStatus, \n"
-                + "    MAX(CASE WHEN e.UserID = ?  THEN e.Status ELSE NULL END) AS UserEnrollStatus\n"
+                + "    COALESCE(ed.TotalStudents, 0) AS TotalStudents, \n"
+                + "    COALESCE(ed.EnrollmentStatus, 0) AS EnrollmentStatus, \n"
+                + "    COALESCE(ue.UserEnrollStatus, 0) AS UserEnrollStatus\n"
                 + "FROM TopCourses tc\n"
-                + "LEFT JOIN Enrollments e ON tc.CourseID = e.CourseID\n"
-                + "GROUP BY \n"
-                + "    tc.CourseID, \n"
-                + "    tc.CourseName, \n"
-                + "    tc.imageCources, \n"
-                + "    tc.ExpertName, \n"
-                + "    tc.Price, \n"
-                + "    tc.Status, \n"
-                + "    tc.AverageRating\n"
+                + "LEFT JOIN EnrollmentData ed ON tc.CourseID = ed.CourseID\n"
+                + "LEFT JOIN UserEnrollment ue ON tc.CourseID = ue.CourseID\n"
                 + "ORDER BY \n"
                 + "    tc.AverageRating DESC, \n"
-                + "    TotalStudents DESC;";
+                + "    ed.TotalStudents DESC;";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);

@@ -24,7 +24,7 @@ public class AuthenticationFilter implements Filter {
             "/jsp/viewblog.jsp", "/ViewBlog", "/RegisterServlet", "/VerifyServlet",
             "/jsp/verify.jsp", "/jsp/changePassword.jsp", "/jsp/forgetPassword.jsp", "/jsp/header",
             "/assets/", "/jsp/footer.jsp", "/css", "/img", "/js", "/Landingpage", "/course",
-            "/ChatbotServlet", "/ForgotPassword", "/LogoutServlet", "Instructor", "SearchBlog",
+            "/ChatbotServlet", "/ForgotPassword", "/LogoutServlet", "/Instructor", "/SearchBlog",
             // Thêm các URL liên quan đến đăng nhập Google
             "/LoginGoogle", // Servlet xử lý đăng nhập Google
             "/oauth2callback", // URL callback của Google (nếu có)
