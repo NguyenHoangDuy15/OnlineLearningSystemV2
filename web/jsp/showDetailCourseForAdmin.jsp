@@ -5,10 +5,9 @@
 
 <!DOCTYPE html>
 <html>
-
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>List Request</title><!--  page only for manager  -->
+        <title>Course Detail</title><!--  page only for manager  -->
         <meta
             content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
             name="viewport"
@@ -53,11 +52,21 @@
                 <div class="container">
                     <div class="page-inner">
                         <div class="page-header">
-                            <h3 class="fw-bold mb-3">Manage Request</h3>
+                            <h3 class="fw-bold mb-3">${sessionScope.courseName}</h3>
                         </div>
-
+                        <div class="page-header">
+                            <h5 class="fw-bold mb-3">Number of Test: ${sessionScope.NumberTest}</h5>
+                        </div>
                         <div class="col-md-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-primary btn-round ms-auto" onclick="BackToList(${courseID})">
+                                            <i class="fas fa-angle-left"></i>
+                                            Back to list
+                                        </button>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <!-- Modal -->
 
@@ -65,34 +74,50 @@
                                         <table class="display table table-striped table-hover" >
                                             <thead>
                                                 <tr style="text-align: start">
-                                                    <th>CourseID</th>
-                                                    <th>Name Of Course</th>
-                                                    <th>Description</th>
-                                                    <th>Created By</th>
-                                                    <th>Price</th>
+                                                    <th>Title</th>
+                                                    <th>Content</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <c:forEach items="${sessionScope.listLession}" var="l">
+                                                    <tr>
+                                                        <td>${l.getTitle()}</td>
+                                                        <td>${l.getContent()}</td>
+                                                    </tr>
+                                                </c:forEach>
+                                                <c:if test="${requestScope.noti1 != null}">
+                                                    <tr >
+                                                        <td style="text-align: center; font-weight: bold" colspan="9">
+                                                            <p class="text-danger">${requestScope.noti1}</p>
+                                                        </td><!-- comment -->
+                                                    </tr>
+                                                </c:if>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="display table table-striped table-hover" >
+                                            <thead>
+                                                <tr style="text-align: start">
+                                                    <th>TestID</th>
+                                                    <th>Name</th>
                                                     <th style="width: 10%; text-align: center">Action</th>
                                                 </tr>
                                             </thead>
 
                                             <tbody>
-                                                <c:forEach items="${sessionScope.listRequestCourse}" var="s">
+                                                <c:forEach items="${sessionScope.listTest}" var="s">
                                                     <tr>
-                                                        <td>${s.getCourseID()}</td>
-                                                        <td>${s.getCourseName()}</td>
-                                                        <td>${s.getDescription()}</td>
-                                                        <td>${s.getCreatedBy()}</td>
-                                                        <td>${s.getPrice()}</td>
+                                                        <td>${s.getTestID()}</td>
+                                                        <td>${s.getName()}</td>
                                                         <td>
                                                             <div class="form-button-action">
-                                                                <a href="UpdateRoleCourse?CourseID=${s.getCourseID()}">
-                                                                    <button type="button" class="btn btn-link btn-primary btn-lg">
-                                                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                                                    </button>
-                                                                </a>
-                                                                <button type="button" class="btn btn-link btn-danger" onclick="doDelete(${s.getCourseID()})">
-                                                                    <i class="fa fa-times"></i>
-                                                                </button>
-                                                                <a href="ShowCourseDetailByAdmin?CourseID=${s.getCourseID()}">
+                                                                <a href="showDetailTestByAdmin?testId=${s.getTestID()}">
                                                                     <button type="button" class="btn btn-link btn-primary btn-lg">
                                                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                                                     </button>
@@ -101,63 +126,15 @@
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
-                                                <c:if test="${requestScope.noti != null}">
+                                                <c:if test="${requestScope.noti2 != null}">
                                                     <tr >
                                                         <td style="text-align: center; font-weight: bold" colspan="9">
-                                                            <p class="text-danger">${requestScope.noti}</p>
+                                                            <p class="text-danger">${requestScope.noti2}</p>
                                                         </td><!-- comment -->
                                                     </tr>
                                                 </c:if>
                                             </tbody>
                                         </table>
-                                    </div>
-                                </div>
-                                <c:set value="${sessionScope.currentindex}" var="index" />
-                                <c:set value="${sessionScope.Nopage}" var="Nopage" />
-                                <div class="card-body" >
-                                    <div class="demo">
-                                        <ul class="pagination pg-primary" style="display: flex; justify-content: flex-end;">
-                                            <div style="width: 100px; align-content: end">${index} of ${Nopage} page</div>
-                                            <li class="page-item ${index < 2 ? 'disabled' :'' } ">
-                                                <a class="page-link" href="ListOfRequestByAdminServlet?index=${index-1}" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                    <span class="sr-only">Previous</span>
-                                                </a>
-                                            </li>
-                                            <c:choose>
-                                                <c:when test="${index <= 3}">
-                                                    <c:set var="startPage" value="1" />
-                                                    <c:set var="endPage" value="${Nopage > 5 ? 5 : Nopage}" />
-                                                </c:when>
-                                                <c:when test="${index > Nopage - 3}">
-                                                    <c:set var="startPage" value="${Nopage - 4 > 0 ? Nopage - 4 : 1}" />
-                                                    <c:set var="endPage" value="${Nopage}" />
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:set var="startPage" value="${index - 2}" />
-                                                    <c:set var="endPage" value="${index + 2}" />
-                                                </c:otherwise>
-                                            </c:choose>
-
-                                            <c:forEach var="p" begin="${startPage}" end="${endPage}">
-                                                <c:if test="${index == p}">
-                                                    <li class="page-item active">
-                                                        <a class="page-link" href="ListOfRequestByAdminServlet?index=${p}">${p}</a>
-                                                    </li>
-                                                </c:if>
-                                                <c:if test="${index != p}">
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="ListOfRequestByAdminServlet?index=${p}">${p}</a>
-                                                    </li>
-                                                </c:if>
-                                            </c:forEach>
-                                            <li class="page-item ${index < Nopage ? '' :'disabled' }" >
-                                                <a class="page-link" href="ListOfRequestByAdminServlet?index=${index+1}" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                    <span class="sr-only">Next</span>
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -186,9 +163,9 @@
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="assets/js/setting-demo2.js"></script>
     <script>
-                                                                    document.querySelector('.close').addEventListener('click', function () {
-                                                                        $('#addUserModal').modal('hide');
-                                                                    });
+                                            document.querySelector('.close').addEventListener('click', function () {
+                                                $('#addUserModal').modal('hide');
+                                            });
     </script>
     <script>
         function doClose() {
@@ -219,6 +196,11 @@
             if (option === true) {
                 window.location = "DenyCourse?CourseID=" + CourseID;
             }
+        }
+    </script>
+    <script>
+        function BackToList() {
+            window.location = "ListOfCourseRequestByAdminServlet";
         }
     </script>
     <script>
