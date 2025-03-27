@@ -8,6 +8,7 @@ import Model.CourseEX;
 import Model.Expert;
 import Model.TestEX;
 import Model.User;
+import dal.CourseDao;
 import dal.CourseEXDAO;
 import dal.ExpertDao;
 import dal.LessonEXDAO;
@@ -72,19 +73,28 @@ public class ShowexpertServlet extends HttpServlet {
         Integer role = (Integer) session.getAttribute("rollID");
         String username = (String) session.getAttribute("username");
         String fullName = (String) session.getAttribute("Fullname");
-         User user = (User) session.getAttribute("account");
-         if (user == null || user.getRoleID() != 2) {
+        User user = (User) session.getAttribute("account");
+        int registeredCourses = 0;
+        int completedCourses = 0;
+
+        CourseDao courseDAL = new CourseDao();
+        if (userID != null) {
+
+            registeredCourses = courseDAL.countRegisteredCourses(userID);
+            completedCourses = courseDAL.countCompletedCourses(userID);
+        }
+        if (user == null || user.getRoleID() != 2) {
             response.sendRedirect("LoginServlet");
             return;
         }
         CourseEXDAO courseDao = new CourseEXDAO();
         List<CourseEX> courses = courseDao.getCourseByUserId(userID);
         request.setAttribute("courses", courses);
-         TestEXDAO testDAO = new TestEXDAO();
+        TestEXDAO testDAO = new TestEXDAO();
         List<TestEX> tests = testDAO.getTestsByCreatorFullName(userID);
 
         request.setAttribute("tests", tests);
-        
+
         String success = request.getParameter("success");
         String error = request.getParameter("error");
         if (success != null) {
@@ -93,7 +103,8 @@ public class ShowexpertServlet extends HttpServlet {
         if (error != null) {
             request.setAttribute("error", error);
         }
-
+        session.setAttribute("registeredCourses", registeredCourses);
+        session.setAttribute("completedCourses", completedCourses);
         request.getRequestDispatcher("jsp/expertDashboard.jsp").forward(request, response);
     }
 
@@ -102,6 +113,5 @@ public class ShowexpertServlet extends HttpServlet {
             throws ServletException, IOException {
         doGet(request, response);
     }
-
 
 }
