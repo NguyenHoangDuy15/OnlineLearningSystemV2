@@ -11,11 +11,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/CourseServlet")
 public class CourseServlet extends HttpServlet {
+
     private CourseEXDAO courseDAO;
     private LessonEXDAO lessonDAO;
     private TestEXDAO testDAO;
@@ -31,7 +33,9 @@ public class CourseServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Lấy courseId từ request
+        HttpSession session = request.getSession();
         String courseIdStr = request.getParameter("courseId");
+
         System.out.println("[CourseServlet] Received courseId: " + courseIdStr);
 
         // Kiểm tra courseId
@@ -45,6 +49,7 @@ public class CourseServlet extends HttpServlet {
         int courseId;
         try {
             courseId = Integer.parseInt(courseIdStr);
+            session.setAttribute("courseId", courseId);
         } catch (NumberFormatException e) {
             System.err.println("[CourseServlet] Invalid course ID: " + courseIdStr);
             request.setAttribute("error", "Invalid course ID");

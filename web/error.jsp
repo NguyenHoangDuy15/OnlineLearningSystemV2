@@ -1,5 +1,5 @@
 <%--
-    Document   : Error404
+    Document   : ErrorPage
     Created on : Mar 26, 2025, 1:07:13 AM
     Author     : Administrator
 --%>
@@ -10,9 +10,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>404 - Page Not Found</title>
+        <title>Error - Medisync</title>
         <style>
-            /* Giữ nguyên toàn bộ CSS của bạn ở đây */
+            /* Keep your original CSS */
             * {
                 margin: 0;
                 padding: 0;
@@ -97,17 +97,40 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="error-code">404</h1>
-            <h2>Oops! Page Not Found</h2>
-            <p>It seems we've hit a dead end. The page you're looking for doesn't exist or has been moved.</p>
+            <% 
+                Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+                String errorMessage = "";
+                String errorTitle = "Oops! Something Went Wrong";
+
+                if (statusCode != null) {
+                    if (statusCode == 404) {
+                        errorTitle = "Oops! Page Not Found";
+                        errorMessage = "The page you requested could not be found! It seems we've hit a dead end.";
+                    } else if (statusCode == 500) {
+                        errorTitle = "Server Error";
+                        errorMessage = "The server encountered an error. We apologize for the inconvenience!";
+                    } else if (statusCode == 503) {
+                        errorTitle = "Service Unavailable";
+                        errorMessage = "The server is currently unavailable. Please try again later!";
+                    } else {
+                        errorTitle = "Unknown Error";
+                        errorMessage = "An unknown error occurred! Error code: " + statusCode;
+                    }
+                } else {
+                    errorMessage = "An unknown error occurred!";
+                }
+            %>
+            <h1 class="error-code"><%= statusCode != null ? statusCode : "???" %></h1>
+            <h2><%= errorTitle %></h2>
+            <p><%= errorMessage %></p>
             <c:choose>
                 <c:when test="${not empty sessionScope.userid}">
-                    <!-- Nếu userId tồn tại trong session, chuyển hướng về training index -->
-                    <a href="index.jsp" class="btn">Back to Home</a>
+                    <!-- If userId exists in session, redirect to training index -->
+                    <a href="index" class="btn">Back to Home</a>
                 </c:when>
                 <c:otherwise>
-                    <!-- Nếu không có userId hoặc session, chuyển hướng về landing page -->
-                    <a href="Langdingpage.jsp" class="btn">Back to Home</a>
+                    <!-- If no userId or session, redirect to landing page -->
+                    <a href="Langdingpage" class="btn">Back to Home</a>
                 </c:otherwise>
             </c:choose>
         </div>
