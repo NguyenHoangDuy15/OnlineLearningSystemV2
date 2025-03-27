@@ -110,7 +110,7 @@ public class LoginGoogle extends HttpServlet {
             User account = getuserByEmail(list, user.getEmail());
             
             if (account == null) {
-                d.add(customer.getUserName(), null, customer.getUserName(), customer.getEmail());
+                d.add(customer.getUserName(), customer.getUserName(), customer.getUserName(), customer.getEmail());
                 list = d.getAll();
                 account = getuserByEmail(list, customer.getEmail()); // Cập nhật lại account
             }

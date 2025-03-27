@@ -26,7 +26,7 @@ public class LogoutServlet extends HttpServlet {
             session.removeAttribute("account");
             session.invalidate();
         }
-        response.sendRedirect("LoginServlet");
+        response.sendRedirect("Landingpage");
     }
 
     /**

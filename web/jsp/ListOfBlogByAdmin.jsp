@@ -57,6 +57,14 @@
 
                         <div class="col-md-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-primary btn-round ms-auto" onclick="BackToList()">
+                                            <i class="fas fa-angle-left"></i>
+                                            Back to Dashboard
+                                        </button>
+                                    </div>
+                                </div>
 
 
                                 <div class="card-body">
@@ -188,6 +196,11 @@
     <script>
         function doClose() {
             $('#addUserModal').modal('hide');
+        }
+    </script>
+    <script>
+        function BackToList() {
+            window.location = "ShowAdminDasboardServlet";
         }
     </script>
     <script>
