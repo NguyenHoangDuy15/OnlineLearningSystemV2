@@ -27,9 +27,8 @@ public class ChatbotServlet extends HttpServlet {
     private String WEATHER_API_KEY;
     private String WEATHER_API_URL;
     private DBContext dbContext;
-    private Map<String, String> cityMapping; // Map để lưu ánh xạ tên thành phố tiếng Việt sang tiếng Anh
+    private Map<String, String> cityMapping;
 
-    // Khởi tạo servlet, đọc cấu hình API và kết nối cơ sở dữ liệu
     @Override
     public void init() throws ServletException {
         Properties props = new Properties();
@@ -57,31 +56,23 @@ public class ChatbotServlet extends HttpServlet {
             dbContext = null;
         }
 
-        // Khởi tạo ánh xạ tên thành phố
         initializeCityMapping();
     }
 
-    // Khởi tạo ánh xạ tên thành phố tiếng Việt sang tiếng Anh
     private void initializeCityMapping() {
         cityMapping = new HashMap<>();
-        // Thành phố trực thuộc trung ương
         cityMapping.put("hà nội", "Hanoi");
         cityMapping.put("thành phố hồ chí minh", "Ho Chi Minh City");
         cityMapping.put("tp.hcm", "Ho Chi Minh City");
         cityMapping.put("hải phòng", "Hai Phong");
         cityMapping.put("đà nẵng", "Da Nang");
         cityMapping.put("cần thơ", "Can Tho");
-
-        // Thành phố thuộc thành phố trực thuộc trung ương
         cityMapping.put("thủ đức", "Thu Duc");
-
-        // Thành phố trực thuộc tỉnh
-        // Miền Bắc
         cityMapping.put("bắc giang", "Bac Giang");
         cityMapping.put("bắc ninh", "Bac Ninh");
         cityMapping.put("chí linh", "Chi Linh");
         cityMapping.put("đông triều", "Dong Trieu");
-        cityMapping.put("hà nam", "Phu Ly"); // Hà Nam thường gọi là Phủ Lý
+        cityMapping.put("hà nam", "Phu Ly");
         cityMapping.put("hạ long", "Ha Long");
         cityMapping.put("hải dương", "Hai Duong");
         cityMapping.put("hưng yên", "Hung Yen");
@@ -90,15 +81,13 @@ public class ChatbotServlet extends HttpServlet {
         cityMapping.put("nam định", "Nam Dinh");
         cityMapping.put("ninh bình", "Ninh Binh");
         cityMapping.put("phổ yên", "Pho Yen");
-        cityMapping.put("phú thọ", "Viet Tri"); // Phú Thọ thường gọi là Việt Trì
+        cityMapping.put("phú thọ", "Viet Tri");
         cityMapping.put("sông công", "Song Cong");
         cityMapping.put("tam điệp", "Tam Diep");
         cityMapping.put("thái nguyên", "Thai Nguyen");
         cityMapping.put("uông bí", "Uong Bi");
-        cityMapping.put("vĩnh phúc", "Vinh Yen"); // Vĩnh Phúc thường gọi là Vĩnh Yên
+        cityMapping.put("vĩnh phúc", "Vinh Yen");
         cityMapping.put("từ sơn", "Tu Son");
-
-        // Miền Trung
         cityMapping.put("bảo lộc", "Bao Loc");
         cityMapping.put("buôn ma thuột", "Buon Ma Thuot");
         cityMapping.put("cam ranh", "Cam Ranh");
@@ -115,9 +104,7 @@ public class ChatbotServlet extends HttpServlet {
         cityMapping.put("tam kỳ", "Tam Ky");
         cityMapping.put("thanh hóa", "Thanh Hoa");
         cityMapping.put("vinh", "Vinh");
-
-        // Miền Nam
-        cityMapping.put("an giang", "Long Xuyen"); // An Giang thường gọi là Long Xuyên
+        cityMapping.put("an giang", "Long Xuyen");
         cityMapping.put("bà rịa", "Ba Ria");
         cityMapping.put("bạc liêu", "Bac Lieu");
         cityMapping.put("bến cát", "Ben Cat");
@@ -147,8 +134,6 @@ public class ChatbotServlet extends HttpServlet {
         cityMapping.put("vị thanh", "Vi Thanh");
         cityMapping.put("vĩnh long", "Vinh Long");
         cityMapping.put("vũng tàu", "Vung Tau");
-
-        // Các thành phố khác
         cityMapping.put("bắc kạn", "Bac Kan");
         cityMapping.put("cẩm phả", "Cam Pha");
         cityMapping.put("điện biên phủ", "Dien Bien Phu");
@@ -165,7 +150,6 @@ public class ChatbotServlet extends HttpServlet {
         cityMapping.put("thái bình", "Thai Binh");
     }
 
-    // Xử lý yêu cầu POST từ JSP
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -181,7 +165,6 @@ public class ChatbotServlet extends HttpServlet {
                 jsonResponse.put("userMessage", "");
                 jsonResponse.put("botResponse", "Vui lòng nhập tin nhắn!");
             } else {
-                // Làm sạch dữ liệu đầu vào để tránh XSS
                 userMessage = userMessage.trim().replaceAll("<", "<").replaceAll(">", ">");
                 String botResponse = processMessage(userMessage);
                 jsonResponse.put("userMessage", userMessage);
@@ -197,7 +180,6 @@ public class ChatbotServlet extends HttpServlet {
         response.getWriter().write(jsonResponse.toString());
     }
 
-    // Xử lý tin nhắn của người dùng
     private String processMessage(String message) {
         String lowercaseMessage = message.toLowerCase();
         String contextData = "";
@@ -205,7 +187,6 @@ public class ChatbotServlet extends HttpServlet {
         boolean isWeatherQuery = lowercaseMessage.contains("thời tiết") || lowercaseMessage.contains("weather");
         String courseName = null;
 
-        // Trích xuất tên khóa học nếu người dùng hỏi cụ thể (ví dụ: "khóa học Java")
         if (lowercaseMessage.contains("khóa học")) {
             String[] words = lowercaseMessage.split("khóa học");
             if (words.length > 1) {
@@ -214,11 +195,8 @@ public class ChatbotServlet extends HttpServlet {
             }
         }
 
-        // Trích xuất danh sách các thành phố nếu người dùng hỏi về thời tiết (ví dụ: "thời tiết Hà Nội, Đà Nẵng và TP.HCM")
-        String cityName = null;
-        List<String> cityNames = new ArrayList<>(); // Danh sách các thành phố
+        List<String> cityNames = new ArrayList<>();
         if (isWeatherQuery) {
-            // Tách chuỗi dựa trên từ "thời tiết" hoặc "weather"
             String[] words;
             String cityPart = null;
             if (lowercaseMessage.contains("thời tiết")) {
@@ -232,7 +210,6 @@ public class ChatbotServlet extends HttpServlet {
                     cityPart = words[1].trim();
                 }
                 if (cityPart == null || cityPart.isEmpty()) {
-                    // Thử lấy trước từ "weather" (ví dụ: "London weather" hoặc "city London weather")
                     String[] beforeWeather = words[0].trim().split("\\s+");
                     if (beforeWeather.length > 0) {
                         if (beforeWeather[beforeWeather.length - 1].equalsIgnoreCase("city") && beforeWeather.length > 1) {
@@ -248,18 +225,15 @@ public class ChatbotServlet extends HttpServlet {
                 return "Vui lòng cung cấp tên thành phố (ví dụ: 'Thời tiết Hà Nội' hoặc 'London weather').";
             }
 
-            // Tách danh sách các thành phố (dựa trên dấu phẩy hoặc từ "và")
             String[] cityArray = cityPart.split(",| và ");
             for (String city : cityArray) {
                 city = city.replace("thành phố", "").trim();
                 if (!city.isEmpty()) {
-                    // Chuyển đổi tên thành phố từ tiếng Việt sang tiếng Anh (nếu là thành phố Việt Nam)
                     String standardizedCityName = city.toLowerCase();
                     String mappedCityName = cityMapping.get(standardizedCityName);
                     if (mappedCityName != null) {
                         cityNames.add(mappedCityName);
                     } else {
-                        // Nếu không tìm thấy trong cityMapping, sử dụng tên gốc (có thể là thành phố quốc tế)
                         cityNames.add(city);
                     }
                 }
@@ -270,7 +244,6 @@ public class ChatbotServlet extends HttpServlet {
             }
         }
 
-        // Truy vấn cơ sở dữ liệu nếu không phải yêu cầu thời tiết
         if (dbContext != null && !isWeatherQuery) {
             try {
                 if (lowercaseMessage.contains("lessons") || lowercaseMessage.contains("courses") || lowercaseMessage.contains("khóa học")) {
@@ -290,7 +263,6 @@ public class ChatbotServlet extends HttpServlet {
             contextData = "Không thể truy cập cơ sở dữ liệu. Tôi sẽ trả lời dựa trên kiến thức chung.";
         }
 
-        // Xử lý yêu cầu thời tiết cho nhiều thành phố
         if (isWeatherQuery) {
             StringBuilder weatherData = new StringBuilder();
             for (String city : cityNames) {
@@ -300,7 +272,6 @@ public class ChatbotServlet extends HttpServlet {
             return weatherData.toString().trim();
         }
 
-        // Tạo prompt để gửi đến API chatbot nếu không phải yêu cầu thời tiết
         String fullPrompt;
         if (contextData.isEmpty() || contextData.contains("Không thể truy cập cơ sở dữ liệu")) {
             fullPrompt = "Bạn là một trợ lý thông minh cho một nền tảng học lập trình trực tuyến. "
@@ -322,7 +293,6 @@ public class ChatbotServlet extends HttpServlet {
 
         String botResponse = callChatbotAPI(fullPrompt);
 
-        // Nếu người dùng hỏi về giá nhưng câu trả lời không chứa thông tin giá
         if (isPriceQuery && !botResponse.toLowerCase().contains("giá") && !botResponse.toLowerCase().contains("miễn phí")) {
             if (contextData.contains("Khóa học") && courseName != null) {
                 String[] lines = contextData.split("\n");
@@ -344,99 +314,99 @@ public class ChatbotServlet extends HttpServlet {
         return botResponse;
     }
 
-    // Lấy danh sách khóa học từ cơ sở dữ liệu
     private String fetchCourses(String courseName) throws SQLException {
         StringBuilder result = new StringBuilder("Danh sách khóa học:\n");
-        String query = "SELECT c.CourseID, c.Name, c.Price, cat.CategoryName AS CategoryName\n"
-                + "FROM Courses c \n"
-                + "JOIN Category cat ON c.CategoryID = cat.CategoryID\n";
-        if (courseName != null && !courseName.isEmpty()) {
-            query += "WHERE c.Name LIKE ?";
-        }
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        String query = "SELECT c.CourseID, c.Name AS CourseName, c.Price, cat.CategoryName, c.Description "
+                + "FROM Courses c "
+                + "JOIN Category cat ON c.CategoryID = cat.CategoryID"
+                + (courseName != null && !courseName.isEmpty() ? " WHERE c.Name LIKE ?" : "");
+        try (Connection conn = dbContext.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             if (courseName != null && !courseName.isEmpty()) {
                 stmt.setString(1, "%" + courseName + "%");
             }
             try (ResultSet rs = stmt.executeQuery()) {
+                boolean hasResults = false;
                 while (rs.next()) {
+                    hasResults = true;
                     double price = rs.getDouble("Price");
                     boolean isPriceNull = rs.wasNull();
                     String priceStr = isPriceNull ? "Miễn phí" : String.format("%.2f", price);
-                    result.append(String.format("Khóa học: %s (ID: %d), Giá: %s, Danh mục: %s\n",
-                            rs.getString("Name"), rs.getInt("CourseID"),
-                            priceStr, rs.getString("CategoryName")));
+                    result.append(String.format("Khóa học: %s (ID: %d), Giá: %s, Danh mục: %s, Mô tả: %s\n",
+                            rs.getString("CourseName"), rs.getInt("CourseID"),
+                            priceStr, rs.getString("CategoryName"), rs.getString("Description")));
+                }
+                if (!hasResults) {
+                    result.append("Không tìm thấy khóa học nào"
+                            + (courseName != null && !courseName.isEmpty() ? " với tên '" + courseName + "'" : "") + ".\n");
                 }
             }
         }
         return result.toString();
     }
 
-    // Lấy danh sách danh mục từ cơ sở dữ liệu
     private String fetchCategories() throws SQLException {
         StringBuilder result = new StringBuilder("Danh sách danh mục:\n");
-        String query = "SELECT CategoryID, CategoryName, Description FROM Category";
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT cat.CategoryName, COUNT(c.CourseID) AS TotalCourses "
+                + "FROM Category cat "
+                + "LEFT JOIN Courses c ON cat.CategoryID = c.CategoryID "
+                + "GROUP BY cat.CategoryName";
+        try (Connection conn = dbContext.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            boolean hasResults = false;
             while (rs.next()) {
-                result.append(String.format("Danh mục: %s (ID: %d), Mô tả: %s\n",
-                        rs.getString("CategoryName"), rs.getInt("CategoryID"),
-                        rs.getString("Description")));
+                hasResults = true;
+                result.append(String.format("Danh mục: %s, Tổng số khóa học: %d\n",
+                        rs.getString("CategoryName"), rs.getInt("TotalCourses")));
+            }
+            if (!hasResults) {
+                result.append("Không có danh mục nào trong hệ thống.\n");
             }
         }
         return result.toString();
     }
 
-    // Lấy thông tin số người tham gia từ bảng History
     private String fetchTotalParticipants() throws SQLException {
         StringBuilder result = new StringBuilder("Thông tin về số người tham gia:\n");
-        String totalQuery = "SELECT COUNT(*) AS TotalParticipants FROM History";
-        int totalParticipants = 0;
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(totalQuery);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                totalParticipants = rs.getInt("TotalParticipants");
-                result.append(String.format("Tổng số người tham gia các khóa học: %d\n", totalParticipants));
-            }
-        }
-
-        String perCourseQuery = "SELECT c.Name, COUNT(h.UserID) AS ParticipantCount \n"
-                + "FROM History h \n"
-                + "JOIN Courses c ON h.CourseID = c.CourseID \n"
+        String query = "SELECT c.Name, COUNT(e.EnrollmentID) AS TotalEnrolledStudents "
+                + "FROM Courses c "
+                + "LEFT JOIN Enrollments e ON c.CourseID = e.CourseID AND e.Status = 1 "
                 + "GROUP BY c.CourseID, c.Name";
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(perCourseQuery);
-             ResultSet rs = stmt.executeQuery()) {
-            result.append("Số người tham gia theo từng khóa học:\n");
+        try (Connection conn = dbContext.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            boolean hasResults = false;
             while (rs.next()) {
+                hasResults = true;
                 result.append(String.format("- Khóa học: %s, Số người tham gia: %d\n",
-                        rs.getString("Name"), rs.getInt("ParticipantCount")));
+                        rs.getString("Name"), rs.getInt("TotalEnrolledStudents")));
+            }
+            if (!hasResults) {
+                result.append("Chưa có người tham gia khóa học nào.\n");
             }
         }
         return result.toString();
     }
 
-    // Lấy danh sách bài kiểm tra từ cơ sở dữ liệu
     private String fetchTests() throws SQLException {
         StringBuilder result = new StringBuilder("Danh sách bài kiểm tra:\n");
-        String query = "SELECT t.TestID, t.Name, t.Status, c.Name AS CourseName \n"
-                + "FROM Test t \n"
-                + "JOIN Courses c ON t.CourseID = c.CourseID";
-        try (Connection conn = dbContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT t.TestID, t.Name AS TestName, COUNT(q.QuestionID) AS TotalQuestions, c.Name AS CourseName "
+                + "FROM Test t "
+                + "LEFT JOIN Question q ON t.TestID = q.TestID "
+                + "JOIN Courses c ON t.CourseID = c.CourseID "
+                + "WHERE t.Status = 1 "
+                + "GROUP BY t.TestID, t.Name, c.Name";
+        try (Connection conn = dbContext.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            boolean hasResults = false;
             while (rs.next()) {
-                result.append(String.format("Bài kiểm tra: %s (ID: %d), Trạng thái: %s, Khóa học: %s\n",
-                        rs.getString("Name"), rs.getInt("TestID"),
-                        rs.getString("Status"), rs.getString("CourseName")));
+                hasResults = true;
+                result.append(String.format("Bài kiểm tra: %s (ID: %d), Tổng số câu hỏi: %d, Khóa học: %s\n",
+                        rs.getString("TestName"), rs.getInt("TestID"),
+                        rs.getInt("TotalQuestions"), rs.getString("CourseName")));
+            }
+            if (!hasResults) {
+                result.append("Không có bài kiểm tra nào trong hệ thống.\n");
             }
         }
         return result.toString();
     }
 
-    // Lấy thông tin thời tiết từ OpenWeatherMap
     private String fetchWeather(String cityName) {
         HttpURLConnection conn = null;
         try {
@@ -479,7 +449,6 @@ public class ChatbotServlet extends HttpServlet {
         }
     }
 
-    // Gọi API chatbot bên ngoài để tạo câu trả lời
     private String callChatbotAPI(String prompt) {
         HttpURLConnection conn = null;
         try {
@@ -542,7 +511,6 @@ public class ChatbotServlet extends HttpServlet {
         }
     }
 
-    // Đóng kết nối cơ sở dữ liệu khi servlet bị hủy
     @Override
     public void destroy() {
         if (dbContext != null) {
