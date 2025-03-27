@@ -54,7 +54,16 @@ public class TestEXDAO extends DBContext {
         }
         return -1;
     }
-
+    public void updateTestsStatusByCourseId(int courseId, int status) {
+    String sql = "UPDATE Test SET Status = ? WHERE CourseID = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, status);
+        ps.setInt(2, courseId);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
     public void updateTestStatus(int testId, int status) {
         String sql = "UPDATE Test SET Status = ? WHERE TestID = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {

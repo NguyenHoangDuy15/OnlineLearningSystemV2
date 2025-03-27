@@ -25,6 +25,11 @@
     int enrollmentCount = (registeredCourses != null) ? registeredCourses : 0;
     int completedCoursesCount = (completedCourses != null) ? completedCourses : 0;
 
+    Boolean showCourseList = (Boolean) request.getAttribute("showCourseList");
+    if (showCourseList == null) {
+        showCourseList = false;
+    }
+
     if (user != null) {
         userNew = new Usernew(user);
     }
@@ -33,7 +38,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Edukate - Online Education Website Template</title>
+        <title>Online learning system</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="Free HTML Templates" name="keywords">
         <meta content="Free HTML Templates" name="description">
@@ -344,17 +349,17 @@
                 position: fixed;
                 top: 0;
                 left: -400px;
-                width: 400px; /* Tăng chiều rộng */
+                width: 400px;
                 height: 100%;
                 background-color: var(--secondary);
-                padding: 16px; /* Giảm padding */
+                padding: 16px;
                 display: flex;
                 flex-direction: column;
-                gap: 16px; /* Giảm gap */
+                gap: 16px;
                 border-right: 1px solid var(--border);
                 transition: left 0.3s ease;
                 z-index: 1000;
-                overflow-y: auto; /* Thêm thanh cuộn nếu nội dung dài */
+                overflow-y: auto;
             }
 
             .sidebar.active {
@@ -371,19 +376,19 @@
             }
 
             .button-group {
-                padding-top: 50px; /* Tăng khoảng cách từ phía trên */
+                padding-top: 50px;
                 display: flex;
                 flex-direction: column;
-                gap: 20px; /* Khoảng cách giữa các nút */
+                gap: 20px;
             }
 
             .button-group .btn {
                 padding-top: 20px;
-                padding: 8px 16px; /* Giảm padding của nút */
-                font-size: 14px; /* Giảm kích thước chữ */
-                text-align: center; /* Căn giữa nội dung nút */
-                width: 100%; /* Đảm bảo nút chiếm toàn bộ chiều rộng */
-                box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước tổng */
+                padding: 8px 16px;
+                font-size: 14px;
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .main-content {
@@ -396,7 +401,7 @@
             }
 
             .main-content.shifted {
-                margin-left: 400px; /* Phải khớp với width của sidebar */
+                margin-left: 400px;
             }
 
             .welcome {
@@ -564,7 +569,7 @@
 
             @media (max-width: 768px) {
                 .sidebar {
-                    width: 250px; /* Tăng chiều rộng trên thiết bị nhỏ */
+                    width: 250px;
                     left: -250px;
                 }
 
@@ -586,19 +591,19 @@
                     <i class="fas fa-bars"></i>
                 </div>
                 <%
-                           if (userId != null) {
+                    if (userId != null) {
                 %>
                 <a href="index" class="navbar-brand ml-lg-3">
                     <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
                 </a>
                 <%
-                            } else {
+                    } else {
                 %>
                 <a href="Landingpage" class="navbar-brand ml-lg-3">
                     <h3 name="logopage" class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Online Learning</h3>
                 </a>
                 <%
-                 }
+                    }
                 %>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -628,7 +633,6 @@
                         <%
                             }
                         %>
-
                     </div>
 
                     <%
@@ -763,20 +767,22 @@
                                 <span class="<%= statusClass %>" id="status<%= course.getCourseID() %>"><%= statusText %></span>
                             </td>
                             <td>
-                                <button class="btn btn-danger <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                <% if (status != 2 && status != 4) { %>
+                                <button class="btn btn-danger" 
                                         onclick="deleteCourse(<%= course.getCourseID() %>)" 
                                         style="padding: 8px 16px; font-size: 12px;">Delete</button>
                                 <a href="CourseServlet?courseId=<%= course.getCourseID() %>">
-                                    <button class="btn btn-primary <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                    <button class="btn btn-primary" 
                                             style="padding: 8px 16px; font-size: 12px;">Update</button>
                                 </a>
                                 <a href="QuestionController?courseId=<%= course.getCourseID() %>">
-                                    <button class="btn btn-success <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                    <button class="btn btn-success" 
                                             style="padding: 8px 16px; font-size: 12px;">Add Test</button>
                                 </a>
-                                <button class="btn btn-warning <%= (status == 2 || status == 4) ? "hidden" : "" %>" 
+                                <button class="btn btn-warning" 
                                         onclick="requestCourse(<%= course.getCourseID() %>)" 
                                         style="padding: 8px 16px; font-size: 12px;">Request</button>
+                                <% } %>
                             </td>
                         </tr>
                         <% } %>
@@ -804,15 +810,18 @@
                     <tbody id="testListBody">
                         <% if (tests != null && !tests.isEmpty()) { %>
                         <% for (TestEX testItem : tests) { %>
-                        <% if (testItem.getStatus() != 0) { %>
                         <% 
                             CourseEX course = courseDAO.getCourseByIdEx(testItem.getCourseID());
-                            boolean isEditable = (course != null && (course.getStatus() == 1 || course.getStatus() == 3));
+                            if (course != null && course.getStatus() != 0 && testItem.getStatus() != 0) { 
+                                boolean isEditable = (course.getStatus() == 1 || course.getStatus() == 3);
+                                boolean isViewOnly = (course.getStatus() == 2 || course.getStatus() == 4);
                         %>
                         <tr id="testRow<%= testItem.getTestID() %>">
                             <td><%= testItem.getTestID() %></td>
                             <td>
-                                <a href="<%= isEditable ? "TestServlet?testId=" + testItem.getTestID() : "ViewQuestionsServlet?testId=" + testItem.getTestID() + "&mode=view" %>">
+                                <a href="<%= isEditable ? "TestServlet?testId=" + testItem.getTestID() : 
+                                              (isViewOnly ? "ViewQuestionsServlet?testId=" + testItem.getTestID() + "&mode=view" : 
+                                              "#") %>">
                                     <%= testItem.getName() %>
                                 </a>
                             </td>
@@ -824,7 +833,7 @@
                                     <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Edit</button>
                                 </a>
                                 <button class="btn btn-danger" onclick="deleteTest(<%= testItem.getTestID() %>)" style="padding: 8px 16px; font-size: 12px;">Delete</button>
-                                <% } else { %>
+                                <% } else if (isViewOnly) { %>
                                 <a href="ViewQuestionsServlet?testId=<%= testItem.getTestID() %>&mode=view">
                                     <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">View</button>
                                 </a>
@@ -844,138 +853,156 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                    function toggleSidebar() {
-                                        const sidebar = document.getElementById('sidebar');
-                                        const mainContent = document.getElementById('mainContent');
-                                        sidebar.classList.toggle('active');
-                                        mainContent.classList.toggle('shifted');
-                                    }
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('mainContent');
+                sidebar.classList.toggle('active');
+                mainContent.classList.toggle('shifted');
+            }
 
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
-                                        const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
-                                        const createCourseBtn = document.getElementById('createCourseBtn');
-                                        const returnFromCourses = document.getElementById('returnFromCourses');
-                                        const returnFromTests = document.getElementById('returnFromTests');
-                                        const welcome = document.getElementById('welcome');
-                                        const courseList = document.getElementById('courseList');
-                                        const testList = document.getElementById('testList');
-                                        const testListBody = document.getElementById('testListBody');
+            document.addEventListener('DOMContentLoaded', function () {
+                const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
+                const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
+                const createCourseBtn = document.getElementById('createCourseBtn');
+                const returnFromCourses = document.getElementById('returnFromCourses');
+                const returnFromTests = document.getElementById('returnFromTests');
+                const welcome = document.getElementById('welcome');
+                const courseList = document.getElementById('courseList');
+                const testList = document.getElementById('testList');
+                const testListBody = document.getElementById('testListBody');
 
-                                        function hideAll() {
-                                            welcome.classList.remove('active');
-                                            welcome.style.display = 'none';
-                                            courseList.style.display = 'none';
-                                            testList.style.display = 'none';
+                function hideAll() {
+                    welcome.classList.remove('active');
+                    welcome.style.display = 'none';
+                    courseList.style.display = 'none';
+                    testList.style.display = 'none';
+                }
+
+                function showWelcome() {
+                    hideAll();
+                    welcome.classList.add('active');
+                    welcome.style.display = 'block';
+                }
+
+                // Kiểm tra nếu cần hiển thị danh sách khóa học ngay khi tải trang
+                const showCourseList = <%= showCourseList %>;
+                if (showCourseList) {
+                    hideAll();
+                    courseList.style.display = 'block';
+                }
+
+                viewOwnerTestBtn.addEventListener('click', () => {
+                    hideAll();
+                    testList.style.display = 'block';
+                    toggleSidebar();
+                });
+
+                viewOwnerCourseBtn.addEventListener('click', () => {
+                    hideAll();
+                    courseList.style.display = 'block';
+                    toggleSidebar();
+                });
+
+                createCourseBtn.addEventListener('click', () => {
+                    window.location.href = 'createCourse';
+                });
+
+                returnFromCourses.addEventListener('click', () => {
+                    showWelcome();
+                });
+
+                returnFromTests.addEventListener('click', () => {
+                    showWelcome();
+                });
+
+                // Thêm hiệu ứng click cho dropdown items
+                document.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+
+                // Thêm hiệu ứng click cho stat items
+                document.querySelectorAll('.stat-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
+                        this.style.background = '#e6f0ff';
+                    });
+                });
+
+                window.deleteCourse = function (courseId) {
+                    if (confirm("Are you sure you want to delete this course?")) {
+                        fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, {method: 'POST'})
+                            .then(response => response.text())
+                            .then(data => {
+                                if (data === "success") {
+                                    alert("Course deleted successfully!");
+                                    document.getElementById('courseRow' + courseId)?.remove();
+                                    document.querySelectorAll(`#testListBody tr`).forEach(row => {
+                                        const courseIdCell = row.cells[3]; // Cột Course ID
+                                        if (courseIdCell && parseInt(courseIdCell.textContent) === courseId) {
+                                            row.remove();
                                         }
-
-                                        function showWelcome() {
-                                            hideAll();
-                                            welcome.classList.add('active');
-                                            welcome.style.display = 'block';
-                                        }
-
-                                        viewOwnerTestBtn.addEventListener('click', () => {
-                                            hideAll();
-                                            testList.style.display = 'block';
-                                            toggleSidebar();
-                                        });
-
-                                        viewOwnerCourseBtn.addEventListener('click', () => {
-                                            hideAll();
-                                            courseList.style.display = 'block';
-                                            toggleSidebar();
-                                        });
-
-                                        createCourseBtn.addEventListener('click', () => {
-                                            window.location.href = 'createCourse';
-                                        });
-
-                                        returnFromCourses.addEventListener('click', () => {
-                                            showWelcome();
-                                        });
-
-                                        returnFromTests.addEventListener('click', () => {
-                                            showWelcome();
-                                        });
-
-                                        // Thêm hiệu ứng click cho dropdown items
-                                        document.querySelectorAll('.dropdown-item').forEach(item => {
-                                            item.addEventListener('click', function () {
-                                                document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                                                this.classList.add('active');
-                                            });
-                                        });
-
-                                        // Thêm hiệu ứng click cho stat items
-                                        document.querySelectorAll('.stat-item').forEach(item => {
-                                            item.addEventListener('click', function () {
-                                                document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
-                                                this.style.background = '#e6f0ff';
-                                            });
-                                        });
-
-                                        window.deleteCourse = function (courseId) {
-                                            if (confirm("Are you sure you want to delete this course?")) {
-                                                fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, {method: 'POST'})
-                                                        .then(response => response.text())
-                                                        .then(data => {
-                                                            if (data === "success") {
-                                                                alert("Course deleted successfully!");
-                                                                document.getElementById('courseRow' + courseId)?.remove();
-                                                            } else {
-                                                                alert("Failed to delete course: " + data);
-                                                            }
-                                                        })
-                                                        .catch(error => alert("An error occurred: " + error.message));
-                                            }
-                                        };
-
-                                        window.requestCourse = function (courseId) {
-                                            if (confirm("Are you sure you want to request approval for this course?")) {
-                                                fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, {method: 'POST'})
-                                                        .then(response => response.text())
-                                                        .then(data => {
-                                                            if (data === "success") {
-                                                                alert("Course request submitted successfully!");
-                                                                const statusSpan = document.getElementById('status' + courseId);
-                                                                if (statusSpan) {
-                                                                    statusSpan.textContent = "Waiting";
-                                                                    statusSpan.className = "status-waiting";
-                                                                }
-                                                                const row = document.getElementById('courseRow' + courseId);
-                                                                if (row)
-                                                                    row.querySelector('.btn-warning')?.classList.add('hidden');
-                                                            } else {
-                                                                alert("Failed to request course: " + data);
-                                                            }
-                                                        })
-                                                        .catch(error => alert("An error occurred: " + error.message));
-                                            }
-                                        };
-
-                                        window.deleteTest = function (testId) {
-                                            if (confirm("Are you sure you want to delete this test?")) {
-                                                fetch('NoticeServlet?action=deleteTest&testId=' + testId, {method: 'POST'})
-                                                        .then(response => response.text())
-                                                        .then(data => {
-                                                            if (data === "success") {
-                                                                alert("Test marked as deleted successfully!");
-                                                                const testRow = document.getElementById('testRow' + testId);
-                                                                if (testRow) {
-                                                                    testRow.remove();
-                                                                    if (testListBody.getElementsByTagName('tr').length === 0) {
-                                                                        testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
-                                                                    }
-                                                                }
-                                                            } else {
-                                                                alert("Failed to mark test as deleted: " + data);
-                                                            }
-                                                        })
-                                                        .catch(error => alert("An error occurred: " + error.message));
-                                            }
-                                        };
                                     });
+
+                                    if (testListBody.getElementsByTagName('tr').length === 0) {
+                                        testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
+                                    }
+                                } else {
+                                    alert("Failed to delete course: " + data);
+                                }
+                            })
+                            .catch(error => alert("An error occurred: " + error.message));
+                    }
+                };
+
+                window.requestCourse = function (courseId) {
+                    if (confirm("Are you sure you want to request approval for this course?")) {
+                        fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, {method: 'POST'})
+                            .then(response => response.text())
+                            .then(data => {
+                                if (data === "success") {
+                                    alert("Course request submitted successfully!");
+                                    const statusSpan = document.getElementById('status' + courseId);
+                                    if (statusSpan) {
+                                        statusSpan.textContent = "Waiting";
+                                        statusSpan.className = "status-waiting";
+                                    }
+                                    const row = document.getElementById('courseRow' + courseId);
+                                    if (row) {
+                                        row.querySelector('td:last-child').innerHTML = '';
+                                    }
+                                } else {
+                                    alert("Failed to request course: " + data);
+                                }
+                            })
+                            .catch(error => alert("An error occurred: " + error.message));
+                    }
+                };
+
+                window.deleteTest = function (testId) {
+                    if (confirm("Are you sure you want to delete this test?")) {
+                        fetch('NoticeServlet?action=deleteTest&testId=' + testId, {method: 'POST'})
+                            .then(response => response.text())
+                            .then(data => {
+                                if (data === "success") {
+                                    alert("Test marked as deleted successfully!");
+                                    const testRow = document.getElementById('testRow' + testId);
+                                    if (testRow) {
+                                        testRow.remove();
+                                        if (testListBody.getElementsByTagName('tr').length === 0) {
+                                            testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
+                                        }
+                                    }
+                                } else {
+                                    alert("Failed to mark test as deleted: " + data);
+                                }
+                            })
+                            .catch(error => alert("An error occurred: " + error.message));
+                    }
+                };
+            });
         </script>
     </body>
 </html>

@@ -35,30 +35,30 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-        <meta charset="utf-8">
-        <title>Edukate - Online Education Website Template</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="Free HTML Templates" name="keywords">
-        <meta content="Free HTML Templates" name="description">
+<head>
+    <meta charset="utf-8">
+    <title>Edukate - Online Education Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
 
-        <!-- Favicon -->
-        <link href="img/favicon.ico" rel="icon">
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
 
-        <!-- Google Web Fonts -->
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-        <!-- Font Awesome -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
-        <!-- Libraries Stylesheet -->
-        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
-        <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/style.css" rel="stylesheet">
-    </head>
-    <head>
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<head>
     <style>
         :root {
             --primary: #4A90E2;
@@ -87,25 +87,9 @@
             padding: 0;
         }
 
-        /* Topbar */
-        .topbar {
-            background: linear-gradient(90deg, #007bff, #00c6ff);
-            padding: 10px 0;
-        }
-
-        .topbar .text-white {
-            color: #fff !important;
-            font-size: 0.9rem;
-        }
-
-        .topbar a:hover i {
-            color: #ffeb3b;
-            transition: color 0.3s ease;
-        }
-
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px 0; /* Tăng padding để header rộng hơn */
+            padding: 20px 0;
         }
 
         .navbar-brand h3 {
@@ -181,10 +165,6 @@
             height: 40px;
             border-radius: 50%;
             border: 2px solid #007bff;
-        }
-
-        .dropdown-header .user-info {
-            flex: 1;
         }
 
         .dropdown-header .user-info h6 {
@@ -324,7 +304,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px; /* Tăng chiều rộng container */
             margin: 32px auto;
             padding: 24px;
             background-color: var(--background);
@@ -340,7 +320,7 @@
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
@@ -348,44 +328,71 @@
             margin-bottom: 8px;
             font-weight: 500;
             color: var(--text-dark);
+            font-size: 16px;
         }
 
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 16px;
             box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
         }
 
         .form-group textarea {
-            min-height: 100px;
+            min-height: 120px; /* Tăng chiều cao textarea mặc định */
             resize: vertical;
         }
 
         .lesson-block {
             position: relative;
             border: 1px solid var(--border);
-            padding: 16px;
-            margin-bottom: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
             border-radius: 8px;
             background-color: var(--secondary);
+            box-shadow: 0 2px 4px var(--shadow);
         }
 
         .lesson-block label {
             font-weight: 500;
             color: var(--text-dark);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .lesson-block input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .lesson-block textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            min-height: 150px; /* Tăng chiều cao textarea trong lesson block */
+            border-radius: 6px;
+            border: 1px solid var(--border);
         }
 
         .remove-lesson-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             background: none;
             border: none;
             color: var(--accent-red);
-            font-size: 16px;
+            font-size: 20px;
             cursor: pointer;
             font-weight: bold;
             transition: color 0.3s ease;
@@ -396,7 +403,7 @@
         }
 
         .btn {
-            padding: 10px 24px;
+            padding: 12px 28px;
             border: none;
             border-radius: 12px;
             font-size: 14px;
@@ -442,9 +449,9 @@
 
         .form-actions {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             justify-content: flex-end;
-            margin-top: 24px;
+            margin-top: 28px;
         }
 
         .notification {
@@ -475,11 +482,12 @@
         }
 
         ul li {
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -546,31 +554,11 @@
                             </div>
                         </li>
                         <!-- Menu Items -->
-                        <li>
-                            <a name="btncp" class="dropdown-item" href="ChangePasswordServlet">
-                                <i class="fas fa-lock mr-2"></i> Change Password
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="Historytransaction">
-                                <i class="fas fa-history mr-2"></i> History of Transaction
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="Role">
-                                <i class="fas fa-user-tie mr-2"></i> Become Expert or Sale
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="Request">
-                                <i class="fas fa-hourglass-half mr-2"></i> Wait for Approval
-                            </a>
-                        </li>
-                        <li>
-                            <a name="btnlg" class="dropdown-item" href="LogoutServlet">
-                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                            </a>
-                        </li>
+                        <li><a name="btncp" class="dropdown-item" href="ChangePasswordServlet"><i class="fas fa-lock mr-2"></i> Change Password</a></li>
+                        <li><a class="dropdown-item" href="Historytransaction"><i class="fas fa-history mr-2"></i> History of Transaction</a></li>
+                        <li><a class="dropdown-item" href="Role"><i class="fas fa-user-tie mr-2"></i> Become Expert or Sale</a></li>
+                        <li><a class="dropdown-item" href="Request"><i class="fas fa-hourglass-half mr-2"></i> Wait for Approval</a></li>
+                        <li><a name="btnlg" class="dropdown-item" href="LogoutServlet"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
                     </ul>
                 </div>
                 <% } else { %>
@@ -590,22 +578,22 @@
             <div class="notification success">
                 <%= successMessage %>
                 <br>
-                <button type="button" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet'" style="margin-top: 10px;">Return to Dashboard</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet?action=viewCourses'" style="margin-top: 10px;">Return to Course List</button>
             </div>
             <script>
                 setTimeout(() => {
-                    window.location.href = 'ShowexpertServlet';
+                    window.location.href = 'ShowexpertServlet?action=viewCourses';
                 }, 5000);
             </script>
         <% } else if (errorMessage != null && !errorMessage.isEmpty()) { %>
             <div class="notification error">
                 <%= errorMessage %>
                 <br>
-                <button type="button" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet'" style="margin-top: 10px;">Return to Dashboard</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet?action=viewCourses'" style="margin-top: 10px;">Return to Course List</button>
             </div>
             <script>
                 setTimeout(() => {
-                    window.location.href = 'ShowexpertServlet';
+                    window.location.href = 'ShowexpertServlet?action=viewCourses';
                 }, 3000);
             </script>
         <% } %>
@@ -621,7 +609,7 @@
             </div>
             <div class="form-group">
                 <label for="price">Price:</label>
-                <input type="number" id="price" name="price" placeholder="Enter price" required>
+             <input type="number" id="price" name="price" placeholder="Enter price" min="1" required>
             </div>
             <div class="form-group">
                 <label for="imageFile">Upload Image:</label>
@@ -642,7 +630,7 @@
                     <label for="lessonName1">Lesson Title:</label>
                     <input type="text" id="lessonName1" name="lessonName[]" placeholder="Enter lesson title" required>
                     <label for="lessonContent1">Lesson Content (URL):</label>
-                    <textarea id="lessonContent1" name="lessonContent[]" placeholder="Enter URL" required></textarea>
+                    <textarea id="lessonContent1" name="lessonContent[]" placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)" required></textarea>
                     <button type="button" class="remove-lesson-btn" onclick="removeLesson(this)">X</button>
                 </div>
             </div>
@@ -652,7 +640,7 @@
                     <span>+</span> More Lesson
                 </button>
                 <button type="submit" id="submitBtn" class="btn btn-success">Create Course</button>
-                <button type="button" class="btn btn-danger" onclick="window.location.href = 'ShowexpertServlet'">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href = 'ShowexpertServlet?action=viewCourses'">Cancel</button>
             </div>
         </form>
 
@@ -670,83 +658,110 @@
         <% } %>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let lessonCount = 1;
-        let isSubmitting = false;
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let lessonCount = 1;
+    let isSubmitting = false;
 
-        function addLesson() {
-            lessonCount++;
-            const lessonsContainer = document.getElementById('lessonsContainer');
-            const newLessonBlock = document.createElement('div');
-            newLessonBlock.classList.add('lesson-block');
-            newLessonBlock.id = `lesson${lessonCount}`;
-            newLessonBlock.innerHTML = `
-                <label for="lessonName${lessonCount}">Lesson Title:</label>
-                <input type="text" id="lessonName${lessonCount}" name="lessonName[]" placeholder="Enter lesson title" required>
-                <label for="lessonContent${lessonCount}">Lesson Content (URL):</label>
-                <textarea id="lessonContent${lessonCount}" name="lessonContent[]" placeholder="Enter URL" required></textarea>
-                <button type="button" class="remove-lesson-btn" onclick="removeLesson(this)">X</button>
-            `;
-            lessonsContainer.appendChild(newLessonBlock);
+    function addLesson() {
+        lessonCount++;
+        const lessonsContainer = document.getElementById('lessonsContainer');
+        const newLessonBlock = document.createElement('div');
+        newLessonBlock.classList.add('lesson-block');
+        newLessonBlock.id = `lesson${lessonCount}`;
+        newLessonBlock.innerHTML = `
+            <label for="lessonName${lessonCount}">Lesson Title:</label>
+            <input type="text" id="lessonName${lessonCount}" name="lessonName[]" placeholder="Enter lesson title" required>
+            <label for="lessonContent${lessonCount}">Lesson Content (URL):</label>
+            <textarea id="lessonContent${lessonCount}" name="lessonContent[]" placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)" required></textarea>
+            <button type="button" class="remove-lesson-btn" onclick="removeLesson(this)">X</button>
+        `;
+        lessonsContainer.appendChild(newLessonBlock);
+    }
+
+    function removeLesson(button) {
+        const lessonBlock = button.parentElement;
+        const lessonTitle = lessonBlock.querySelector('input[name="lessonName[]"]').value || "this lesson";
+        const confirmRemove = confirm(`Are you sure you want to remove "${lessonTitle}"?`);
+        if (confirmRemove) {
+            lessonBlock.remove();
+        }
+    }
+
+    document.getElementById('createCourseForm').addEventListener('submit', function (event) {
+        if (isSubmitting) {
+            event.preventDefault();
+            return;
         }
 
-        function removeLesson(button) {
-            const lessonBlock = button.parentElement;
-            const lessonTitle = lessonBlock.querySelector('input[name="lessonName[]"]').value || "this lesson";
-            const confirmRemove = confirm(`Are you sure you want to remove "${lessonTitle}"?`);
-            if (confirmRemove) {
-                lessonBlock.remove();
-            }
+        // Kiểm tra trường Category
+        const categorySelect = document.getElementById('categoryId');
+        if (!categorySelect.value || categorySelect.value === "") {
+            alert('Please select a category before submitting.');
+            event.preventDefault();
+            return;
         }
 
-        document.getElementById('createCourseForm').addEventListener('submit', function (event) {
-            if (isSubmitting) {
+        // Kiểm tra các link YouTube
+        const lessonContents = document.getElementsByName('lessonContent[]');
+        const youtubeRegex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}/;
+        const contentValues = []; // Mảng lưu trữ các URL để kiểm tra trùng
+
+        for (let i = 0; i < lessonContents.length; i++) {
+            let content = lessonContents[i].value.trim();
+
+            // Kiểm tra định dạng YouTube URL
+            if (!youtubeRegex.test(content)) {
+                alert('Lesson Content ' + (i + 1) + ' must be a valid YouTube link (e.g., https://www.youtube.com/watch?v=abc123).');
                 event.preventDefault();
                 return;
             }
-
-            const lessonContents = document.getElementsByName('lessonContent[]');
-            for (let i = 0; i < lessonContents.length; i++) {
-                let content = lessonContents[i].value;
-                if (!content.match(/^https:\/\/www\.youtube\.com\/watch\?v=/)) {
-                    alert('Lesson Content ' + (i + 1) + ' must be a valid YouTube link (starting with https://www.youtube.com/watch?v=...)');
-                    event.preventDefault();
-                    return;
-                }
-            }
-
-            isSubmitting = true;
-            document.getElementById('submitBtn').disabled = true;
-        });
-
-        function deleteLessonFromDB(lessonId) {
-            if (confirm("Do you want to delete this lesson?")) {
-                window.location.href = "NoticeServlet?deleteLesson=" + lessonId;
-            }
+            const priceInput = document.getElementById('price');
+        const priceValue = parseFloat(priceInput.value);
+        if (isNaN(priceValue) || priceValue <= 0) {
+            alert('Price must be a number greater than 0.');
+            event.preventDefault();
+            return;
         }
 
-        // Toggle sidebar (not used in this layout but included for compatibility)
-        function toggleSidebar() {
-            // Placeholder function if sidebar is added later
+            // Kiểm tra trùng lặp
+            if (contentValues.includes(content)) {
+                alert('Lesson Content ' + (i + 1) + ' is a duplicate. Please use a different YouTube link.');
+                event.preventDefault();
+                return;
+            }
+            contentValues.push(content); // Thêm URL vào mảng nếu không trùng
         }
 
-        // Dropdown and stat item interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
+        isSubmitting = true;
+        document.getElementById('submitBtn').disabled = true;
+    });
 
-            document.querySelectorAll('.stat-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
-                    this.style.background = '#e6f0ff';
-                });
+    function deleteLessonFromDB(lessonId) {
+        if (confirm("Do you want to delete this lesson?")) {
+            window.location.href = "NoticeServlet?deleteLesson=" + lessonId;
+        }
+    }
+
+    function toggleSidebar() {
+        // Nếu cần thêm logic cho sidebar, bạn có thể thêm vào đây
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
             });
         });
-    </script>
+
+        document.querySelectorAll('.stat-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
+                this.style.background = '#e6f0ff';
+            });
+        });
+    });
+</script>
 </body>
 </html>

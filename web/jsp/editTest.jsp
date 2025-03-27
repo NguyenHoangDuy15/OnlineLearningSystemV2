@@ -626,7 +626,9 @@
                         <li>
                             <a class="dropdown-item" href="Request">
                                 <i class="fas fa-hourglass-half"></i> Wait for Approval
-                            </a>
+                            </a
+
+>
                         </li>
                         <li>
                             <a name="btnlg" class="dropdown-item logout" href="LogoutServlet">
@@ -738,7 +740,9 @@
                     </div>
 
                     <div class="form-buttons">
-                        <button type="submit" name="action" value="addQuestion" class="btn btn-primary">Add Question</button>
+                        <c:if test="${questions.size() < 30}">
+                            <button type="submit" name="action" value="addQuestion" class="btn btn-primary">Add Question</button>
+                        </c:if>
                         <button type="submit" name="action" value="updateTest" class="btn btn-success">Save Changes</button>
                     </div>
                 </form>
@@ -753,36 +757,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-                                                const sidebar = document.getElementById('sidebar');
-                                                function toggleSidebar() {
-                                                    const mainContent = document.getElementById('mainContent');
-                                                    sidebar.classList.toggle('active');
-                                                    mainContent.classList.toggle('shifted');
-                                                }
+        const sidebar = document.getElementById('sidebar');
+        function toggleSidebar() {
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shifted');
+        }
 
-                                                document.getElementById('updateTestForm').addEventListener('submit', function (event) {
-                                                    sessionStorage.setItem('scrollPosition', window.scrollY);
-                                                });
+        document.getElementById('updateTestForm').addEventListener('submit', function (event) {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
 
-                                                window.addEventListener('load', function () {
-                                                    const scrollPosition = sessionStorage.getItem('scrollPosition');
-                                                    if (scrollPosition) {
-                                                        window.scrollTo(0, parseInt(scrollPosition));
-                                                        sessionStorage.removeItem('scrollPosition');
-                                                    }
-                                                    document.querySelectorAll('.dropdown-item').forEach(item => {
-                                                        item.addEventListener('click', function () {
-                                                            document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                                                            this.classList.add('active');
-                                                        });
-                                                    });
-                                                    document.querySelectorAll('.stat-item').forEach(item => {
-                                                        item.addEventListener('click', function () {
-                                                            document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
-                                                            this.style.background = '#e6f0ff';
-                                                        });
-                                                    });
-                                                });
+        window.addEventListener('load', function () {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, parseInt(scrollPosition));
+                sessionStorage.removeItem('scrollPosition');
+            }
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            document.querySelectorAll('.stat-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
+                    this.style.background = '#e6f0ff';
+                });
+            });
+        });
     </script>
 </body>
 </html>
