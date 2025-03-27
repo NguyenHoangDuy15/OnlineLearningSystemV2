@@ -133,7 +133,7 @@
 
                     <c:forEach var="answer" items="${userAnswers}" varStatus="loop">
                         <div class="mb-4">
-                            <h5 class="card-title">Question ${loop.count}:</h5>
+                            <h5 class="card-title">Question ${((currentPage - 1) * 5) + loop.index + 1}:</h5>
                             <p class="card-text">${answer.questionContent}</p>
 
                             <c:set var="options" value="A,B,C,D" />
