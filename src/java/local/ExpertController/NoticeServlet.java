@@ -58,7 +58,10 @@ public class NoticeServlet extends HttpServlet {
         } else if ("deleteCourse".equals(action)) {
             try {
                 int courseId = Integer.parseInt(request.getParameter("courseId"));
-                courseDAO.deleteCourse(courseId);
+                // Cập nhật status của course thành 0
+                courseDAO.updateCourseStatus(courseId, 0); // Giả định phương thức này tồn tại
+                // Cập nhật status của tất cả test liên quan thành 0
+                testDAO.updateTestsStatusByCourseId(courseId, 0); // Thêm phương thức này
                 response.setContentType("text/plain");
                 response.getWriter().write("success");
             } catch (Exception e) {

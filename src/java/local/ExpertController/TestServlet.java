@@ -168,6 +168,14 @@ public class TestServlet extends HttpServlet {
                 session.removeAttribute("tempQuestions_" + testId);
                 response.sendRedirect("TestServlet?testId=" + testId + "&success=Test updated successfully");
             } else if ("addQuestion".equals(action)) {
+                if (questions.size() >= 30) {
+                    request.setAttribute("error", "Cannot add more questions. Maximum limit of 30 questions reached.");
+                    request.setAttribute("test", test);
+                    request.setAttribute("questions", questions);
+                    request.setAttribute("selectedCorrectAnswers", selectedCorrectAnswers);
+                    request.getRequestDispatcher("jsp/editTest.jsp").forward(request, response);
+                    return;
+                }
                 QuestionEX newQuestion = new QuestionEX();
                 newQuestion.setTestID(testId);
                 newQuestion.setQuestionID(-1);

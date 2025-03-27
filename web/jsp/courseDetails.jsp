@@ -34,7 +34,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Edukate - Online Education Website Template</title>
+        <title>Online learning</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="Free HTML Templates" name="keywords">
         <meta content="Free HTML Templates" name="description">
@@ -472,6 +472,15 @@
                 transform: translateY(-2px);
                 box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
             }
+
+            a {
+                text-decoration: none;
+                color: #007bff;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
         </style>
     </head>
     <body>
@@ -670,7 +679,6 @@
                     <% } %>
                 </tbody>
             </table>
-
             <h3>Tests</h3>
             <table id="testTable">
                 <thead>
@@ -706,6 +714,10 @@
                                     onclick="deleteTest(<%= test.getTestID() %>)">
                                 Delete
                             </button>
+                            <% } else if (course != null && (course.getStatus() == 2 || course.getStatus() == 4)) { %>
+                            <a href="ViewQuestionsServlet?testId=<%= test.getTestID() %>&mode=view">
+                                <button class="btn btn-view" style="padding: 8px 16px; font-size: 12px;">View</button>
+                            </a>
                             <% } %>
                         </td>
                     </tr>
@@ -722,7 +734,7 @@
             <p>Course not found.</p>
             <% } %>
 
-            <button class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet#courseList'">Return to Course List</button>
+            <button class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet?action=viewCourses'">Return to Course List</button>
         </main>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
