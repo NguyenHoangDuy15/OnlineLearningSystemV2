@@ -5,8 +5,10 @@
 package local.SaleController;
 
 import Model.Blog;
+import Model.Courses;
 import Model.User;
 import dal.BlogDAO;
+import dal.CourseDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,6 +17,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +33,18 @@ public class ViewOwnerBlogList extends HttpServlet {
             throws ServletException, IOException {
 //        
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("account");
 
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = (User) session.getAttribute("account");
+        int registeredCourses = 0;
+        int completedCourses = 0;
+
+        CourseDao courseDAL = new CourseDao();
+        if (userId != null) {
+
+            registeredCourses = courseDAL.countRegisteredCourses(userId);
+            completedCourses = courseDAL.countCompletedCourses(userId);
+        }
         // Kiểm tra nếu chưa đăng nhập hoặc không phải Sale
         if (user == null || user.getRoleID() != 3) {
             response.sendRedirect("LoginServlet");
@@ -46,7 +60,8 @@ public class ViewOwnerBlogList extends HttpServlet {
         } else {
             blogs = blogDAO.searchBlogsByUserID(user.getUserID(), search); // Tìm kiếm theo từ khóa
         }
-
+        session.setAttribute("registeredCourses", registeredCourses);
+        session.setAttribute("completedCourses", completedCourses);
         request.setAttribute("blogs", blogs);
         request.setAttribute("search", search); // Trả lại từ khóa cho giao diện
         request.getRequestDispatcher("jsp/viewownerbloglist.jsp").forward(request, response);
