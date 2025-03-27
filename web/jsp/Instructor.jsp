@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -270,7 +271,8 @@
                                                 <c:forEach begin="1" end="${emptyStars}">
                                                     <i class="far fa-star" style="color: #f1c40f;"></i>
                                                 </c:forEach>
-                                                <span>(${rating})</span>
+                                                
+                                                <span>(<fmt:formatNumber value="${rating}" minFractionDigits="1" maxFractionDigits="1"/>)</span>
                                             </div>
                                             <div class="text-center">
                                                 <h6>Courses:</h6>
