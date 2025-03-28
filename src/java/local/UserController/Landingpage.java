@@ -73,7 +73,7 @@ public class Landingpage extends HttpServlet {
         FeedbackDao dao = new FeedbackDao();
         List<Feedback> feedbacks = dao.getCustomerFeedbacks();
         ExpertDao expertdao = new ExpertDao();
-        List<Expert> coursesdao = expertdao.getAllInstructorCoursesss();
+        List<Expert> coursesdao = expertdao.getTopInstructors();
         request.setAttribute("coursedao", coursesdao);
         request.setAttribute("feedbacks", feedbacks);
 

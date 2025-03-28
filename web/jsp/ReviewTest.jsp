@@ -123,6 +123,16 @@
                 transform: translateY(-5px);
                 box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             }
+            .score-display {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+            .question-number {
+                color: #2B62D1;
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
@@ -131,43 +141,54 @@
                 <div class="card-body">
                     <h3 class="text-center">Review Test</h3>
 
+                    <!-- Hiển thị điểm số -->
+                    <div class="score-display text-center">
+                        <h5>Your Score: <span class="text-primary">${score}</span></h5>
+                    </div>
+
                     <c:forEach var="answer" items="${userAnswers}" varStatus="loop">
                         <div class="mb-4">
-                            <h5 class="card-title">Question ${((currentPage - 1) * 5) + loop.index + 1}:</h5>
-                            <p class="card-text">${answer.questionContent}</p>
+                            <h5 class="card-title">
+                                <span class="question-number">Question ${((currentPage - 1) * 5) + loop.index + 1}</span>: 
+                                ${fn:escapeXml(answer.questionContent)}
+                            </h5>
 
-                            <c:set var="options" value="A,B,C,D" />
-                            <c:forEach var="option" items="${fn:split(options, ',')}">
+                            <c:forEach var="option" items="${fn:split('A,B,C,D', ',')}">
                                 <c:set var="key" value="option${option}" />
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" disabled
                                            ${answer.answerOption == option ? 'checked' : ''}>
                                     <label class="form-check-label">
-                                        ${answer[key]}
+                                        ${fn:escapeXml(answer[key])}
+                                        <c:if test="${answer.answerOption == option}">
+                                            <span class="${answer.isCorrectAnswer ? 'text-success' : 'text-danger'}">
+                                                ${answer.isCorrectAnswer ? '(Correct)' : '(Incorrect)'}
+                                            </span>
+                                        </c:if>
                                     </label>
-                                    <c:if test="${answer.answerOption == option}">
-                                        <span class="${answer.isCorrectAnswer ? 'text-success' : 'text-danger'}">
-                                            ${answer.isCorrectAnswer ? '(Correct)' : '(Wrong)'}
-                                        </span>
-                                    </c:if>
                                 </div>
                             </c:forEach>
                         </div>
                     </c:forEach>
 
-                    <!-- Navigation buttons -->
+                    <!-- Pagination -->
                     <div class="d-flex justify-content-between mt-4">
                         <c:if test="${currentPage > 1}">
-                            <a href="ReviewTest?historyId=${historyId}&page=${currentPage - 1}" class="btn btn-secondary">Previous</a>
+                            <a href="ReviewTest?testId=${testId}&page=${currentPage - 1}&courseId=${courseId}" 
+                               class="btn btn-secondary">Previous</a>
                         </c:if>
-
+                        <div class="text-center flex-grow-1">
+                            Page ${currentPage} of ${totalPages}
+                        </div>
                         <c:if test="${currentPage < totalPages}">
-                            <a href="ReviewTest?historyId=${historyId}&page=${currentPage + 1}" class="btn btn-primary">Next</a>
+                            <a href="ReviewTest?testId=${testId}&page=${currentPage + 1}&courseId=${courseId}" 
+                               class="btn btn-primary">Next</a>
                         </c:if>
                     </div>
 
-                    <div class="text-center mt-3">
-                        <a href="Lessonservlet?userid=${userid}&courseId=${courseId}&historyId=${historyId}&testId=${testId}" class="btn btn-primary">Back to Course</a>
+                    <div class="text-center mt-4">
+                        <a href="Lessonservlet?userid=${sessionScope.userid}&courseId=${courseId}&historyId=${historyId}&testId=${testId}" 
+                           class="btn btn-primary">Back to Course</a>
                     </div>
                 </div>
             </div>

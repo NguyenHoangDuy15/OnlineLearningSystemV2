@@ -1,5 +1,7 @@
 package dal;
 
+import Model.History;
+
 import Model.Question;
 import Model.Test;
 import Model.User;
@@ -202,7 +204,7 @@ public class TestDAO extends DBContext {
         return -1;
     }
 
-    public void insertUserAnswer(int userId ,int testId, int questionId, String answerOption, int answerId, int historyId) {
+    public void insertUserAnswer(int userId, int testId, int questionId, String answerOption, int answerId, int historyId) {
         String sql = "INSERT INTO UserAnswers (UserID, TestID, QuestionID, AnswerOption, AnswerID, IsCorrectAnswer, HistoryID) VALUES (?, ?, ?, ?, ?, null, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -242,10 +244,20 @@ public class TestDAO extends DBContext {
         String countTotalSql = "SELECT COUNT(*) FROM Question WHERE TestID = ?";
         String updateTestStatusSql = "UPDATE History SET TestStatus = ? WHERE UserID = ? AND TestID = ? AND HistoryID = ?";
         String getCourseIdSql = "SELECT CourseID, COALESCE(CourseStatus, -1) FROM History WHERE TestID = ? AND UserID = ? AND HistoryID = ?";
+        // Sửa truy vấn để kiểm tra trạng thái mới nhất của tất cả bài test
         String checkTestsSql = "SELECT (CASE WHEN NOT EXISTS ("
-                + "    SELECT 1 FROM History WHERE CourseID = ? AND UserID = ? AND HistoryID = ? "
-                + "    AND (TestStatus IS NULL OR TestStatus = 0)) "
-                + "    THEN 1 ELSE 0 END) AS ShouldUpdateCourse";
+                + "    SELECT 1 FROM Test t "
+                + "    WHERE t.CourseID = ? AND t.Status = 1 "
+                + "    AND NOT EXISTS ("
+                + "        SELECT 1 FROM History h "
+                + "        WHERE h.TestID = t.TestID AND h.UserID = ? AND h.TestStatus = 1 "
+                + "        AND h.HistoryID = ("
+                + "            SELECT MAX(h2.HistoryID) "
+                + "            FROM History h2 "
+                + "            WHERE h2.TestID = t.TestID AND h2.UserID = ?"
+                + "        )"
+                + "    )"
+                + ") THEN 1 ELSE 0 END) AS ShouldUpdateCourse";
         String updateCourseStatusSql = "UPDATE History SET CourseStatus = ? WHERE CourseID = ? AND UserID = ? AND HistoryID = ?";
 
         try {
@@ -297,15 +309,15 @@ public class TestDAO extends DBContext {
                     psInitCourse.executeUpdate();
                 }
 
-                // 7️⃣ Kiểm tra nếu tất cả bài test đã hoàn thành (CourseStatus => 1)
+                // 7️⃣ Kiểm tra nếu trạng thái mới nhất của tất cả bài test là pass (CourseStatus => 1)
                 PreparedStatement psCheck = connection.prepareStatement(checkTestsSql);
                 psCheck.setInt(1, courseId);
                 psCheck.setInt(2, userId);
-                psCheck.setInt(3, historyId);
+                psCheck.setInt(3, userId); // Tham số thứ 3 cho subquery MAX(HistoryID)
                 ResultSet rsCheck = psCheck.executeQuery();
 
                 if (rsCheck.next() && rsCheck.getInt(1) == 1) {
-                    // ✅ Nếu tất cả bài test hoàn thành, cập nhật CourseStatus = 1
+                    // ✅ Nếu trạng thái mới nhất của tất cả bài test là pass, cập nhật CourseStatus = 1
                     PreparedStatement psUpdateCourse = connection.prepareStatement(updateCourseStatusSql);
                     psUpdateCourse.setInt(1, 1);
                     psUpdateCourse.setInt(2, courseId);
@@ -322,61 +334,54 @@ public class TestDAO extends DBContext {
         return "0.0% - Fail";
     }
 
-    public List<UserAnswer> getUserAnswersByHistoryId(int userId, int historyId) {
-        List<UserAnswer> userAnswers = new ArrayList<>();
+    public List<UserAnswer> getUserAnswers(int userId, int testId, int historyId) throws SQLException {
+        List<UserAnswer> answers = new ArrayList<>();
         String sql = "SELECT Q.QuestionID, Q.QuestionContent, Q.OptionA, Q.OptionB, "
                 + "Q.OptionC, Q.OptionD, UA.AnswerOption, UA.IsCorrectAnswer "
                 + "FROM UserAnswers UA "
                 + "JOIN Question Q ON UA.QuestionID = Q.QuestionID "
-                + "WHERE UA.UserID = ? AND UA.HistoryID = ?";
+                + "WHERE UA.UserID = ? AND UA.TestID = ? AND UA.HistoryID = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
-            stmt.setInt(2, historyId);
+            stmt.setInt(2, testId);
+            stmt.setInt(3, historyId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    UserAnswer answer = new UserAnswer(
-                            rs.getInt("QuestionID"),
-                            rs.getString("QuestionContent"),
-                            rs.getString("OptionA"),
-                            rs.getString("OptionB"),
-                            rs.getString("OptionC"),
-                            rs.getString("OptionD"),
-                            rs.getString("AnswerOption"),
-                            rs.getBoolean("IsCorrectAnswer")
-                    );
-                    userAnswers.add(answer);
+                    UserAnswer answer = new UserAnswer();
+                    answer.setQuestionID(rs.getInt("QuestionID"));
+                    answer.setQuestionContent(rs.getString("QuestionContent"));
+                    answer.setOptionA(rs.getString("OptionA"));
+                    answer.setOptionB(rs.getString("OptionB"));
+                    answer.setOptionC(rs.getString("OptionC"));
+                    answer.setOptionD(rs.getString("OptionD"));
+                    answer.setAnswerOption(rs.getString("AnswerOption"));
+                    answer.setIsCorrectAnswer(rs.getBoolean("IsCorrectAnswer"));
+                    answers.add(answer);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return userAnswers;
+        return answers;
     }
 
-    public Integer getTestStatus(int historyId, int courseId, int testId, int userId) {
-        String sql = "SELECT TestStatus FROM History \n"
-                + "WHERE HistoryID = ?\n"
-                + "AND CourseID = ? \n"
-                + "AND TestID = ? \n"
-                + "AND UserID = ?;";
-
+    public Integer getCourseStatus(int userId, int courseId) {
+        String sql = "SELECT TOP 1 CourseStatus "
+                + "FROM History "
+                + "WHERE UserID = ? AND CourseID = ? AND CourseStatus = 1 "
+                + "ORDER BY HistoryID DESC";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, historyId);
+            stmt.setInt(1, userId);
             stmt.setInt(2, courseId);
-            stmt.setInt(3, testId);
-            stmt.setInt(4, userId);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("TestStatus"); // Trả về 1 (đã hoàn thành) hoặc 0 (chưa hoàn thành)
+                    return rs.getInt("CourseStatus"); // Trả về 1 nếu đã từng hoàn thành
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Trả về null nếu không tìm thấy kết quả
+        return null; // Trả về null nếu chưa từng hoàn thành
     }
 
     public Integer getHistoryId(int userId, int testId, int courseId) {
@@ -420,33 +425,28 @@ public class TestDAO extends DBContext {
         }
         return null;
     }
-    public static void main(String[] args) {
-        TestDAO testdao = new TestDAO();
-        int userId = 1;      // Giả lập UserID
-        int testId = 1;      // Giả lập TestID
-        int courseId = 1;    // Giả lập CourseID
 
-        // 1. Chèn bản ghi History và lấy HistoryID
-        int historyId = testdao.insertHistory(userId, testId, courseId);
-        if (historyId == -1) {
-            System.out.println("Failed to insert History record. Exiting...");
-            return;
+    public Map<Integer, Integer> getAllTestStatuses(int userId, int courseId) {
+        Map<Integer, Integer> testStatuses = new HashMap<>();
+        String sql = "SELECT t.TestID, h.TestStatus "
+                + "FROM Test t "
+                + "LEFT JOIN History h ON t.TestID = h.TestID AND h.UserID = ? AND h.CourseID = ? "
+                + "WHERE t.CourseID = ? AND t.Status = 1";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, courseId);
+            stmt.setInt(3, courseId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int testId = rs.getInt("TestID");
+                    Integer status = rs.getObject("TestStatus") != null ? rs.getInt("TestStatus") : null;
+                    testStatuses.put(testId, status); // null nếu chưa làm, hoặc giá trị TestStatus nếu đã làm
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        // 2. Giả lập 30 câu hỏi và câu trả lời ngẫu nhiên
-        Random random = new Random();
-        String[] options = {"A", "B", "C", "D"};
-        for (int questionId = 1; questionId <= 30; questionId++) {
-            String answerOption = options[random.nextInt(options.length)]; // Chọn ngẫu nhiên A, B, C, D
-            int answerId = questionId; // Giả lập AnswerID bằng QuestionID (tăng dần từ 1-30)
-          testdao.insertUserAnswer(userId, testId, questionId, answerOption, answerId, historyId);
-        }
-
-        // 3. Cập nhật trạng thái đúng/sai
-        testdao.updateCorrectAnswers(userId, testId, historyId);
-
-        // 4. Lấy và in kết quả
-       
-        System.out.println("Test Result: " +  testdao.getTestResult(userId, testId, historyId));
+        return testStatuses;
     }
+
 }

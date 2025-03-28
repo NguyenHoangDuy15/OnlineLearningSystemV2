@@ -2,6 +2,8 @@ package Model;
 
 public class UserAnswer {
 
+  
+
     int userID;
     int testID;
     int questionID;
