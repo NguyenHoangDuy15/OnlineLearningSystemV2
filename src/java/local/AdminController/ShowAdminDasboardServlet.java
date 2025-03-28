@@ -11,6 +11,7 @@ import Model.Feedback;
 import Model.MoneyHistoryByAdmin;
 import Model.RequestPrint;
 import Model.Requests;
+import Model.TransactionAdmin;
 import Model.User;
 import dal.AdminDao;
 import dal.BlogDAO;
@@ -27,6 +28,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -92,6 +94,7 @@ public class ShowAdminDasboardServlet extends HttpServlet {
         List<User> users = userDAO.getAll();
         List<MoneyHistoryByAdmin> money = adao.getAllHistory();
         List<CoursePrint> coursesRequest = cdao.getAllCourseRequestForAdmin();
+        List<MoneyHistoryByAdmin> monleyList = adao.get2History(1);
         //
         float price = 0;
         for (MoneyHistoryByAdmin moneyHistoryByAdmin : money) {
@@ -100,6 +103,7 @@ public class ShowAdminDasboardServlet extends HttpServlet {
             }
         }
         // Luu Session
+        session.setAttribute("monleyList", monleyList);
         session.setAttribute("numberOfCourse", courses.size());
         session.setAttribute("numberOfBlog", blogs.size());
         session.setAttribute("numberOfExpert", experts.size());

@@ -3,6 +3,7 @@ package dal;
 import Model.CatergoryPrint;
 import Model.MoneyHistoryByAdmin;
 import Model.RequestPrint;
+import Model.TransactionAdmin;
 import Model.User;
 import java.util.*;
 import java.lang.*;
@@ -59,6 +60,33 @@ public class AdminDao extends DBContext {
         return list;
     }
 
+    public List<TransactionAdmin> getAllTran() {
+        List<TransactionAdmin> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    CAST(t.PaymentDate AS DATE) AS TransactionDate, \n"
+                + "    SUM(p.Amount) AS TotalAmount\n"
+                + "FROM \n"
+                + "    TransactionHistory t\n"
+                + "JOIN \n"
+                + "    Payment p ON t.PayID = p.PayID\n"
+                + "GROUP BY \n"
+                + "    CAST(t.PaymentDate AS DATE)\n"
+                + "ORDER BY \n"
+                + "    TransactionDate;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                TransactionAdmin m = new TransactionAdmin(
+                        rs.getString("TransactionDate"), rs.getFloat("TotalAmount"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
     public List<MoneyHistoryByAdmin> get5History(int index) {
         List<MoneyHistoryByAdmin> list = new ArrayList<>();
         String sql = "SELECT \n"
@@ -72,7 +100,38 @@ public class AdminDao extends DBContext {
                 + "FROM TransactionHistory t\n"
                 + "JOIN Payment p ON t.PayID = p.PayID\n"
                 + "JOIN Courses c ON t.CourseID = c.CourseID WHERE t.Status = 1\n"
-                + "ORDER BY PayID OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+                + "ORDER BY PayID desc OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, 5 * (index - 1));
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                MoneyHistoryByAdmin m = new MoneyHistoryByAdmin(rs.getInt("PayID"), rs.getInt("Status"),
+                        rs.getDate("CreatedAt"), rs.getInt("CourseID"),
+                        rs.getString("CourseName"), null,
+                        rs.getDate("PaymentDate"), rs.getFloat("Price"));
+                list.add(m);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    public List<MoneyHistoryByAdmin> get2History(int index) {
+        List<MoneyHistoryByAdmin> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    t.PayID, \n"
+                + "    t.Status, \n"
+                + "    t.CreatedAt, \n"
+                + "    t.CourseID, \n"
+                + "    c.Name AS CourseName, \n"
+                + "    t.PaymentDate, \n"
+                + "    p.Amount AS Price\n"
+                + "FROM TransactionHistory t\n"
+                + "JOIN Payment p ON t.PayID = p.PayID\n"
+                + "JOIN Courses c ON t.CourseID = c.CourseID WHERE t.Status = 1\n"
+                + "ORDER BY PayID desc OFFSET ? ROWS FETCH NEXT 2 ROWS ONLY;";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, 5 * (index - 1));

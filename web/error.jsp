@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Error - Medisync</title>
+        <title>Error</title>
         <style>
             /* Keep your original CSS */
             * {

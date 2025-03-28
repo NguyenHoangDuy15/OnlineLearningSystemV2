@@ -208,11 +208,11 @@
             window.location = "ShowAdminDasboardServlet";
         }
     </script>
-    <script>
+<!--    <script>
         function addUser() {
             window.location = "AddNewUserServlet";
         }
-    </script>
+    </script>-->
     <script>
         function validate() {
             var email = document.getElementById("email").value;
