@@ -4,6 +4,8 @@
  */
 package local.UserController;
 
+import Model.History;
+
 import Model.Lesson;
 
 import dal.LessonsDao;
@@ -19,6 +21,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -65,7 +68,6 @@ public class Lessonservlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userid");
 
@@ -85,31 +87,38 @@ public class Lessonservlet extends HttpServlet {
             session.setAttribute("courseId", courseId);
 
             LessonsDao lessonDAO = new LessonsDao();
-            List<Lesson> lessonsAndTests = lessonDAO.getLessonsAndTests(courseId);
             TestDAO testDao = new TestDAO();
 
-            // Lấy testId & historyId gần nhất nếu có
-            Integer testId = testDao.getLastTestId(userId, courseId);
-            Integer historyId = (testId != null) ? testDao.getHistoryId(userId, testId, courseId) : null;
+            List<Lesson> lessonsAndTests = lessonDAO.getLessonsAndTests(courseId);
+            Map<Integer, Integer> testStatuses = testDao.getAllTestStatuses(userId, courseId);
+            Integer lastTestId = testDao.getLastTestId(userId, courseId);
+            Integer historyId = (lastTestId != null) ? testDao.getHistoryId(userId, lastTestId, courseId) : null;
 
-            // Cập nhật session nhưng KHÔNG tạo mới nếu không có
-            session.setAttribute("testId", testId);
-            session.setAttribute("historyId", historyId);
+            // Lọc danh sách tests chỉ lấy những test có status 0 hoặc 1
+            List<Lesson> tests = lessonDAO.getTestsByCourseId(courseId)
+                    .stream()
+                    .filter(test -> {
+                        Integer status = testStatuses.get(test.getId());
+                        return status != null && (status == 0 || status == 1);
+                    })
+                    .collect(Collectors.toList());
 
-            // Lấy trạng thái TestStatus từ database
-            Map<Integer, Integer> testStatuses = new HashMap<>();
-            for (Lesson lesson : lessonsAndTests) {
-                if ("Test".equals(lesson.getType()) && historyId != null) {
-                    Integer status = testDao.getTestStatus(historyId, courseId, lesson.getId(), userId);
-                    testStatuses.put(lesson.getId(), status != null ? status : 0);
-                }
-            }
-           
+            Integer courseStatus = testDao.getCourseStatus(userId, courseId);
+
             request.setAttribute("lessonsAndTests", lessonsAndTests);
+            request.setAttribute("tests", tests);
             request.setAttribute("testStatuses", testStatuses);
+            request.setAttribute("historyId", historyId);
+            request.setAttribute("courseStatus", courseStatus);
+            // Kiểm tra xem có test nào để hiển thị trong Test History không
+            request.setAttribute("hasTestHistory", !tests.isEmpty());
+
             request.getRequestDispatcher("jsp/lessons.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
+            response.sendRedirect("jsp/Error.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
             response.sendRedirect("jsp/Error.jsp");
         }
     }

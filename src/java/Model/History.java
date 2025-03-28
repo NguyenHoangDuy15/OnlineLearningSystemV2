@@ -1,14 +1,18 @@
-
 package Model;
+
 public class History {
-     int historyID;
-     int userID;
-     int courseID;
-     int testID;
-     
-     int teststatus;
-     int coursestatus;
-     String creatat;
+
+    int historyID;
+    int userID;
+    int courseID;
+    int testID;
+    int correctAnswers;
+    int totalQuestions;
+    int teststatus;
+    int coursestatus;
+    String creatat;
+    int score;
+
     public History(int historyID, int userID, int testID) {
         this.historyID = historyID;
         this.userID = userID;
@@ -16,6 +20,16 @@ public class History {
     }
 
     public History() {
+    }
+
+    public History(int historyID, String creatat, int teststatus, int correctAnswers, int totalQuestions) {
+        this.historyID = historyID;
+        this.creatat = creatat;
+        this.teststatus = teststatus;
+        this.correctAnswers = correctAnswers;
+
+        this.totalQuestions = totalQuestions;
+
     }
 
     public History(int historyID, int userID, int courseID, int testID, int teststatus, int coursestatus, String creatat) {
@@ -28,7 +42,29 @@ public class History {
         this.creatat = creatat;
     }
 
- 
+    public int getCorrectAnswers() {
+        return correctAnswers;
+    }
+
+    public void setCorrectAnswers(int correctAnswers) {
+        this.correctAnswers = correctAnswers;
+    }
+
+    public int getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public void setTotalQuestions(int totalQuestions) {
+        this.totalQuestions = totalQuestions;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public int getCourseID() {
         return courseID;
@@ -90,5 +126,5 @@ public class History {
     public String toString() {
         return "History{" + "historyID=" + historyID + ", userID=" + userID + ", testID=" + testID + '}';
     }
-    
+
 }

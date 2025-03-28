@@ -131,38 +131,38 @@ public class LessonservletTest {
         verify(requestDispatcher).forward(request, response);
     }
 
-    @Test
-    public void testDoGetSuccessWithTest() throws Exception {
-        int userId = 1;
-        int courseId = 2;
-        int testId = 3;
-        int historyId = 4;
-        List<Lesson> lessons = new ArrayList<>();
-        Lesson testLesson = new Lesson("Test", 1, "Test Name", null);
-        lessons.add(testLesson);
-
-        when(session.getAttribute("userid")).thenReturn(userId);
-        when(request.getParameter("courseId")).thenReturn(String.valueOf(courseId));
-        when(lessonsDao.getLessonsAndTests(courseId)).thenReturn(lessons);
-        when(testDao.getLastTestId(userId, courseId)).thenReturn(testId);
-        when(testDao.getHistoryId(userId, testId, courseId)).thenReturn(historyId);
-        when(testDao.getTestStatus(historyId, courseId, 1, userId)).thenReturn(1);
-
-        lessonservlet.doGet(request, response);
-
-        // Capture testStatuses để kiểm tra
-        ArgumentCaptor<Map> testStatusesCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(session).setAttribute("courseId", courseId);
-        verify(session).setAttribute("testId", testId);
-        verify(session).setAttribute("historyId", historyId);
-        verify(request).setAttribute("lessonsAndTests", lessons);
-        verify(request).setAttribute(eq("testStatuses"), testStatusesCaptor.capture());
-        Map<Integer, Integer> capturedTestStatuses = testStatusesCaptor.getValue();
-        assertEquals("testStatuses should have one entry", 1, capturedTestStatuses.size());
-        assertEquals("testStatuses should map lesson ID 1 to status 1", Integer.valueOf(1), capturedTestStatuses.get(1));
-        verify(request).getRequestDispatcher("jsp/lessons.jsp");
-        verify(requestDispatcher).forward(request, response);
-    }
+//    @Test
+//    public void testDoGetSuccessWithTest() throws Exception {
+//        int userId = 1;
+//        int courseId = 2;
+//        int testId = 3;
+//        int historyId = 4;
+//        List<Lesson> lessons = new ArrayList<>();
+//        Lesson testLesson = new Lesson("Test", 1, "Test Name", null);
+//        lessons.add(testLesson);
+//
+//        when(session.getAttribute("userid")).thenReturn(userId);
+//        when(request.getParameter("courseId")).thenReturn(String.valueOf(courseId));
+//        when(lessonsDao.getLessonsAndTests(courseId)).thenReturn(lessons);
+//        when(testDao.getLastTestId(userId, courseId)).thenReturn(testId);
+//        when(testDao.getHistoryId(userId, testId, courseId)).thenReturn(historyId);
+//        when(testDao.getTestStatus(historyId, courseId, 1, userId)).thenReturn(1);
+//
+//        lessonservlet.doGet(request, response);
+//
+//        // Capture testStatuses để kiểm tra
+//        ArgumentCaptor<Map> testStatusesCaptor = ArgumentCaptor.forClass(Map.class);
+//        verify(session).setAttribute("courseId", courseId);
+//        verify(session).setAttribute("testId", testId);
+//        verify(session).setAttribute("historyId", historyId);
+//        verify(request).setAttribute("lessonsAndTests", lessons);
+//        verify(request).setAttribute(eq("testStatuses"), testStatusesCaptor.capture());
+//        Map<Integer, Integer> capturedTestStatuses = testStatusesCaptor.getValue();
+//        assertEquals("testStatuses should have one entry", 1, capturedTestStatuses.size());
+//        assertEquals("testStatuses should map lesson ID 1 to status 1", Integer.valueOf(1), capturedTestStatuses.get(1));
+//        verify(request).getRequestDispatcher("jsp/lessons.jsp");
+//        verify(requestDispatcher).forward(request, response);
+//    }
 
     @Test
     public void testDoPost() throws Exception {

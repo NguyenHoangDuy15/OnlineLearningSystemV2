@@ -43,28 +43,44 @@ public class ExpertDao extends DBContext {
         return list;
     }
 
-    public List<Expert> getAllInstructorCoursesss() {
-        List<Expert> list = new ArrayList<>();
-        String sql = "SELECT u.FullName AS username, c.Name AS course_name, u.Avartar "
-                + "FROM Users u "
-                + "JOIN Courses c ON u.UserID = c.UserID "
-                + "JOIN Roles r ON u.RoleID = r.RoleID "
-                + "WHERE r.RoleID = 2;"; // RoleID = 2 là giảng viên
+    public List<Expert> getTopInstructors() {
+        List<Expert> instructors = new ArrayList<>();
+        String sql = "SELECT TOP 3 \n"
+                + "    u.UserID,\n"
+                + "    u.FullName AS InstructorName,\n"
+                + "    u.Avartar AS InstructorAvatar,\n"
+                + "    AVG(f.Rating) AS AverageRating\n"
+                + " \n"
+                + "FROM \n"
+                + "    Users u\n"
+                + "JOIN \n"
+                + "    Courses c ON u.UserID = c.UserID\n"
+                + "JOIN \n"
+                + "    Feedbacks f ON c.CourseID = f.CourseID\n"
+                + "WHERE \n"
+                + "    u.RoleID = 2  -- Assuming RoleID 2 is for instructors\n"
+                + "    AND f.Status = 1  -- Only count approved feedbacks\n"
+                + "GROUP BY \n"
+                + "    u.UserID, u.FullName, u.Avartar\n"
+                + "ORDER BY \n"
+                + "    AverageRating DESC;\n"
+                + "";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                list.add(new Expert(
-                        rs.getString("username"),
-                        rs.getString("course_name"),
-                        rs.getString("Avartar")
-                ));
+                Expert instructor = new Expert(
+                        rs.getInt("UserID"),
+                        rs.getString("InstructorName"),
+                        rs.getString("InstructorAvatar"),
+                        rs.getDouble("AverageRating")
+                );
+
+                instructors.add(instructor);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list;
+        return instructors;
     }
 
     public List<Expert> getAllInstructorCourses(String expertId) {
@@ -177,106 +193,106 @@ public class ExpertDao extends DBContext {
     }
 
 //    
-   public List<ExpertNew> getFilteredExperts(String category, String ratingOrder, int offset, int limit) {
-    List<ExpertNew> experts = new ArrayList<>();
-    String sql = "SELECT u.UserID, u.UserName, u.FullName, u.Email, u.Avartar, c.Name AS CourseName, cat.CategoryName, "
-            + "f.Rating " // Lấy từng rating thay vì AVG ngay trong SQL
-            + "FROM Users u "
-            + "LEFT JOIN Courses c ON u.UserID = c.UserID "
-            + "LEFT JOIN Category cat ON c.CategoryID = cat.CategoryID "
-            + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
-            + "WHERE u.RoleID = 2 "
-            + (category != null && !category.isEmpty() ? "AND cat.CategoryID = ? " : "")
-            + "AND (f.FeedbackID IS NULL OR f.Status = 1) " // Add condition for Feedbacks.Status = 1
-            + "ORDER BY u.UserID";
+    public List<ExpertNew> getFilteredExperts(String category, String ratingOrder, int offset, int limit) {
+        List<ExpertNew> experts = new ArrayList<>();
+        String sql = "SELECT u.UserID, u.UserName, u.FullName, u.Email, u.Avartar, c.Name AS CourseName, cat.CategoryName, "
+                + "f.Rating " // Lấy từng rating thay vì AVG ngay trong SQL
+                + "FROM Users u "
+                + "LEFT JOIN Courses c ON u.UserID = c.UserID "
+                + "LEFT JOIN Category cat ON c.CategoryID = cat.CategoryID "
+                + "LEFT JOIN Feedbacks f ON c.CourseID = f.CourseID "
+                + "WHERE u.RoleID = 2 "
+                + (category != null && !category.isEmpty() ? "AND cat.CategoryID = ? " : "")
+                + "AND (f.FeedbackID IS NULL OR f.Status = 1) " // Add condition for Feedbacks.Status = 1
+                + "ORDER BY u.UserID";
 
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        if (category != null && !category.isEmpty()) {
-            ps.setString(1, category);
-        }
-        ResultSet rs = ps.executeQuery();
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            if (category != null && !category.isEmpty()) {
+                ps.setString(1, category);
+            }
+            ResultSet rs = ps.executeQuery();
 
-        // Map để lưu trữ expert, danh sách khóa học và danh sách rating
-        Map<Integer, ExpertNew> expertMap = new LinkedHashMap<>();
-        Map<Integer, List<Double>> ratingsMap = new HashMap<>();
+            // Map để lưu trữ expert, danh sách khóa học và danh sách rating
+            Map<Integer, ExpertNew> expertMap = new LinkedHashMap<>();
+            Map<Integer, List<Double>> ratingsMap = new HashMap<>();
 
-        while (rs.next()) {
-            int userID = rs.getInt("userID");
-            ExpertNew expert = expertMap.get(userID);
+            while (rs.next()) {
+                int userID = rs.getInt("userID");
+                ExpertNew expert = expertMap.get(userID);
 
-            if (expert == null) {
-                expert = new ExpertNew();
-                expert.setUserID(userID);
-                expert.setUserName(rs.getString("userName"));
-                expert.setFullName(rs.getString("fullName"));
-                expert.setEmail(rs.getString("email"));
-                expert.setAvartar(rs.getString("avartar"));
-                expert.setCategoryName(rs.getString("categoryName"));
-                expertMap.put(userID, expert);
-                ratingsMap.put(userID, new ArrayList<>());
+                if (expert == null) {
+                    expert = new ExpertNew();
+                    expert.setUserID(userID);
+                    expert.setUserName(rs.getString("userName"));
+                    expert.setFullName(rs.getString("fullName"));
+                    expert.setEmail(rs.getString("email"));
+                    expert.setAvartar(rs.getString("avartar"));
+                    expert.setCategoryName(rs.getString("categoryName"));
+                    expertMap.put(userID, expert);
+                    ratingsMap.put(userID, new ArrayList<>());
+                }
+
+                // Thêm khóa học
+                String courseName = rs.getString("courseName");
+                if (courseName != null && !courseName.equals("No Course")) {
+                    expert.getCourseNames().add(courseName);
+                }
+
+                // Thu thập rating
+                double rating = rs.getDouble("Rating");
+                if (rs.wasNull()) {
+                    rating = 0; // Nếu không có rating, gán 0
+                }
+                ratingsMap.get(userID).add(rating);
             }
 
-            // Thêm khóa học
-            String courseName = rs.getString("courseName");
-            if (courseName != null && !courseName.equals("No Course")) {
-                expert.getCourseNames().add(courseName);
-            }
+            // Tính trung bình rating cho mỗi expert
+            for (Map.Entry<Integer, ExpertNew> entry : expertMap.entrySet()) {
+                int userID = entry.getKey();
+                ExpertNew expert = entry.getValue();
+                List<Double> ratings = ratingsMap.get(userID);
 
-            // Thu thập rating
-            double rating = rs.getDouble("Rating");
-            if (rs.wasNull()) {
-                rating = 0; // Nếu không có rating, gán 0
-            }
-            ratingsMap.get(userID).add(rating);
-        }
-
-        // Tính trung bình rating cho mỗi expert
-        for (Map.Entry<Integer, ExpertNew> entry : expertMap.entrySet()) {
-            int userID = entry.getKey();
-            ExpertNew expert = entry.getValue();
-            List<Double> ratings = ratingsMap.get(userID);
-
-            double avgRating = 0;
-            if (!ratings.isEmpty()) {
-                double sum = 0;
-                int count = 0;
-                for (Double rating : ratings) {
-                    if (rating > 0) { // Chỉ tính rating > 0
-                        sum += rating;
-                        count++;
+                double avgRating = 0;
+                if (!ratings.isEmpty()) {
+                    double sum = 0;
+                    int count = 0;
+                    for (Double rating : ratings) {
+                        if (rating > 0) { // Chỉ tính rating > 0
+                            sum += rating;
+                            count++;
+                        }
                     }
+                    avgRating = (count > 0) ? sum / count : 0;
                 }
-                avgRating = (count > 0) ? sum / count : 0;
+                expert.setAvgRating(avgRating);
             }
-            expert.setAvgRating(avgRating);
+
+            // Chuyển map thành list
+            experts = new ArrayList<>(expertMap.values());
+
+            // Sắp xếp theo rating nếu cần
+            if (ratingOrder != null && !ratingOrder.isEmpty()) {
+                experts.sort((e1, e2) -> {
+                    if ("ASC".equalsIgnoreCase(ratingOrder)) {
+                        return Double.compare(e1.getAvgRating(), e2.getAvgRating());
+                    } else {
+                        return Double.compare(e2.getAvgRating(), e1.getAvgRating());
+                    }
+                });
+            }
+
+            // Áp dụng phân trang
+            int start = Math.min(offset, experts.size());
+            int end = Math.min(start + limit, experts.size());
+            experts = experts.subList(start, end);
+
+            System.out.println("Experts size in DAO: " + experts.size());
+        } catch (SQLException e) {
+            System.err.println("SQL Error in getFilteredExperts: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        // Chuyển map thành list
-        experts = new ArrayList<>(expertMap.values());
-
-        // Sắp xếp theo rating nếu cần
-        if (ratingOrder != null && !ratingOrder.isEmpty()) {
-            experts.sort((e1, e2) -> {
-                if ("ASC".equalsIgnoreCase(ratingOrder)) {
-                    return Double.compare(e1.getAvgRating(), e2.getAvgRating());
-                } else {
-                    return Double.compare(e2.getAvgRating(), e1.getAvgRating());
-                }
-            });
-        }
-
-        // Áp dụng phân trang
-        int start = Math.min(offset, experts.size());
-        int end = Math.min(start + limit, experts.size());
-        experts = experts.subList(start, end);
-
-        System.out.println("Experts size in DAO: " + experts.size());
-    } catch (SQLException e) {
-        System.err.println("SQL Error in getFilteredExperts: " + e.getMessage());
-        e.printStackTrace();
+        return experts;
     }
-    return experts;
-}
 //    public int countFilteredExperts(String category, String ratingOrder) {
 //        String sql = "SELECT COUNT(*) AS Total FROM Users u "
 //                + "JOIN Courses c ON u.UserID = c.UserID "
@@ -300,6 +316,7 @@ public class ExpertDao extends DBContext {
 //        }
 //        return 0;
 //    }
+
     public int countFilteredExperts(String category, String ratingOrder) {
         String sql = "SELECT COUNT(DISTINCT u.UserID) AS Total FROM Users u "
                 + "LEFT JOIN Courses c ON u.UserID = c.UserID "

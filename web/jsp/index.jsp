@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -216,8 +217,8 @@
     <body>
         <%@ include file="header.jsp" %>
         <!-- Header Start -->
-       
-  
+
+
         <div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
             <div class="container text-center my-5 py-5">
                 <h1 class="text-white mt-4 mb-4">Learn From Home</h1>
@@ -286,7 +287,7 @@
             <div class="container py-5">
                 <div class="section-title text-center position-relative mb-5">
                     <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Expert</h6>
-                    <h1 class="display-4">Meet Our Expert</h1>
+                    <h1 class="display-4">Top 3 Expert</h1>
                 </div>
                 <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                     <c:forEach items="${coursedao}" var="course">
@@ -295,13 +296,30 @@
                             <div class="bg-light text-center p-4">
                                 <h5 class="mb-3">${course.username}</h5> <!-- Hiển thị tên giảng viên -->
                                 <p class="mb-2">${course.courseName}</p> <!-- Hiển thị tên khóa học -->
-                                <div class="d-flex justify-content-center">
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-twitter"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-instagram"></i></a>
-                                    <a class="mx-1 p-1" href="#"><i class="fab fa-youtube"></i></a>
+                                <div class="text-center mb-2">
+                                    <c:set var="rating" value="${course.rating}"/>
+                                    <c:set var="fullStars" value="${Math.floor(rating)}"/>
+                                    <c:set var="decimalPart" value="${rating - fullStars}"/>
+                                    <c:set var="hasHalfStar" value="${decimalPart >= 0.5}"/>
+                                    <c:set var="starsDisplayed" value="${fullStars + (hasHalfStar ? 1 : 0)}"/>
+                                    <c:set var="emptyStars" value="${5 - starsDisplayed}"/>
+
+                                    <!-- Sao đầy -->
+                                    <c:forEach begin="1" end="${fullStars}">
+                                        <i class="fas fa-star" style="color: #f1c40f;"></i>
+                                    </c:forEach>
+                                    <!-- Sao nửa -->
+                                    <c:if test="${hasHalfStar}">
+                                        <i class="fas fa-star-half-alt" style="color: #f1c40f;"></i>
+                                    </c:if>
+                                    <!-- Sao rỗng -->
+                                    <c:forEach begin="1" end="${emptyStars}">
+                                        <i class="far fa-star" style="color: #f1c40f;"></i>
+                                    </c:forEach>
+
+                                    <span>(<fmt:formatNumber value="${rating}" minFractionDigits="1" maxFractionDigits="1"/>)</span>
                                 </div>
+
                             </div>
                         </div>
                     </c:forEach>
@@ -345,19 +363,19 @@
         </script>
 
         <!-- Nhúng chatbot widget -->
-     <% 
-    // Không khai báo lại, chỉ gán giá trị
-    userId = (Integer) session.getAttribute("userid");
+        <% 
+       // Không khai báo lại, chỉ gán giá trị
+       userId = (Integer) session.getAttribute("userid");
     
-    // Kiểm tra nếu userId tồn tại (khác null)
-    if (userId != null) {
-%>
-    <iframe 
-        src="jsp/chatbot-widget.jsp" 
-        style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
-    </iframe>
-<% 
-    } 
-%>
+       // Kiểm tra nếu userId tồn tại (khác null)
+       if (userId != null) {
+        %>
+        <iframe 
+            src="jsp/chatbot-widget.jsp" 
+            style="position: fixed; bottom: 0; right: 0; border: none; width: 400px; height: 600px; z-index: 1000;">
+        </iframe>
+        <% 
+            } 
+        %>
     </body>
 </html>
