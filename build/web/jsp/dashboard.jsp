@@ -1,10 +1,8 @@
-<%-- 
-    Document   : dashboard
-    Created on : Mar 7, 2025, 8:13:45 PM
-    Author     : DELL
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -304,44 +302,66 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <div class="tab-content" id="myTabContent">
+                        <!-- Newest Notifications Section -->
+                        <div class="tab-pane fade show active" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">History Transcript</div>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <c:forEach var="news" items="${sessionScope.monleyList}">
+                                            <li>
+                                                <span style="font-size: 21px" class="date">${news.getPaymentDate()}</span>
+                                                <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size:16px;">
+                                                    ${news.getCourseName()}
+                                                </p>
+                                            </li>
+                                        </c:forEach>
+                                        <li><a href="ListTranscriptByAdminServlet">View History</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-                <!--   Core JS Files   -->
-                <script src="assets/js/core/jquery-3.7.1.min.js"></script>
-                <script src="assets/js/core/popper.min.js"></script>
-                <script src="assets/js/core/bootstrap.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <!--   Core JS Files   -->
+                    <script src="assets/js/core/jquery-3.7.1.min.js"></script>
+                    <script src="assets/js/core/popper.min.js"></script>
+                    <script src="assets/js/core/bootstrap.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-                <!-- jQuery Scrollbar -->
-                <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+                    <!-- jQuery Scrollbar -->
+                    <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
-                <!-- Chart JS -->
-                <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+                    <!-- Chart JS -->
+                    <script src="assets/js/plugin/chart.js/chart.min.js"></script>
 
-                <!-- jQuery Sparkline -->
-                <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+                    <!-- jQuery Sparkline -->
+                    <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
 
-                <!-- Chart Circle -->
-                <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+                    <!-- Chart Circle -->
+                    <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
 
-                <!-- Datatables -->
-                <script src="assets/js/plugin/datatables/datatables.min.js"></script>
-
-
-                <!-- jQuery Vector Maps -->
-                <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-                <script src="assets/js/plugin/jsvectormap/world.js"></script>
+                    <!-- Datatables -->
+                    <script src="assets/js/plugin/datatables/datatables.min.js"></script>
 
 
-                <!-- Kaiadmin JS -->
-                <script src="assets/js/kaiadmin.min.js"></script>
+                    <!-- jQuery Vector Maps -->
+                    <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+                    <script src="assets/js/plugin/jsvectormap/world.js"></script>
 
-                <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-                <script src="assets/js/setting-demo.js"></script>
-                <script src="assets/js/demo.js"></script>
-                <script>
+
+                    <!-- Kaiadmin JS -->
+                    <script src="assets/js/kaiadmin.min.js"></script>
+
+                    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+                    <script src="assets/js/setting-demo.js"></script>
+                    <script src="assets/js/demo.js"></script>
+                    <script>
             $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
                 type: "line",
                 height: "70",
@@ -366,28 +386,28 @@
                 lineColor: "#ffa534",
                 fillColor: "rgba(255, 165, 52, .14)",
             });
-                </script>
+                    </script>
 
-                <script>
-                    // Format price to VND
-                    function formatCurrencyVND(value) {
-                        return new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND'
-                        }).format(value);
-                    }
+                    <script>
+                        // Format price to VND
+                        function formatCurrencyVND(value) {
+                            return new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(value);
+                        }
 
-                    // Apply the format to all prices
-                    $(document).ready(function () {
-                        $('.price-vnd').each(function () {
-                            let price = parseFloat($(this).text());
-                            $(this).text(formatCurrencyVND(price));
+                        // Apply the format to all prices
+                        $(document).ready(function () {
+                            $('.price-vnd').each(function () {
+                                let price = parseFloat($(this).text());
+                                $(this).text(formatCurrencyVND(price));
+                            });
                         });
-                    });
-                    function doClose() {
-                        $('#addUserModal').modal('hide');
-                    }
-                </script>
+                        function doClose() {
+                            $('#addUserModal').modal('hide');
+                        }
+                    </script>
 
-                </body>
-                </html>
+                    </body>
+                    </html>
