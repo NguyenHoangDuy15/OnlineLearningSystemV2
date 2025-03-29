@@ -853,156 +853,155 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            function toggleSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const mainContent = document.getElementById('mainContent');
-                sidebar.classList.toggle('active');
-                mainContent.classList.toggle('shifted');
-            }
+                                    function toggleSidebar() {
+                                        const sidebar = document.getElementById('sidebar');
+                                        const mainContent = document.getElementById('mainContent');
+                                        sidebar.classList.toggle('active');
+                                        mainContent.classList.toggle('shifted');
+                                    }
 
-            document.addEventListener('DOMContentLoaded', function () {
-                const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
-                const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
-                const createCourseBtn = document.getElementById('createCourseBtn');
-                const returnFromCourses = document.getElementById('returnFromCourses');
-                const returnFromTests = document.getElementById('returnFromTests');
-                const welcome = document.getElementById('welcome');
-                const courseList = document.getElementById('courseList');
-                const testList = document.getElementById('testList');
-                const testListBody = document.getElementById('testListBody');
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const viewOwnerTestBtn = document.getElementById('viewOwnerTestBtn');
+                                        const viewOwnerCourseBtn = document.getElementById('viewOwnerCourseBtn');
+                                        const createCourseBtn = document.getElementById('createCourseBtn');
+                                        const returnFromCourses = document.getElementById('returnFromCourses');
+                                        const returnFromTests = document.getElementById('returnFromTests');
+                                        const welcome = document.getElementById('welcome');
+                                        const courseList = document.getElementById('courseList');
+                                        const testList = document.getElementById('testList');
+                                        const testListBody = document.getElementById('testListBody');
 
-                function hideAll() {
-                    welcome.classList.remove('active');
-                    welcome.style.display = 'none';
-                    courseList.style.display = 'none';
-                    testList.style.display = 'none';
-                }
-
-                function showWelcome() {
-                    hideAll();
-                    welcome.classList.add('active');
-                    welcome.style.display = 'block';
-                }
-
-                // Kiểm tra nếu cần hiển thị danh sách khóa học ngay khi tải trang
-                const showCourseList = <%= showCourseList %>;
-                if (showCourseList) {
-                    hideAll();
-                    courseList.style.display = 'block';
-                }
-
-                viewOwnerTestBtn.addEventListener('click', () => {
-                    hideAll();
-                    testList.style.display = 'block';
-                    toggleSidebar();
-                });
-
-                viewOwnerCourseBtn.addEventListener('click', () => {
-                    hideAll();
-                    courseList.style.display = 'block';
-                    toggleSidebar();
-                });
-
-                createCourseBtn.addEventListener('click', () => {
-                    window.location.href = 'createCourse';
-                });
-
-                returnFromCourses.addEventListener('click', () => {
-                    showWelcome();
-                });
-
-                returnFromTests.addEventListener('click', () => {
-                    showWelcome();
-                });
-
-                // Thêm hiệu ứng click cho dropdown items
-                document.querySelectorAll('.dropdown-item').forEach(item => {
-                    item.addEventListener('click', function () {
-                        document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                        this.classList.add('active');
-                    });
-                });
-
-                // Thêm hiệu ứng click cho stat items
-                document.querySelectorAll('.stat-item').forEach(item => {
-                    item.addEventListener('click', function () {
-                        document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
-                        this.style.background = '#e6f0ff';
-                    });
-                });
-
-                window.deleteCourse = function (courseId) {
-                    if (confirm("Are you sure you want to delete this course?")) {
-                        fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, {method: 'POST'})
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === "success") {
-                                    alert("Course deleted successfully!");
-                                    document.getElementById('courseRow' + courseId)?.remove();
-                                    document.querySelectorAll(`#testListBody tr`).forEach(row => {
-                                        const courseIdCell = row.cells[3]; // Cột Course ID
-                                        if (courseIdCell && parseInt(courseIdCell.textContent) === courseId) {
-                                            row.remove();
+                                        function hideAll() {
+                                            welcome.classList.remove('active');
+                                            welcome.style.display = 'none';
+                                            courseList.style.display = 'none';
+                                            testList.style.display = 'none';
                                         }
+
+                                        function showWelcome() {
+                                            hideAll();
+                                            welcome.classList.add('active');
+                                            welcome.style.display = 'block';
+                                        }
+
+                                        // Kiểm tra nếu cần hiển thị danh sách khóa học ngay khi tải trang
+                                        const showCourseList = <%= showCourseList %>;
+                                        if (showCourseList) {
+                                            hideAll();
+                                            courseList.style.display = 'block';
+                                        }
+
+                                        viewOwnerTestBtn.addEventListener('click', () => {
+                                            hideAll();
+                                            testList.style.display = 'block';
+                                            toggleSidebar();
+                                        });
+
+                                        viewOwnerCourseBtn.addEventListener('click', () => {
+                                            hideAll();
+                                            courseList.style.display = 'block';
+                                            toggleSidebar();
+                                        });
+
+                                        createCourseBtn.addEventListener('click', () => {
+                                            window.location.href = 'createCourse';
+                                        });
+
+                                        returnFromCourses.addEventListener('click', () => {
+                                            window.location.href = 'ShowexpertServlet';
+                                        });
+
+                                        returnFromTests.addEventListener('click', () => {
+                                            window.location.href = 'ShowexpertServlet';
+                                        });
+                                        // Thêm hiệu ứng click cho dropdown items
+                                        document.querySelectorAll('.dropdown-item').forEach(item => {
+                                            item.addEventListener('click', function () {
+                                                document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                                                this.classList.add('active');
+                                            });
+                                        });
+
+                                        // Thêm hiệu ứng click cho stat items
+                                        document.querySelectorAll('.stat-item').forEach(item => {
+                                            item.addEventListener('click', function () {
+                                                document.querySelectorAll('.stat-item').forEach(i => i.style.background = '#fff');
+                                                this.style.background = '#e6f0ff';
+                                            });
+                                        });
+
+                                        window.deleteCourse = function (courseId) {
+                                            if (confirm("Are you sure you want to delete this course?")) {
+                                                fetch('NoticeServlet?action=deleteCourse&courseId=' + courseId, {method: 'POST'})
+                                                        .then(response => response.text())
+                                                        .then(data => {
+                                                            if (data === "success") {
+                                                                alert("Course deleted successfully!");
+                                                                document.getElementById('courseRow' + courseId)?.remove();
+                                                                document.querySelectorAll(`#testListBody tr`).forEach(row => {
+                                                                    const courseIdCell = row.cells[3]; // Cột Course ID
+                                                                    if (courseIdCell && parseInt(courseIdCell.textContent) === courseId) {
+                                                                        row.remove();
+                                                                    }
+                                                                });
+
+                                                                if (testListBody.getElementsByTagName('tr').length === 0) {
+                                                                    testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
+                                                                }
+                                                            } else {
+                                                                alert("Failed to delete course: " + data);
+                                                            }
+                                                        })
+                                                        .catch(error => alert("An error occurred: " + error.message));
+                                            }
+                                        };
+
+                                        window.requestCourse = function (courseId) {
+                                            if (confirm("Are you sure you want to request approval for this course?")) {
+                                                fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, {method: 'POST'})
+                                                        .then(response => response.text())
+                                                        .then(data => {
+                                                            if (data === "success") {
+                                                                alert("Course request submitted successfully!");
+                                                                const statusSpan = document.getElementById('status' + courseId);
+                                                                if (statusSpan) {
+                                                                    statusSpan.textContent = "Waiting";
+                                                                    statusSpan.className = "status-waiting";
+                                                                }
+                                                                const row = document.getElementById('courseRow' + courseId);
+                                                                if (row) {
+                                                                    row.querySelector('td:last-child').innerHTML = '';
+                                                                }
+                                                            } else {
+                                                                alert("Failed to request course: " + data);
+                                                            }
+                                                        })
+                                                        .catch(error => alert("An error occurred: " + error.message));
+                                            }
+                                        };
+
+                                        window.deleteTest = function (testId) {
+                                            if (confirm("Are you sure you want to delete this test?")) {
+                                                fetch('NoticeServlet?action=deleteTest&testId=' + testId, {method: 'POST'})
+                                                        .then(response => response.text())
+                                                        .then(data => {
+                                                            if (data === "success") {
+                                                                alert("Test marked as deleted successfully!");
+                                                                const testRow = document.getElementById('testRow' + testId);
+                                                                if (testRow) {
+                                                                    testRow.remove();
+                                                                    if (testListBody.getElementsByTagName('tr').length === 0) {
+                                                                        testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                alert("Failed to mark test as deleted: " + data);
+                                                            }
+                                                        })
+                                                        .catch(error => alert("An error occurred: " + error.message));
+                                            }
+                                        };
                                     });
-
-                                    if (testListBody.getElementsByTagName('tr').length === 0) {
-                                        testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
-                                    }
-                                } else {
-                                    alert("Failed to delete course: " + data);
-                                }
-                            })
-                            .catch(error => alert("An error occurred: " + error.message));
-                    }
-                };
-
-                window.requestCourse = function (courseId) {
-                    if (confirm("Are you sure you want to request approval for this course?")) {
-                        fetch('NoticeServlet?action=requestCourse&courseId=' + courseId, {method: 'POST'})
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === "success") {
-                                    alert("Course request submitted successfully!");
-                                    const statusSpan = document.getElementById('status' + courseId);
-                                    if (statusSpan) {
-                                        statusSpan.textContent = "Waiting";
-                                        statusSpan.className = "status-waiting";
-                                    }
-                                    const row = document.getElementById('courseRow' + courseId);
-                                    if (row) {
-                                        row.querySelector('td:last-child').innerHTML = '';
-                                    }
-                                } else {
-                                    alert("Failed to request course: " + data);
-                                }
-                            })
-                            .catch(error => alert("An error occurred: " + error.message));
-                    }
-                };
-
-                window.deleteTest = function (testId) {
-                    if (confirm("Are you sure you want to delete this test?")) {
-                        fetch('NoticeServlet?action=deleteTest&testId=' + testId, {method: 'POST'})
-                            .then(response => response.text())
-                            .then(data => {
-                                if (data === "success") {
-                                    alert("Test marked as deleted successfully!");
-                                    const testRow = document.getElementById('testRow' + testId);
-                                    if (testRow) {
-                                        testRow.remove();
-                                        if (testListBody.getElementsByTagName('tr').length === 0) {
-                                            testListBody.innerHTML = '<tr><td colspan="5">No tests available</td></tr>';
-                                        }
-                                    }
-                                } else {
-                                    alert("Failed to mark test as deleted: " + data);
-                                }
-                            })
-                            .catch(error => alert("An error occurred: " + error.message));
-                    }
-                };
-            });
         </script>
     </body>
 </html>

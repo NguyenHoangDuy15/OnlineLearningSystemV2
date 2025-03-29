@@ -41,6 +41,14 @@ public class createCourse extends HttpServlet {
                 String imageCourses = "default.jpg";
                 Part filePart = request.getPart("imageFile");
 
+                // Kiểm tra courseName và description không được null, rỗng hoặc toàn dấu cách
+                if (courseName == null || courseName.trim().isEmpty()) {
+                    throw new Exception("Course name cannot be empty or contain only whitespace.");
+                }
+                if (description == null || description.trim().isEmpty()) {
+                    throw new Exception("Description cannot be empty or contain only whitespace.");
+                }
+
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = extractFileName(filePart);
                     String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
@@ -64,13 +72,20 @@ public class createCourse extends HttpServlet {
 
                 if (lessonNames != null && lessonContents != null && lessonNames.length == lessonContents.length) {
                     for (int i = 0; i < lessonNames.length; i++) {
-                        String lessonName = lessonNames[i].trim();
-                        String lessonContent = lessonContents[i].trim();
+                        String lessonName = lessonNames[i] != null ? lessonNames[i].trim() : "";
+                        String lessonContent = lessonContents[i] != null ? lessonContents[i].trim() : "";
 
-                        if (!lessonName.isEmpty() && !lessonContent.isEmpty()) {
-                            lessonDao.addLesson(courseId, lessonName, lessonContent);
-                            lessonCount++;
+                        // Kiểm tra lessonName và lessonContent không được rỗng hoặc toàn dấu cách
+                        if (lessonName.isEmpty()) {
+                            throw new Exception("Lesson name cannot be empty or contain only whitespace.");
                         }
+                        if (lessonContent.isEmpty()) {
+                            throw new Exception("Lesson content cannot be empty or contain only whitespace.");
+                        }
+
+                        // Chỉ thêm lesson nếu cả hai trường đều hợp lệ
+                        lessonDao.addLesson(courseId, lessonName, lessonContent);
+                        lessonCount++;
                     }
                 }
 

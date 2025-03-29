@@ -353,7 +353,7 @@
 
         .lesson-block {
             position: relative;
-            border: 1px solid var(--border);
+            border: 1px solid Ver(--border);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
@@ -459,21 +459,18 @@
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
-            display: none;
         }
 
         .notification.success {
             color: var(--accent-green);
             background-color: #e6ffe6;
             border: 1px solid var(--accent-green);
-            display: block;
         }
 
         .notification.error {
             color: var(--accent-red);
             background-color: #ffe6e6;
             border: 1px solid var(--accent-red);
-            display: block;
         }
 
         ul {
@@ -589,13 +586,8 @@
             <div class="notification error">
                 <%= errorMessage %>
                 <br>
-                <button type="button" class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet?action=viewCourses'" style="margin-top: 10px;">Return to Course List</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = 'createCourse'" style="margin-top: 10px;">Try Again</button>
             </div>
-            <script>
-                setTimeout(() => {
-                    window.location.href = 'ShowexpertServlet?action=viewCourses';
-                }, 3000);
-            </script>
         <% } %>
         <form id="createCourseForm" action="createCourse" method="post" enctype="multipart/form-data">
             <input type="hidden" name="action" value="createCourse">
@@ -609,7 +601,7 @@
             </div>
             <div class="form-group">
                 <label for="price">Price:</label>
-             <input type="number" id="price" name="price" placeholder="Enter price" min="1" required>
+                <input type="number" id="price" name="price" placeholder="Enter price" min="1" required>
             </div>
             <div class="form-group">
                 <label for="imageFile">Upload Image:</label>
@@ -694,6 +686,22 @@
             return;
         }
 
+        // Kiểm tra toàn dấu cách cho courseName
+        const courseName = document.getElementById('courseName').value;
+        if (!courseName || courseName.trim() === '') {
+            alert('Course name cannot be empty or contain only whitespace.');
+            event.preventDefault();
+            return;
+        }
+
+        // Kiểm tra toàn dấu cách cho description
+        const description = document.getElementById('description').value;
+        if (!description || description.trim() === '') {
+            alert('Description cannot be empty or contain only whitespace.');
+            event.preventDefault();
+            return;
+        }
+
         // Kiểm tra trường Category
         const categorySelect = document.getElementById('categoryId');
         if (!categorySelect.value || categorySelect.value === "") {
@@ -702,8 +710,26 @@
             return;
         }
 
-        // Kiểm tra các link YouTube
+        // Kiểm tra toàn dấu cách cho lessonName và lessonContent
+        const lessonNames = document.getElementsByName('lessonName[]');
         const lessonContents = document.getElementsByName('lessonContent[]');
+        for (let i = 0; i < lessonNames.length; i++) {
+            const lessonName = lessonNames[i].value;
+            if (!lessonName || lessonName.trim() === '') {
+                alert('Lesson Title ' + (i + 1) + ' cannot be empty or contain only whitespace.');
+                event.preventDefault();
+                return;
+            }
+
+            const lessonContent = lessonContents[i].value;
+            if (!lessonContent || lessonContent.trim() === '') {
+                alert('Lesson Content ' + (i + 1) + ' cannot be empty or contain only whitespace.');
+                event.preventDefault();
+                return;
+            }
+        }
+
+        // Kiểm tra các link YouTube
         const youtubeRegex = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}/;
         const contentValues = []; // Mảng lưu trữ các URL để kiểm tra trùng
 
@@ -716,13 +742,6 @@
                 event.preventDefault();
                 return;
             }
-            const priceInput = document.getElementById('price');
-        const priceValue = parseFloat(priceInput.value);
-        if (isNaN(priceValue) || priceValue <= 0) {
-            alert('Price must be a number greater than 0.');
-            event.preventDefault();
-            return;
-        }
 
             // Kiểm tra trùng lặp
             if (contentValues.includes(content)) {
@@ -731,6 +750,15 @@
                 return;
             }
             contentValues.push(content); // Thêm URL vào mảng nếu không trùng
+        }
+
+        // Kiểm tra giá
+        const priceInput = document.getElementById('price');
+        const priceValue = parseFloat(priceInput.value);
+        if (isNaN(priceValue) || priceValue <= 0) {
+            alert('Price must be a number greater than 0.');
+            event.preventDefault();
+            return;
         }
 
         isSubmitting = true;

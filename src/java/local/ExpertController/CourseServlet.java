@@ -38,7 +38,6 @@ public class CourseServlet extends HttpServlet {
 
         System.out.println("[CourseServlet] Received courseId: " + courseIdStr);
 
-        // Kiểm tra courseId
         if (courseIdStr == null || courseIdStr.trim().isEmpty()) {
             System.err.println("[CourseServlet] Course ID is null or empty");
             request.setAttribute("error", "Course ID is missing");
@@ -56,8 +55,6 @@ public class CourseServlet extends HttpServlet {
             request.getRequestDispatcher("jsp/error1.jsp").forward(request, response);
             return;
         }
-
-        // Lấy thông tin khóa học
         CourseEX course = courseDAO.getCourseByIdEx(courseId);
         System.out.println("[CourseServlet] Fetched course: " + (course != null ? course.getCourseID() : "null"));
         if (course == null) {

@@ -582,7 +582,7 @@
                 <p>No questions available for this test.</p>
                 <% } %>
             </div>
-            <button class="btn btn-primary" onclick="window.location.href = 'ShowexpertServlet'">Return to List Dashboard</button>
+            <button class="btn btn-primary" onclick="history.back()">Cancel</button>
         </div>
     </main>
 
