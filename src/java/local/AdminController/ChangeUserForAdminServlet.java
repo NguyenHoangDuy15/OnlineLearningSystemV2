@@ -112,8 +112,15 @@ public class ChangeUserForAdminServlet extends HttpServlet {
                 request.setAttribute("name", fullname);
                 request.setAttribute("status", status);
                 request.getRequestDispatcher("jsp/ChangeUserForAdmin.jsp").forward(request, response);
-
             }
+        } else if (fullname.trim() == null) {
+            session.setAttribute("noti", "Fullname not null");
+            request.setAttribute("fullname", fullname);
+            request.setAttribute("email", email);
+            request.setAttribute("role", role);
+            request.setAttribute("name", fullname);
+            request.setAttribute("status", status);
+            request.getRequestDispatcher("jsp/ChangeUserForAdmin.jsp").forward(request, response);
         } else {
             adao.UpdateUserForAdmin(userid, fullname, email, role, status);
             if (r == 2) {

@@ -100,7 +100,7 @@ public class AddNewUserServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("AddNewUserServlet").forward(request, response);
-        } else if (!Validator.isValidUsername(user)) {
+        } else if (!Validator.isValidUsername(user) || user.trim() == null) {
             request.setAttribute("err", "Invalid username! Must be 5-20 characters, no spaces, not starting with a number.");
             request.setAttribute("username", user);
             request.setAttribute("password", pass);
@@ -108,7 +108,7 @@ public class AddNewUserServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("AddNewUserServlet").forward(request, response);
-        } else if (!Validator.isValidEmail(mail)) {
+        } else if (!Validator.isValidEmail(mail) || mail.trim() == null) {
             request.setAttribute("err", "Invalid email format!");
             request.setAttribute("username", user);
             request.setAttribute("password", pass);
@@ -116,7 +116,7 @@ public class AddNewUserServlet extends HttpServlet {
             request.setAttribute("name", fullname);
             request.setAttribute("email", mail);
             request.getRequestDispatcher("AddNewUserServlet").forward(request, response);
-        } else if (!Validator.isValidPassword(pass)) {
+        } else if (!Validator.isValidPassword(pass) || pass.trim() == null) {
             request.setAttribute("err", "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
             request.setAttribute("username", user);
             request.setAttribute("password", pass);
