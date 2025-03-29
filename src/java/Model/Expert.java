@@ -106,8 +106,6 @@ public class Expert {
         return "Expert{" + "username=" + username + ", courseName=" + courseName + ", avatar=" + avatar + '}';
     }
 
-    public void add(Expert instructors) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+ 
 
 }
