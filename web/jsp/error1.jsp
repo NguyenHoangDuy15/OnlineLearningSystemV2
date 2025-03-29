@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error - Online Learning</title>
+    <title>Error - <%= request.getAttribute("error") != null ? request.getAttribute("error") : "Online Learning" %></title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -52,8 +53,8 @@
 </head>
 <body>
     <div class="error-container">
-        <h2>Error</h2>
-        <p><%= request.getAttribute("error") != null ? request.getAttribute("error") : "An unexpected error occurred." %></p>
+        <h2><i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>Error</h2>
+        <p>${error != null ? error : 'An unexpected error occurred.'}</p>
         <button class="btn" onclick="window.history.back()">Go Back</button>
     </div>
 </body>
