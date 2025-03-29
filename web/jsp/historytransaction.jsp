@@ -153,7 +153,7 @@
                                 <div class="card border-0 shadow d-flex flex-row align-items-center p-3">
                                     <div class="card-body ml-4" style="flex: 1;">
                                         <h5 class="card-title mb-2">${t.courseName}</h5>
-                                        <p class="card-text">${t.paidAmount}$<span class="tooltip-text">Số tiền đã thanh toán</span></p>
+                                        <p class="card-text">${t.paidAmount} VND<span class="tooltip-text">Số tiền đã thanh toán</span></p>
                                         <p class="text-muted mb-0"><strong>Payment Date:</strong> ${t.createdAt}<span class="tooltip-text">Ngày thanh toán</span></p>
                                         <p class="text-${t.status == 1 ? 'success' : 'danger'}">
                                             <strong>Status:</strong> ${t.status == 1 ? "Completed" : "Pending"}<span class="tooltip-text">Trạng thái giao dịch</span>
