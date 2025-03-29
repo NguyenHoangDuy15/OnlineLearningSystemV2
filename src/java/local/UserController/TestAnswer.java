@@ -131,15 +131,14 @@ public class TestAnswer extends HttpServlet {
             int historyId = testDao.insertHistory(userId, testId, courseId);
             session.setAttribute("historyId", historyId);
 
-            for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
-                int index = 0;
-                for (int i = 0; i < questions.size(); i++) {
-                    if (questions.get(i).getQuestionID() == entry.getKey()) {
-                        index = i + 1;
-                        break;
-                    }
+            // Duyệt qua danh sách questions để insert user answers
+            for (int i = 0; i < questions.size(); i++) {
+                Question question = questions.get(i);
+                int questionId = question.getQuestionID();
+                String answerOption = userAnswers.get(questionId);
+                if (answerOption != null) { // Chỉ insert nếu người dùng đã trả lời
+                    testDao.insertUserAnswer(userId, testId, questionId, answerOption, i + 1, historyId);
                 }
-                testDao.insertUserAnswer(userId, testId, entry.getKey(), entry.getValue(), index, historyId);
             }
 
             testDao.updateCorrectAnswers(userId, testId, historyId);

@@ -9,19 +9,53 @@ package Model;
  * @author Administrator
  */
 public class Expert {
+
     int userId;
     String username;
     String name;
     String email;
     String avatar;
     String courseName;
+    double rating;
 
-    public Expert(int userId,String username, String email, String avatar, String courseName) {
+    public Expert(int userId, String username, String email, String avatar, String courseName) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.avatar = avatar;
         this.courseName = courseName;
+    }
+
+    public Expert(int userId, String username, String avatar, double rating) {
+        this.userId = userId;
+        this.username = username;
+      
+        this.avatar = avatar;
+        this.rating = rating;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public Expert(String username, String courseName, String avatar) {
@@ -71,5 +105,7 @@ public class Expert {
     public String toString() {
         return "Expert{" + "username=" + username + ", courseName=" + courseName + ", avatar=" + avatar + '}';
     }
+
+ 
 
 }

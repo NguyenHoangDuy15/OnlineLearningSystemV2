@@ -59,11 +59,10 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
-                                        <nav
-                                            class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
-                                            >
-                                        </nav>
-
+                                        <button class="btn btn-primary btn-round ms-auto" onclick="BackToList()">
+                                            <i class="fas fa-angle-left"></i>
+                                            Back to Dashboard
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -184,6 +183,11 @@
     <script>
         function addUser() {
             window.location = "AddNewUserServlet";
+        }
+    </script>
+    <script>
+        function BackToList() {
+            window.location = "ShowAdminDasboardServlet";
         }
     </script>
     <script>

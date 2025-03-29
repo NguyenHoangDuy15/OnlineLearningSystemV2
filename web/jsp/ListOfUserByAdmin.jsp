@@ -58,6 +58,7 @@
 
                         <div class="col-md-12">
                             <div class="card">
+
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <nav
@@ -92,8 +93,15 @@
                                                 </div>
                                             </form>
                                         </nav>
+
+                                        <button class="btn btn-primary btn-round ms-auto" onclick="BackToList()">
+                                            <i class="fas fa-angle-left"></i>
+                                            Back to Dashboard
+                                        </button>
+
                                         <c:set value="${requestScope.noti}" var="noti" />
                                     </div>
+
                                 </div>
                                 <div class="card-body">
                                     <!-- Modal -->
@@ -240,6 +248,11 @@
     <script>
         function doClose() {
             $('#addUserModal').modal('hide');
+        }
+    </script>
+    <script>
+        function BackToList() {
+            window.location = "ShowAdminDasboardServlet";
         }
     </script>
     <script>

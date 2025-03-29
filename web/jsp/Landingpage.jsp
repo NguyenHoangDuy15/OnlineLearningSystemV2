@@ -1,4 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -277,7 +278,7 @@
             <div class="container py-5">
                 <div class="section-title text-center position-relative mb-5">
                     <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Expert</h6>
-                    <h1 class="display-4">Meet Our Expert</h1>
+                    <h1 class="display-4">Top 3 Expert</h1>
                 </div>
                 <div class="owl-carousel team-carousel position-relative" style="padding: 0 30px;">
                     <c:forEach items="${coursedao}" var="course">
@@ -285,7 +286,29 @@
                             <img class="img-fluid w-100" src="${course.avatar}" alt="Instructor">
                             <div class="bg-light text-center p-4">
                                 <h5 class="mb-3">${course.username}</h5> <!-- Hiển thị tên giảng viên -->
-                                <p class="mb-2">${course.courseName}</p> <!-- Hiển thị tên khóa học -->
+                                <div class="text-center mb-2">
+                                    <c:set var="rating" value="${course.rating}"/>
+                                    <c:set var="fullStars" value="${Math.floor(rating)}"/>
+                                    <c:set var="decimalPart" value="${rating - fullStars}"/>
+                                    <c:set var="hasHalfStar" value="${decimalPart >= 0.5}"/>
+                                    <c:set var="starsDisplayed" value="${fullStars + (hasHalfStar ? 1 : 0)}"/>
+                                    <c:set var="emptyStars" value="${5 - starsDisplayed}"/>
+
+                                    <!-- Sao đầy -->
+                                    <c:forEach begin="1" end="${fullStars}">
+                                        <i class="fas fa-star" style="color: #f1c40f;"></i>
+                                    </c:forEach>
+                                    <!-- Sao nửa -->
+                                    <c:if test="${hasHalfStar}">
+                                        <i class="fas fa-star-half-alt" style="color: #f1c40f;"></i>
+                                    </c:if>
+                                    <!-- Sao rỗng -->
+                                    <c:forEach begin="1" end="${emptyStars}">
+                                        <i class="far fa-star" style="color: #f1c40f;"></i>
+                                    </c:forEach>
+
+                                    <span>(<fmt:formatNumber value="${rating}" minFractionDigits="1" maxFractionDigits="1"/>)</span>
+                                </div>
 
                             </div>
                         </div>

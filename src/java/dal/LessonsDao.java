@@ -1,4 +1,3 @@
-
 package dal;
 
 import Model.Courses;
@@ -58,7 +57,37 @@ public class LessonsDao extends DBContext {
         }
         return list;
     }
-    
+
+    public List<Lesson> getTestsByCourseId(int courseId) {
+        List<Lesson> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    'Test' AS Type, \n"
+                + "    t.TestID AS ID, \n"
+                + "    t.Name AS Name, \n"
+                + "    NULL AS Content\n"
+                + "FROM Test t \n"
+                + "WHERE t.CourseID = ? AND t.Status = 1";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, courseId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Lesson(
+                            rs.getString("Type"),
+                            rs.getInt("ID"),
+                            rs.getString("Name"),
+                            rs.getString("Content")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<LessionAdmin> getLessionByCourseID(int courseId) {
         List<LessionAdmin> list = new ArrayList<>();
         String sql = "SELECT [LessonID]\n"
@@ -74,12 +103,12 @@ public class LessonsDao extends DBContext {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 LessionAdmin m = new LessionAdmin(
-                            rs.getInt("LessonID"),
-                            rs.getString("Content"),
-                            rs.getInt("CourseID"),
-                            rs.getString("Title"),
-                            rs.getInt("Status")
-                    );
+                        rs.getInt("LessonID"),
+                        rs.getString("Content"),
+                        rs.getInt("CourseID"),
+                        rs.getString("Title"),
+                        rs.getInt("Status")
+                );
                 list.add(m);
             }
         } catch (SQLException e) {
@@ -88,5 +117,4 @@ public class LessonsDao extends DBContext {
         return list;
     }
 
-   
 }
