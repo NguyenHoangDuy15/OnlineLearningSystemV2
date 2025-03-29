@@ -200,8 +200,7 @@
                                                     </div>
                                                     <input type="text" name="userid" value="${u.userID}" hidden="">
                                                     <div class="modal-footer border-0">
-                                                        <c:set value="${requestScope.noti}" var="noti"/>
-                                                        ${noti}
+                                                        ${err}
                                                         <button
                                                             type="submit"
                                                             class="btn btn-primary">
